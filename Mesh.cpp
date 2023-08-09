@@ -176,71 +176,52 @@ void Mesh::MakePSO()
 		assert(SUCCEEDED(hr));
 }
 
-void Mesh::Update(int NumTriangle)
+void Mesh::Update()
 {
-	    MakeVertexResource(NumTriangle);
-	    MakeVertexBufferView(NumTriangle);
-	    MakeMaterialResource(NumTriangle);
-		InputDataTriangle(vertexData,NumTriangle);
+	    vertexResource = CreateBufferResource(
+			DX12Common::GetInstance()->GetDevice(), sizeof(Vector4) * 3);
+		MakeVertexBufferView();
+	    materialResource = CreateBufferResource(
+			DX12Common::GetInstance()->GetDevice(), sizeof(Vector4));
+		InputDataTriangle(vertexData);
 }
 
-void Mesh::MakeVertexResource(int NumTriangle)
-{
-	    D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
-	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	    D3D12_RESOURCE_DESC vertexResourceDesc{};
-
-	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-
-	vertexResourceDesc.Width = sizeof(Vector4) * NumTriangle*3;
-
-	vertexResourceDesc.Height = 1;
-	vertexResourceDesc.DepthOrArraySize = 1;
-	vertexResourceDesc.MipLevels = 1;
-	vertexResourceDesc.SampleDesc.Count = 1;
-
-	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	hr = DX12Common::GetInstance()->GetDevice()->CreateCommittedResource(
-		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
-		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr, IID_PPV_ARGS(&vertexResource));
-	assert(SUCCEEDED(hr));
-}
-
-void Mesh::MakeMaterialResource(int NumTriangle)
-{
+ID3D12Resource* Mesh::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes) {
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	D3D12_RESOURCE_DESC materialResourceDesc{};
+	D3D12_RESOURCE_DESC ResourceDesc{};
 
-	materialResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	
-	materialResourceDesc.Width = sizeof(Vector4) * NumTriangle * 3;
-	
-	materialResourceDesc.Height = 1;
-	materialResourceDesc.DepthOrArraySize = 1;
-	materialResourceDesc.MipLevels = 1;
-	materialResourceDesc.SampleDesc.Count = 1;
-	
-	materialResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 
-	hr = DX12Common::GetInstance()->GetDevice()->CreateCommittedResource(
-	    &uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &materialResourceDesc,
-	    D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&materialResource));
+	ResourceDesc.Width = sizeInBytes * 3;
+
+	ResourceDesc.Height = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	ID3D12Resource* Resource = nullptr;
+
+	hr = device->CreateCommittedResource(
+	    &uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &ResourceDesc,
+	    D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&Resource));
 	assert(SUCCEEDED(hr));
+	return Resource;
 }
 
-void Mesh::MakeVertexBufferView(int NumTriangle)
+
+void Mesh::MakeVertexBufferView()
 {
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vertexBufferView.SizeInBytes = sizeof(Vector4) * NumTriangle*3;
+	vertexBufferView.SizeInBytes = sizeof(Vector4) * 3;
 	vertexBufferView.StrideInBytes = sizeof(Vector4);
 }
 
-void Mesh::InputDataTriangle(Vector4* vertexData,int numTriangle)
+void Mesh::InputDataTriangle(Vector4* vertexData)
 {
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
@@ -289,7 +270,7 @@ void Mesh::InputDataTriangle(Vector4* vertexData,int numTriangle)
 
 }
 
-void Mesh::DrawTriangle(int NumTriangle) {
+void Mesh::DrawTriangle() {
 	float clearColor[] =
 	{
 		0.1f, 0.25f,0.5f,1.0f
@@ -300,25 +281,32 @@ void Mesh::DrawTriangle(int NumTriangle) {
 	    clearColor, 0, nullptr);
 }
 
-void Mesh::Draw(int NumTriangle) {
-	DrawTriangle(NumTriangle);
+void Mesh::Draw() {
+	DrawTriangle();
 	DX12Common::GetInstance()->GetCommandList()->
 		RSSetViewports(1, &viewport);
+
 	DX12Common::GetInstance()->GetCommandList()->
 		RSSetScissorRects(1, &scissorRect);
+
 	DX12Common::GetInstance()->GetCommandList()->
 		SetPipelineState(graphicsPipelineState);
+
 	DX12Common::GetInstance()->GetCommandList()->
 		SetGraphicsRootSignature(rootSignature);
+
 	DX12Common::GetInstance()->GetCommandList()->
 		IASetVertexBuffers(0, 1, &vertexBufferView);
+
 	DX12Common::GetInstance()->GetCommandList()->
 		IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	DX12Common::GetInstance()->GetCommandList()->
 	    SetGraphicsRootConstantBufferView(0,
 			materialResource->GetGPUVirtualAddress());
+
 	DX12Common::GetInstance()->GetCommandList()->
-		DrawInstanced(NumTriangle * 3, NumTriangle, 0, 0);
+		DrawInstanced(3, 1, 0, 0);
 }
     
 

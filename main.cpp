@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			dx12Common->DrawScreen();
 			for (int i = 0; i < kNumTriangle; i++)
 			{
-				mesh[i]->Draw(kNumTriangle);
+				mesh[i]->Draw();
 			}
 			dx12Common->ClearScreen();
 		}
