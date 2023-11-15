@@ -8,8 +8,7 @@ const int32_t kNumTriangle = 2;
 Vector4* vertexData = nullptr;
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	Debug::D3DResourceLeakChecker leakCheck;
-	CoInitializeEx(0, COINIT_MULTITHREADED);
+	Debug::D3DResourceLeakChecker* leakCheck = new Debug::D3DResourceLeakChecker;	CoInitializeEx(0, COINIT_MULTITHREADED);
 	Mesh* mesh[kNumTriangle];
 	for (int i = 0; i < kNumTriangle; i++)
 	{
@@ -26,14 +25,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	winAPP->Initialize(kWindowWidth, kWindowHeight);
 	winAPP->CreateWindowView(L"CG2");
 
-#ifdef _DEBUG
-	debug->DebugLayer();
-#endif
-
 	dx12Common->Init( kWindowWidth, kWindowHeight);
 	imgui->Initialize(
 	    winAPP->GetHWND(),
-		dx12Common->GetInstance()->GetDevice(),
+		dx12Common->GetInstance()->GetDevice().Get(),
 	    dx12Common->GetInstance()->GetSwapChainDesc(),
 	    dx12Common->GetInstance()->GetRtvDesc(),
 	    dx12Common->GetInstance()->GetSrvDescriptorHeap().Get());
@@ -142,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			 //       sphere, ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
 			mesh[0]->DrawOBJ(ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
 
-				imgui->Endframe(dx12Common->GetInstance()->GetCommandList());
+				imgui->Endframe(dx12Common->GetInstance()->GetCommandList().Get());
 			dx12Common->ClearScreen();
 		}
 	}
@@ -152,8 +147,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//{
 	//	mesh[i]->MeshRelease();
 	//}
-	dx12Common->DX12Release(debug->GetDebugController().Get());
-	debug->ReportLiveObject();
 	CoUninitialize();
+	delete leakCheck;
 	return 0;
 }

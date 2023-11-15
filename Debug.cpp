@@ -6,7 +6,7 @@ Debug::~Debug()
 }
 void Debug::Log(const std::string& message)
 {
-	OutputDebugStringA(message.c_str());
+    OutputDebugStringA(message.c_str());
 }
 
 std::string Debug::ConvertString(const std::wstring& str)
@@ -43,48 +43,6 @@ std::wstring Debug::ConvertString(const std::string& str)
     return result;
 }
 
-void Debug::DebugLayer()
-{
-    if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-    {
-        debugController->EnableDebugLayer();
-        debugController->SetEnableGPUBasedValidation(TRUE);
-    }
-}
-
-void Debug::InfoQueue(Microsoft::WRL::ComPtr<ID3D12Device> device)
-{
-    Microsoft::WRL::ComPtr<ID3D12InfoQueue> InfoQueue = nullptr;
-    if(SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&InfoQueue))))
-    {
-        InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-        InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-        //InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
-        D3D12_MESSAGE_ID denyIds[] =
-        {
-            D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
-        };
-        D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
-        D3D12_INFO_QUEUE_FILTER filter{};
-        filter.DenyList.NumIDs = _countof(denyIds);
-        filter.DenyList.pIDList = denyIds;
-        filter.DenyList.NumSeverities = _countof(severities);
-        filter.DenyList.pSeverityList = severities;
-        InfoQueue->PushStorageFilter(&filter);
-        InfoQueue->Release();
-    }
-}
-
-void Debug::ReportLiveObject()
-{
-    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
-    {
-        debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-        debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-        debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-        debug->Release();
-    }
-}
 
 Debug::D3DResourceLeakChecker::~D3DResourceLeakChecker()
 {

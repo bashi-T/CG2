@@ -2,25 +2,29 @@
 
 MyImGui::~MyImGui()
 {
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void MyImGui::Initialize(
-    HWND hwnd,
-	Microsoft::WRL::ComPtr<ID3D12Device> device,
+	HWND hwnd,
+	ID3D12Device* device,
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc,
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc,
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap) {
+	ID3D12DescriptorHeap* srvDescriptorHeap)
+{
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX12_Init(
-		device.Get(),
+		device,
 		swapChainDesc.BufferCount,
 		rtvDesc.Format,
-		srvDescriptorHeap.Get(),
-	    srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-	    srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		srvDescriptorHeap,
+		srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
 void MyImGui::Update()
@@ -31,7 +35,8 @@ void MyImGui::Update()
 
 }
 
-void MyImGui::Endframe(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) {
+void MyImGui::Endframe(ID3D12GraphicsCommandList* commandList)
+{
 	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
 }
