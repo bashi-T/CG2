@@ -41,6 +41,24 @@ struct Sphere {
 	float radius;
 };
 
+struct Line//直線
+{
+	Vector3 origin;//始点
+	Vector3 diff;//終点
+};
+
+struct Ray//半直線
+{
+	Vector3 origin;
+	Vector3 diff;
+};
+
+struct Segment//線分
+{
+	Vector3 origin;
+	Vector3 diff;
+};
+
 //Matrix2x2 Add(Matrix2x2 a, Matrix2x2 b) {
 //	Matrix2x2 add;
 //	for (int x = 0; x < 2; x++) {
@@ -341,3 +359,7 @@ Matrix4x4 MakeViewportMatrix(
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
+Vector3 Project(const Vector3& v1, const Vector3& v2);//正射影ベクトル
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment);//最近接点

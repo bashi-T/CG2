@@ -513,3 +513,18 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	};
 	return result;
 }
+
+Vector3 Project(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 proj;
+	Vector3 newV2 = Normalize(v2);
+	proj = Multiply(Dot(v1, newV2), newV2);
+	return proj;
+}
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
+{
+	Vector3 result;
+	result = Add(segment.origin, Project(Subtract(point, segment.origin), segment.diff));
+	return result;
+}
