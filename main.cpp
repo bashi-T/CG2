@@ -24,15 +24,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool useWorldMap = true;
 
 	winAPP->Initialize(kWindowWidth, kWindowHeight);
-	winAPP->CreateWindowView(L"CG2");
+	winAPP->CreateWindowView(L"LE2B_12_ツヅキバシ_マサミ");
 
 	dx12Common->Init(kWindowWidth, kWindowHeight);
-	imgui->Initialize(
-	    winAPP->GetHWND(),
-		dx12Common->GetDevice().Get(),
-	    dx12Common->GetSwapChainDesc(),
-	    dx12Common->GetRtvDesc(),
-	    dx12Common->GetSrvDescriptorHeap().Get());
+	//imgui->Initialize(
+	//    winAPP->GetHWND(),
+	//	dx12Common->GetDevice().Get(),
+	//    dx12Common->GetSwapChainDesc(),
+	//    dx12Common->GetRtvDesc(),
+	//    dx12Common->GetSrvDescriptorHeap().Get());
 
 	Vector4 Top[kNumTriangle];
 	Vector4 Left[kNumTriangle];
@@ -60,12 +60,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector2 texcoordRightBottom[kNumTriangle];
 	Vector2 texcoordLeftBottom[kNumTriangle];
 
-	Vector4 ColorSphere[kNumTriangle];
-	
-	LeftTop[0] = {0.0f, 0.0f, 0.0f, 1.0f};
-	RightTop[0] = { kWindowWidth/3, 0.0f, 0.0f, 1.0f};
-	RightBottom[0] = { kWindowWidth/3, kWindowHeight/3, 0.0f, 1.0f};
-	LeftBottom[0] = { 0.0f, kWindowHeight/3, 0.0f, 1.0f};
+	LeftTop[0] = {-1.0f, 1.0f, 0.0f, 1.0f};
+	RightTop[0] = { 1.0f, 1.0f, 0.0f, 1.0f};
+	RightBottom[0] = { 1.0f, -1.0f, 0.0f, 1.0f};
+	LeftBottom[0] = { -1.0f, -1.0f, 0.0f, 1.0f};
 	ColorSprite[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	texcoordLeftTop[0] = {0.0f, 0.0f};
 	texcoordRightTop[0] = {1.0f, 0.0f};
@@ -73,6 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	texcoordLeftBottom[0] = {0.0f, 1.0f};
 
 	
+	Vector4 ColorSphere[kNumTriangle];
 	Sphere sphere = { { 0.0f,0.0f,0.0f },1.0f };
 	ColorSphere[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -85,23 +84,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	while (NewMSG.message != WM_QUIT)
 	{
 		
-		imgui->Update();
+		//imgui->Update();
 
 		for (int i = 0; i < kNumTriangle; i++)
 		{
 			mesh[i]->Update();
 		}
-		//ImGui::Begin("sphereEdit");
-		//ImGui::ColorEdit3("Sphere", (float*)&ColorSphere[0]);
-		//ImGui::DragFloat3("sphere.center", (float*)&sphere.center, 0.01f);
-		//ImGui::DragFloat("sphere.radius", (float*)&sphere.radius, 0.01f);
+		//ImGui::Begin("PlaneEdit");
+		////ImGui::ColorEdit3("Sphere", (float*)&ColorSphere[0]);
+		////ImGui::DragFloat3("sphere.center", (float*)&sphere.center, 0.01f);
+		////ImGui::DragFloat("sphere.radius", (float*)&sphere.radius, 0.01f);
+		//ImGui::ColorEdit4("color", &ColorSprite[0].x);
 		//ImGui::Checkbox("useWorldMap", &useWorldMap);
 		//ImGui::End();
 
 		if (PeekMessage(&NewMSG, NULL, 0, 0, PM_REMOVE))
 		{
 			winAPP->ProcessMessage(NewMSG);
-			ImGui::Render();
+			//ImGui::Render();
 		} else
 		{
 			dx12Common->DrawScreen();
@@ -113,19 +113,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			dx12Common->GetCommandList().Get()->
 				SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
 
-			//for (int i = 0; i < kNumTriangle; i++)
-			//{
-			//	mesh[i]->DrawTriangle(
-			//		Top[i],
-			//		Right[i],
-			//		Left[i],
-			//		Color[i],
-			//		texcoordTop[i],
-			//		texcoordRight[i],
-			//		texcoordLeft[i],
-			//		useWorldMap);
-			//}
-				mesh[0]->DrawSprite(
+				//mesh[0]->DrawTriangle(
+				//	Top[0],
+				//	Right[0],
+				//	Left[0],
+				//	Color[0],
+				//	texcoordTop[0],
+				//	texcoordRight[0],
+				//	texcoordLeft[0],
+				//	useWorldMap);
+
+				mesh[0]->DrawPlane(
 					LeftTop[0],
 					RightTop[0],
 					RightBottom[0],
@@ -136,13 +134,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					texcoordRightBottom[0],
 					texcoordLeftBottom[0],
 					kWindowWidth,
-					kWindowHeight);
+					kWindowHeight,
+					useWorldMap);
 
-				mesh[0]->DrawSphere(
-			        sphere, ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
-			mesh[0]->DrawOBJ(ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
+				//mesh[0]->DrawSphere(
+			 //       sphere, ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
+			//mesh[0]->DrawOBJ(ColorSphere[0], useWorldMap, kWindowWidth, kWindowHeight);
 
-				imgui->Endframe(dx12Common->GetCommandList().Get());
+				//imgui->Endframe(dx12Common->GetCommandList().Get());
 			dx12Common->ClearScreen();
 		}
 	}
@@ -150,7 +149,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	CloseHandle(dx12Common->GetFenceEvent());
 	dx12Common->DX12Release();
 
-	delete imgui;
+	//delete imgui;
 	dx12Common->DeleteInstance();
 	for (int i = 0; i < kNumTriangle; i++)
 	{

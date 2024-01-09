@@ -83,37 +83,37 @@ Matrix4x4 Subtract(Matrix4x4 a, Matrix4x4 b) {
 Matrix4x4 Multiply(Matrix4x4 a, Matrix4x4 b) {
 	Matrix4x4 multiply;
 	multiply.m[0][0] = a.m[0][0] * b.m[0][0] + a.m[0][1] * b.m[1][0] + a.m[0][2] * b.m[2][0] +
-	                   a.m[0][3] * b.m[3][0];
+		a.m[0][3] * b.m[3][0];
 	multiply.m[0][1] = a.m[0][0] * b.m[0][1] + a.m[0][1] * b.m[1][1] + a.m[0][2] * b.m[2][1] +
-	                   a.m[0][3] * b.m[3][1];
+		a.m[0][3] * b.m[3][1];
 	multiply.m[0][2] = a.m[0][0] * b.m[0][2] + a.m[0][1] * b.m[1][2] + a.m[0][2] * b.m[2][2] +
-	                   a.m[0][3] * b.m[3][2];
+		a.m[0][3] * b.m[3][2];
 	multiply.m[0][3] = a.m[0][0] * b.m[0][3] + a.m[0][1] * b.m[1][3] + a.m[0][2] * b.m[2][3] +
-	                   a.m[0][3] * b.m[3][3];
+		a.m[0][3] * b.m[3][3];
 	multiply.m[1][0] = a.m[1][0] * b.m[0][0] + a.m[1][1] * b.m[1][0] + a.m[1][2] * b.m[2][0] +
-	                   a.m[1][3] * b.m[3][0];
+		a.m[1][3] * b.m[3][0];
 	multiply.m[1][1] = a.m[1][0] * b.m[0][1] + a.m[1][1] * b.m[1][1] + a.m[1][2] * b.m[2][1] +
-	                   a.m[1][3] * b.m[3][1];
+		a.m[1][3] * b.m[3][1];
 	multiply.m[1][2] = a.m[1][0] * b.m[0][2] + a.m[1][1] * b.m[1][2] + a.m[1][2] * b.m[2][2] +
-	                   a.m[1][3] * b.m[3][2];
+		a.m[1][3] * b.m[3][2];
 	multiply.m[1][3] = a.m[1][0] * b.m[0][3] + a.m[1][1] * b.m[1][3] + a.m[1][2] * b.m[2][3] +
-	                   a.m[1][3] * b.m[3][3];
+		a.m[1][3] * b.m[3][3];
 	multiply.m[2][0] = a.m[2][0] * b.m[0][0] + a.m[2][1] * b.m[1][0] + a.m[2][2] * b.m[2][0] +
-	                   a.m[2][3] * b.m[3][0];
+		a.m[2][3] * b.m[3][0];
 	multiply.m[2][1] = a.m[2][0] * b.m[0][1] + a.m[2][1] * b.m[1][1] + a.m[2][2] * b.m[2][1] +
-	                   a.m[2][3] * a.m[3][1];
+		a.m[2][3] * b.m[3][1];
 	multiply.m[2][2] = a.m[2][0] * b.m[0][2] + a.m[2][1] * b.m[1][2] + a.m[2][2] * b.m[2][2] +
-	                   a.m[2][3] * b.m[3][2];
+		a.m[2][3] * b.m[3][2];
 	multiply.m[2][3] = a.m[2][0] * b.m[0][3] + a.m[2][1] * b.m[1][3] + a.m[2][2] * b.m[2][3] +
-	                   a.m[2][3] * b.m[3][3];
-	multiply.m[3][0] = a.m[3][0] * b.m[3][0] + a.m[3][1] * b.m[1][0] + a.m[3][2] * b.m[2][0] +
-	                   a.m[3][3] * b.m[3][0];
+		a.m[2][3] * b.m[3][3];
+	multiply.m[3][0] = a.m[3][0] * b.m[0][0] + a.m[3][1] * b.m[1][0] + a.m[3][2] * b.m[2][0] +
+		a.m[3][3] * b.m[3][0];
 	multiply.m[3][1] = a.m[3][0] * b.m[0][1] + a.m[3][1] * b.m[1][1] + a.m[3][2] * b.m[2][1] +
-	                   a.m[3][3] * b.m[3][1];
+		a.m[3][3] * b.m[3][1];
 	multiply.m[3][2] = a.m[3][0] * b.m[0][2] + a.m[3][1] * b.m[1][2] + a.m[3][2] * b.m[2][2] +
-	                   a.m[3][3] * b.m[3][2];
+		a.m[3][3] * b.m[3][2];
 	multiply.m[3][3] = a.m[3][0] * b.m[0][3] + a.m[3][1] * b.m[1][3] + a.m[3][2] * b.m[2][3] +
-	                   a.m[3][3] * b.m[3][3];
+		a.m[3][3] * b.m[3][3];
 
 	return multiply;
 }
@@ -425,57 +425,55 @@ Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 rotate, Vector3 translate) {
 	return result;
 };
 
-Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
+{
 	Matrix4x4 result;
-
-	result.m[0][0] = 1 / aspectRatio * 1 / std::tan(fovY / 2);
+	result.m[0][0] = (1.0f / aspectRatio) * (1.0f / std::tan(fovY / 2));
 	result.m[0][1] = 0;
 	result.m[0][2] = 0;
 	result.m[0][3] = 0;
 	result.m[1][0] = 0;
-	result.m[1][1] = 1 / std::tan(fovY / 2);
+	result.m[1][1] = (1.0f / std::tan(fovY / 2));
 	result.m[1][2] = 0;
 	result.m[1][3] = 0;
 	result.m[2][0] = 0;
 	result.m[2][1] = 0;
 	result.m[2][2] = farClip / (farClip - nearClip);
-	result.m[2][3] = 1;
+	result.m[2][3] = 1.0f;
 	result.m[3][0] = 0;
 	result.m[3][1] = 0;
-	result.m[3][2] = -nearClip * farClip / (farClip - nearClip);
+	result.m[3][2] = (-nearClip * farClip) / (farClip - nearClip);
 	result.m[3][3] = 0;
-
 	return result;
 }
-
 Matrix4x4 MakeOrthographicMatrix(
-    float left, float top, float right, float bottom, float nearClip, float farClip) {
+	float left, float top, float right, float bottom, float nearClip , float farClip)
+{
 	Matrix4x4 result;
-
-	result.m[0][0] = 2 / (right - left);
+	result.m[0][0] = 2.0f / (right - left);
 	result.m[0][1] = 0;
 	result.m[0][2] = 0;
 	result.m[0][3] = 0;
 	result.m[1][0] = 0;
-	result.m[1][1] = 2 / (top - bottom);
+	result.m[1][1] = 2.0f / (top - bottom);
 	result.m[1][2] = 0;
 	result.m[1][3] = 0;
 	result.m[2][0] = 0;
 	result.m[2][1] = 0;
-	result.m[2][2] = 1 / (nearClip - farClip);
+	result.m[2][2] = 1.0f / (farClip - nearClip);
 	result.m[2][3] = 0;
 	result.m[3][0] = (left + right) / (left - right);
 	result.m[3][1] = (top + bottom) / (bottom - top);
 	result.m[3][2] = nearClip / (nearClip - farClip);
-	result.m[3][3] = 1;
+	result.m[3][3] = 1.0f;
 
 	return result;
 }
-
 Matrix4x4 MakeViewportMatrix(
-    float left, float top, float width, float height, float minDepth, float maxDepth) {
+	float left, float top, float width, float height,
+	float minDepth, float maxDepth )
+{
 	Matrix4x4 result;
-
 	result.m[0][0] = width / 2;
 	result.m[0][1] = 0;
 	result.m[0][2] = 0;

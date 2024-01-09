@@ -32,9 +32,13 @@ public:
 	    Vector4 Top, Vector4 Right, Vector4 Left, Vector4 color, Vector2 coordTop,
 	    Vector2 coordRight, Vector2 coordLeft, bool useWorldMap);
 	void DrawSprite(
-	    Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
-	    Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
-	    Vector2 coordLeftBottom, int32_t width, int32_t height);
+		Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
+		Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
+		Vector2 coordLeftBottom, int32_t width, int32_t height);
+	void DrawPlane(
+		Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
+		Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
+		Vector2 coordLeftBottom, int32_t width, int32_t height, bool useWorldMap);
 	void DrawSphere(
 		const Sphere& sphere_, Vector4 color, bool useWorldMap, int32_t width, int32_t height);
 	void DrawOBJ(
@@ -47,16 +51,22 @@ public:
 	    Vector4 Top, Vector4 Right, Vector4 Left, Vector4 color, Vector2 coordTop,
 	    Vector2 coordRight, Vector2 coordLeft);
 	void InputDataSprite(
-	    Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
-	    Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
-	    Vector2 coordLeftBottom, int32_t width, int32_t height);
+		Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
+		Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
+		Vector2 coordLeftBottom, int32_t width, int32_t height);
+	void InputDataPlane(
+		Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
+		Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
+		Vector2 coordLeftBottom, int32_t width, int32_t height);
 	void InputDataSphere(
 		Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
 		Vector2 coordLeftTop, Vector2 coordRightTop, Vector2 coordRightBottom,
 		Vector2 coordLeftBottom, uint32_t count, int32_t width, int32_t height);
 
 	void MakeShaderResourceView(const DirectX::TexMetadata& metadata, const DirectX::TexMetadata& metadata2);
-
+	
+	void MakeShaderResourceViewStructuredBuffer();
+	
 	struct VertexData
 	{
 		Vector4 position;
@@ -108,11 +118,13 @@ private:
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
 	TransformMatrix transformMatrix;
+	TransformMatrix transformMatrixPlane;
 	TransformMatrix transformMatrixSprite;
 	TransformMatrix transformMatrixSphere;
 	TransformMatrix transformMatrixObj;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResourcePlane;
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResourceSprite;
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResourceSphere;
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResourceObj;
@@ -131,6 +143,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourcePlane = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewPlane{};
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceSprite = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite{};
 
@@ -140,8 +155,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceObj = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewObj{};
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResourceSprite = nullptr;
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSprite{};
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResourcePlane = nullptr;
+	D3D12_INDEX_BUFFER_VIEW indexBufferViewPlane{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResourceSphere = nullptr;
 	D3D12_INDEX_BUFFER_VIEW indexBufferViewSphere{};
@@ -157,6 +178,7 @@ private:
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResourcePlane;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResourceSprite;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResourceSphere;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResourceObj;
@@ -174,7 +196,17 @@ private:
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
+	TransformMatrix uvTransform{
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f},
+	};
 	TransformMatrix uvTransformSprite{
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f},
+	};
+	TransformMatrix uvTransformPlane{
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
@@ -189,25 +221,28 @@ private:
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
 	};
-
 	TransformMatrix cameraTransform;
 	DirectionalLight* DirectionalLightData = nullptr;
+	TransformationMatrix* transformationMatrixDataPlane = nullptr;
 	TransformationMatrix* transformationMatrixDataSprite = nullptr;
 	TransformationMatrix* transformationMatrixDataSphere = nullptr;
 	TransformationMatrix* transformationMatrixDataObj = nullptr;
 
 	Matrix4x4 cameraMatrix;
 	Matrix4x4 viewMatrix;
+	Matrix4x4 viewMatrixPlane;
 	Matrix4x4 viewMatrixSprite;
 	Matrix4x4 viewMatrixSphere;
 	Matrix4x4 viewMatrixObj;
 
 	Matrix4x4 projectionMatrix;
+	Matrix4x4 projectionMatrixPlane;
 	Matrix4x4 projectionMatrixSprite;
 	Matrix4x4 projectionMatrixSphere;
 	Matrix4x4 projectionMatrixObj;
 
 	Matrix4x4 worldViewProjectionMatrix;
+	Matrix4x4 worldViewProjectionMatrixPlane;
 	Matrix4x4 worldViewProjectionMatrixSprite;
 	Matrix4x4 worldViewProjectionMatrixSphere;
 	Matrix4x4 worldViewProjectionMatrixObj;
@@ -220,9 +255,17 @@ private:
 
 	DirectX::ScratchImage mipImages;
 	DirectX::ScratchImage mipImages2;
+	DirectX::ScratchImage texmipImages;
+	DirectX::ScratchImage texmipImages2;
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU2;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU2;
 
+	const uint32_t kNumInstance = 10;
+	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU;
+	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU;
+	TransformMatrix transformsInstancing[10];
+	TransformationMatrix* instancingData = nullptr;
+	ComPtr<ID3D12Resource> instancingResource;
 };
