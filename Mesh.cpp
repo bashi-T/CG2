@@ -3,7 +3,8 @@
 Mesh::~Mesh() {
 }
 
-void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height) {
+void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height)
+{
 	kSubdivision == 16;
 	
 	viewport.TopLeftX = 0.0f;
@@ -59,31 +60,32 @@ transformMatrix = {
 	modelData = LoadObjFile("Resource",filename);
 
 	vertexResource = CreateBufferResource(sizeof(VertexData) * 3);
-	vertexResourceSprite = CreateBufferResource(sizeof(VertexData) * 6);
-	vertexResourcePlane = CreateBufferResource(sizeof(VertexData) * 6);
-	vertexResourceSphere = CreateBufferResource(sizeof(VertexData) * 6 * kSubdivision * kSubdivision);
-	vertexResourceObj = CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
-	
 	materialResource = CreateBufferResource(sizeof(Material));
-	materialResourceSprite = CreateBufferResource(sizeof(Material));
-	materialResourcePlane = CreateBufferResource(sizeof(Material));
-	materialResourceSphere = CreateBufferResource(sizeof(Material));
-	materialResourceObj = CreateBufferResource(sizeof(Material));
-
 	transformationMatrixResource = CreateBufferResource(sizeof(TransformationMatrix));
+	indexResource = CreateBufferResource(sizeof(uint32_t) * 3);
+	
+	vertexResourceSprite = CreateBufferResource(sizeof(VertexData) * 6);
+	materialResourceSprite = CreateBufferResource(sizeof(Material));
 	transformationMatrixResourceSprite = CreateBufferResource(sizeof(TransformationMatrix));
-	transformationMatrixResourcePlane = CreateBufferResource(sizeof(TransformationMatrix));
+	indexResourceSprite = CreateBufferResource(sizeof(uint32_t) * 6);
+
+	vertexResourceSphere = CreateBufferResource(sizeof(VertexData) * 6 * kSubdivision * kSubdivision);
+	materialResourceSphere = CreateBufferResource(sizeof(Material));
 	transformationMatrixResourceSphere = CreateBufferResource(sizeof(TransformationMatrix));
+	indexResourceSphere = CreateBufferResource(sizeof(uint32_t) * 6 * kSubdivision * kSubdivision);
+
+	vertexResourceObj = CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
+	materialResourceObj = CreateBufferResource(sizeof(Material));
 	transformationMatrixResourceObj = CreateBufferResource(sizeof(TransformationMatrix));
 
 	directionalLightResource = CreateBufferResource(sizeof(DirectionalLight));
 	directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&DirectionalLightData));
 	
-	indexResource = CreateBufferResource(sizeof(uint32_t) * 3);
-	indexResourceSprite = CreateBufferResource(sizeof(uint32_t) * 6);
+	vertexResourcePlane = CreateBufferResource(sizeof(VertexData) * 6);
+	materialResourcePlane = CreateBufferResource(sizeof(Material));
+	//transformationMatrixResourcePlane = CreateBufferResource(sizeof(TransformationMatrix));
 	indexResourcePlane = CreateBufferResource(sizeof(uint32_t) * 6);
-	indexResourceSphere = CreateBufferResource(sizeof(uint32_t) * 6 * kSubdivision * kSubdivision);
-	
+
 	instancingResource =
 		CreateBufferResource(sizeof(TransformationMatrix) * kNumInstance);
 	instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
@@ -122,7 +124,7 @@ transformMatrix = {
 	textureResource2 = CreateTextureResource(DX12Common::GetInstance()->GetDevice().Get(), texmetadata2);
 	UploadTextureData(textureResource.Get(), texmipImages, texmetadata);
 	UploadTextureData(textureResource2.Get(), texmipImages2, texmetadata2);
-
+	MakeShaderResourceView(texmetadata, texmetadata2);
 	MakeShaderResourceViewStructuredBuffer();
 
 	MakeBufferView();
@@ -192,11 +194,11 @@ void Mesh::MakePSO()
 	//rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	//rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 0;
-	descriptorRange[0].NumDescriptors = 1;
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	//D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	//descriptorRange[0].BaseShaderRegister = 0;
+	//descriptorRange[0].NumDescriptors = 1;
+	//descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	//descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
 	descriptorRangeForInstancing[0].BaseShaderRegister = 0;
@@ -204,20 +206,20 @@ void Mesh::MakePSO()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	rootParameters[1].Descriptor.ShaderRegister = 0;
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	rootParameters[1].Descriptor.ShaderRegister = 0;
 	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
 	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
 
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
-	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
-	
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters[3].Descriptor.ShaderRegister = 1;
+	//rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	//rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	//rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
+	//rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+	//
+	//rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	//rootParameters[3].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature_.pParameters = rootParameters;
 	descriptionRootSignature_.NumParameters = _countof(rootParameters);
@@ -238,7 +240,8 @@ void Mesh::MakePSO()
 	hr = D3D12SerializeRootSignature(
 	    &descriptionRootSignature_, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		debug_->Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
@@ -315,7 +318,7 @@ void Mesh::MakePSO()
 void Mesh::Update()
 {
 
-	DirectionalLightData->direction = Normalize(DirectionalLightData->direction);
+	//DirectionalLightData->direction = Normalize(DirectionalLightData->direction);
 	
 	//ImGui::Begin("Light&Camera");
 	//ImGui::ColorEdit3("LightColor", (float*)&DirectionalLightData->color, 0.01f);
@@ -509,11 +512,12 @@ void Mesh::InputDataPlane(Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom
 	//vertexResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataPlane));
 	//std::memcpy(vertexDataPlane, modelData.vertices.data(), sizeof(VertexData) * 6);
 	//Material* materialDataPlane = nullptr;
-	//instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
+	//materialResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&materialDataPlane));
 	//uint32_t* indexDataPlane = nullptr;
 	//indexResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&indexDataPlane));
-	//transformationMatrixResourcePlane->Map(
-	//	0, nullptr, reinterpret_cast<void**>(&instancingData));
+	////transformationMatrixResourcePlane->Map(
+	////	0, nullptr, reinterpret_cast<void**>(&transformationMatrixDataPlane));
+	instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 
 	//materialDataPlane[0].color = color;
 	//materialDataPlane[0].enableLighting = true;
@@ -557,13 +561,13 @@ void Mesh::InputDataPlane(Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom
 	//indexDataPlane[4] = 2;
 	//indexDataPlane[5] = 3;
 
-	modelData.vertices.push_back({ .position = LeftTop,.texcoord = coordLeftTop,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.vertices.push_back({ .position = RightTop,.texcoord = coordRightTop,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.vertices.push_back({ .position = RightBottom,.texcoord = coordRightBottom,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.vertices.push_back({ .position = LeftTop,.texcoord = coordLeftTop,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.vertices.push_back({ .position = RightBottom,.texcoord = coordRightBottom,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.vertices.push_back({ .position = LeftBottom,.texcoord = coordLeftBottom,.normal = { 0.0f, 0.0f, -1.0f } });
-	modelData.material.textureFilePath = "./Resource/worldMap.png";
+	//modelData.vertices.push_back({ .position = LeftTop,.texcoord = coordLeftTop,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.vertices.push_back({ .position = RightTop,.texcoord = coordRightTop,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.vertices.push_back({ .position = RightBottom,.texcoord = coordRightBottom,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.vertices.push_back({ .position = LeftTop,.texcoord = coordLeftTop,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.vertices.push_back({ .position = RightBottom,.texcoord = coordRightBottom,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.vertices.push_back({ .position = LeftBottom,.texcoord = coordLeftBottom,.normal = { 0.0f, 0.0f, -1.0f } });
+	//modelData.material.textureFilePath = "./Resource/worldMap.png";
 }
 
 void Mesh::InputDataSphere(
@@ -660,8 +664,8 @@ void Mesh::DrawSprite(
 	DX12Common::GetInstance()->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
 	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootDescriptorTable(
 	    2, GetTextureSrvHandleGPU());
-	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-		3, directionalLightResource->GetGPUVirtualAddress());
+	//DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+	//	3, directionalLightResource->GetGPUVirtualAddress());
 	DX12Common::GetInstance()->GetCommandList().Get()->
 		IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
 	DX12Common::GetInstance()->GetCommandList().Get()->
@@ -686,7 +690,7 @@ void Mesh::DrawPlane(Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vec
 	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		0, materialResourcePlane->GetGPUVirtualAddress());
 	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-		1, transformationMatrixResourcePlane->GetGPUVirtualAddress());
+		1, instancingResource->GetGPUVirtualAddress());
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv = DX12Common::GetInstance()->GetRtvHandles(
 		DX12Common::GetInstance()->GetBackBufferIndex());
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
@@ -695,8 +699,8 @@ void Mesh::DrawPlane(Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vec
 		1,instancingSrvHandleGPU);
 	//DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 	//	3, directionalLightResource->GetGPUVirtualAddress());
-	DX12Common::GetInstance()->GetCommandList().Get()->IASetVertexBuffers(
-		0, 1, &vertexBufferViewPlane);
+	DX12Common::GetInstance()->GetCommandList().Get()->
+		IASetVertexBuffers(0, 1, &vertexBufferViewPlane);
 	DX12Common::GetInstance()->GetCommandList().Get()->
 		IASetIndexBuffer(&indexBufferViewPlane);
 	DX12Common::GetInstance()->GetCommandList().Get()->
