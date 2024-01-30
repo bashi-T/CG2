@@ -52,6 +52,7 @@ public:
 	void SetTextureLeftTop(const Vector2& texturelefttop) { this->textureLeftTop = texturelefttop; }
 	void SetTextureSize(const Vector2& texturesize) { this->textureSize = texturesize; }
 	void AdjestTextureSize();
+	void AdjestScreenSize(int32_t width, int32_t height);
 
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
 	Vector4 GetLeftTop() { return LeftTop; }

@@ -21,6 +21,11 @@ void GameScene::Initialize(int32_t width, int32_t height, WinAPP* winAPP)
 		"plane.obj",
 		"world.obj"
 	};
+	std::string ScreenFilePath[2] =
+	{
+		"Resource/title.png",
+		"Resource/clear.png",
+	};
 	numShot = 0;
 	winAPP->Initialize(width, height, L"GE3");
 	dx12Common->Initialize(width, height, winAPP);
@@ -51,14 +56,15 @@ void GameScene::Initialize(int32_t width, int32_t height, WinAPP* winAPP)
 	};
 
 	SPCommon->Initialize(dx12Common);
-	for (uint32_t i = 0; i < 1; i++)
+	for (uint32_t i = 0; i < 2; i++)
 	{
 		Sprite* sprite = new Sprite();
-		sprite->Initialize(width, height, SPCommon, "Resource/civ6.png");
-			posSprite.x = 0.0f;
-			posSprite.y = 0.0f;
-		sprite->SetPositoin(posSprite);
-		sprites.push_back(sprite);
+		sprite->Initialize(width, height, SPCommon, ScreenFilePath[i]);
+			//posSprite.x = 0.0f;
+			//posSprite.y = 0.0f;
+			//sprite->SetPositoin(posSprite);
+		sprite->SetSize({ float(width),float(height) });
+			sprites.push_back(sprite);
 	}
 
 
@@ -208,23 +214,29 @@ void GameScene::Update(int32_t width, int32_t height)
 				}
 			}
 		}
-		if (hitCount == 5)
+		if (hitCount == 4)
 		{
-			numScene = 0;
+			numScene = 2;
 			hitCount = 0;
 		}
 		break;
 	case 0:
-		for (Sprite* sprite : sprites)
+		sprites.at(0)->Update(width, height);
+		if (input_->PushKey(DIK_SPACE))
 		{
-			sprite->Update(width, height);
-		}
-		if (input_->PushKey(DIK_SPACE)) {
+			objects3d.at(0)->SetTranslate({ 0.0f,2.0f,0.0f });
 			objects3d.at(1)->SetTranslate({ 0.0f,0.0f,objects3d.at(1)->GetTranslate().z + v[1] });
 			objects3d.at(2)->SetTranslate({ 4.0f,objects3d.at(2)->GetTranslate().y + v[2],15.0f });
 			objects3d.at(3)->SetTranslate({ -4.0f,objects3d.at(3)->GetTranslate().y + v[3],15.0f });
 			objects3d.at(4)->SetTranslate({ objects3d.at(4)->GetTranslate().x + v[4], 1.0f,15.0f });
 			numScene++;
+		}
+		break;
+	case 2:
+		sprites.at(1)->Update(width, height);
+		if (input_->PushKey(DIK_SPACE))
+		{
+			numScene = 0;
 		}
 		break;
 	}
@@ -240,9 +252,15 @@ void GameScene::Draw()
 			object3d->Draw(object3dCommon, true, ModelManager::GetInstance()->GetModelCommon());
 		}
 	}
-	for (Sprite* sprite : sprites)
+	if (numScene == 0)
 	{
-		sprite->Draw(SPCommon);
+		sprites.at(0)->Draw(SPCommon);
+
+	}
+	if (numScene == 2)
+	{
+		sprites.at(1)->Draw(SPCommon);
+
 	}
 	imgui->Endframe(dx12Common->GetCommandList().Get());
 

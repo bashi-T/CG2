@@ -50,9 +50,9 @@ void Object3d::Update()
 		Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	transformationMatrixData->World = worldMatrix;
-	ImGui::Begin("obj");
-	ImGui::DragFloat3("translate", (float*)&transformMatrix.translate, 0.01f);
-	ImGui::End();
+	//ImGui::Begin("obj");
+	//ImGui::DragFloat3("translate", (float*)&transformMatrix.translate, 0.01f);
+	//ImGui::End();
 
 }
 
