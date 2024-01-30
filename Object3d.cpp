@@ -17,7 +17,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, int32_t width, int32_t
 	cameraTransform = {
 	{1.0f, 1.0f, 1.0f},
 	{0.3f, 0.0f, 0.0f},
-	{0.0f, 4.0f, -10.0f}
+	{0.0f, 9.0f, -20.0f}
 	};
 
 	transformationMatrixResource->Map(
@@ -50,6 +50,9 @@ void Object3d::Update()
 		Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	transformationMatrixData->World = worldMatrix;
+	ImGui::Begin("obj");
+	ImGui::DragFloat3("translate", (float*)&transformMatrix.translate, 0.01f);
+	ImGui::End();
 
 }
 

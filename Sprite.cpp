@@ -27,13 +27,6 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
 	};
-	cameraTransform = {
-		{1.0f, 1.0f, 1.0f},
-		{0.0f, 0.0f, 0.0f},
-		{0.0f, 0.0f, -15.0f}
-	};
-	cameraMatrix =
-		MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
@@ -62,9 +55,6 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 
 void Sprite::Update(int32_t width, int32_t height)
 {
-
-	cameraMatrix =
-		MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	projectionMatrix =
 		MakeOrthographicMatrix(0.0f, 0.0f, float(width), float(height), 0.0f, 100.0f);
 	transformMatrix.translate = { position.x,position.y,0.0f };

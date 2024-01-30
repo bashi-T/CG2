@@ -1,6 +1,6 @@
 #include "Model.h"
 
-void Model::Initialize(ModelCommon* modelCommon,std::string objFilePath)
+void Model::Initialize(ModelCommon* modelCommon, std::string objFilePath, std::string textureFilePath)
 {
 	this->modelCommon_ = modelCommon;
 
@@ -13,9 +13,9 @@ void Model::Initialize(ModelCommon* modelCommon,std::string objFilePath)
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-	
-	TextureManager::GetInstance()->LoadTexture(modelCommon_->GetDx12Common(), modelData.material.textureFilePath);
-	TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData.material.textureFilePath);
+	//modelData.material.textureFilePath.push_back(textureFilePath);
+	TextureManager::GetInstance()->LoadTexture(modelCommon_->GetDx12Common(), textureFilePath);
+	modelData.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData[0].enableLighting = false;

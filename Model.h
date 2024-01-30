@@ -48,7 +48,7 @@ private:
 	};
 
 public:
-	void Initialize(ModelCommon* modelCommon, std::string objFilePath);
+	void Initialize(ModelCommon* modelCommon, std::string objFilePath, std::string textureFilePath);
 	void Draw(ModelCommon* modelCommon);
 	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
 	ModelData LoadObjFile(const std::string& directryPath, const std::string& filename);

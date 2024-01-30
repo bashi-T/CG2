@@ -93,8 +93,10 @@ public:
 	void SetRotate(const Vector3& rotate) { transformMatrix.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transformMatrix.translate = translate; }
 	const Vector3& GetScale()const { return transformMatrix.scale; }
+	void SetCameraTranslate(const Vector3& translate) { cameraTransform.translate = translate; }
 	const Vector3& GetRotate()const { return transformMatrix.rotate; }
 	const Vector3& GetTranslate()const { return transformMatrix.translate; }
+	const Vector3& GetCameraTranslate()const { return cameraTransform.translate; }
 
 };
 

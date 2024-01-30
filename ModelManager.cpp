@@ -23,16 +23,16 @@ void ModelManager::Initialize(DX12Common* dxCommon)
 	modelCommon_->Initialize(dxCommon);
 }
 
-void ModelManager::LoadModel(const std::string& filePath)
+void ModelManager::LoadModel(const std::string& objfilePath, const std::string& texfilePath)
 {
-	if (models.contains(filePath))
+	if (models.contains(objfilePath))
 	{
 		return;
 	}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->Initialize(modelCommon_,filePath);
-	models.insert(std::make_pair(filePath, std::move(model)));
+	model->Initialize(modelCommon_,objfilePath, texfilePath);
+	models.insert(std::make_pair(objfilePath, std::move(model)));
 }
 
 Model* ModelManager::FindModel(const std::string& filePath)

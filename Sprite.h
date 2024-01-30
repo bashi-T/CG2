@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include"TextureManager.h"
+#include"Camera.h"
 
 #pragma comment(lib, "dxcompiler.lib")
 
@@ -53,8 +54,6 @@ public:
 	void AdjestTextureSize();
 
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
-	TransformMatrix GetCameraTransform() { return cameraTransform; }
-	Matrix4x4 GetCameraMatrix() { return cameraMatrix; }
 	Vector4 GetLeftTop() { return LeftTop; }
 	Vector4 GetRightTop() { return RightTop; }
 	Vector4 GetRightBottom(){ return RightBottom; }
@@ -87,6 +86,7 @@ private:
 	WinAPP* sWinApp;
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
+	Camera* camera_;
 	uint32_t textureIndex = 0;
 
 	TransformMatrix transformMatrix;
@@ -135,10 +135,7 @@ private:
 	Vector2 coordRightBottom;
 	Vector2 coordLeftBottom;
 
-	TransformMatrix cameraTransform;
 	DirectionalLight* DirectionalLightData = nullptr;
-
-	Matrix4x4 cameraMatrix;
 
 	Matrix4x4 viewMatrix;
 

@@ -23,7 +23,7 @@ public:
 
 	void Finalize();
 	void Initialize(DX12Common* dxCommon);
-	void LoadModel(const std::string& filePath);
+	void LoadModel(const std::string& objfilePath, const std::string& texfilePath);
 	Model* FindModel(const std::string& filePath);
 
 	ModelCommon* GetModelCommon() { return modelCommon_; }
