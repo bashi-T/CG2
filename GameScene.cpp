@@ -63,11 +63,9 @@ void GameScene::Initialize(int32_t width, int32_t height, WinAPP* winAPP)
 			//posSprite.x = 0.0f;
 			//posSprite.y = 0.0f;
 			//sprite->SetPositoin(posSprite);
-		sprite->SetSize({ float(width),float(height) });
+		sprite->SetSize({ float(width),float(height)*1.1f });
 			sprites.push_back(sprite);
 	}
-
-
 }
 
 void GameScene::Update(int32_t width, int32_t height)
@@ -214,6 +212,11 @@ void GameScene::Update(int32_t width, int32_t height)
 				}
 			}
 		}
+		for(int i=1;i<5;i++)
+		{
+			objects3d.at(i)->SetRotate({ objects3d.at(i)->GetRotate().x, objects3d.at(i)->GetRotate().y, objects3d.at(i)->GetRotate().z + 4.0f });
+		}
+		objects3d.at(5)->SetRotate({ objects3d.at(5)->GetRotate().x, objects3d.at(5)->GetRotate().y + 0.4f, objects3d.at(5)->GetRotate().z });
 		if (hitCount == 4)
 		{
 			numScene = 2;
@@ -221,22 +224,89 @@ void GameScene::Update(int32_t width, int32_t height)
 		}
 		break;
 	case 0:
-		sprites.at(0)->Update(width, height);
+		sprites.at(0)->Update(width, height, sprites.at(0)->GetColor());
+		for (int i = 1; i < 5; i++)
+		{
+			objects3d.at(i)->Update();
+			objects3d.at(i)->SetRotate({ objects3d.at(i)->GetRotate().x, objects3d.at(i)->GetRotate().y, objects3d.at(i)->GetRotate().z + 0.25f });
+		}
+		if(sceneFade==0)
+		{
+			objects3d.at(1)->SetTranslate({ -4.5f,5.0f,0.0f });
+			objects3d.at(2)->SetTranslate({ -1.5f,5.0f,0.0f });
+			objects3d.at(3)->SetTranslate({ 1.5f,5.0f,0.0f });
+			objects3d.at(4)->SetTranslate({ 4.5f,5.0f,0.0f });
+		}
+
 		if (input_->PushKey(DIK_SPACE))
 		{
-			objects3d.at(0)->SetTranslate({ 0.0f,2.0f,0.0f });
-			objects3d.at(1)->SetTranslate({ 0.0f,0.0f,objects3d.at(1)->GetTranslate().z + v[1] });
-			objects3d.at(2)->SetTranslate({ 4.0f,objects3d.at(2)->GetTranslate().y + v[2],15.0f });
-			objects3d.at(3)->SetTranslate({ -4.0f,objects3d.at(3)->GetTranslate().y + v[3],15.0f });
-			objects3d.at(4)->SetTranslate({ objects3d.at(4)->GetTranslate().x + v[4], 1.0f,15.0f });
-			numScene++;
+			sceneFade = 1;
+		}
+
+		if (sceneMove < 41)
+		{
+			sprites.at(0)->SetPositoin({ sprites.at(0)->GetPosition().x, -10.0f });
+		}
+		else if(sceneMove<80)
+		{
+			sprites.at(0)->SetPositoin({ sprites.at(0)->GetPosition().x, 0.0f });
+		}
+		else if (sceneMove <= 80)
+		{
+			sceneMove = 0;
+		}
+		sceneMove++;
+
+		if(sceneFade == 1)
+		{
+			for (int i = 1; i < 5; i++)
+			{
+				objects3d.at(i)->SetTranslate({ objects3d.at(i)->GetTranslate().x , objects3d.at(i)->GetTranslate().y + 0.4f , objects3d.at(i)->GetTranslate().z });
+			}
+			sprites.at(0)->SetColor({ sprites.at(0)->GetColor().x - 0.015f, sprites.at(0)->GetColor().y - 0.015f, sprites.at(0)->GetColor().z - 0.015f, sprites.at(0)->GetColor().w });
+			if (sprites.at(0)->GetColor().x <= 0.0f && sprites.at(0)->GetColor().y <= 0.0f && sprites.at(0)->GetColor().z <= 0.0f)
+			{
+				objects3d.at(0)->SetTranslate({ 0.0f,2.0f,0.0f });
+				objects3d.at(1)->SetTranslate({ 0.0f,0.0f,10.0f });
+				objects3d.at(2)->SetTranslate({ 4.0f,5.0f,15.0f });
+				objects3d.at(3)->SetTranslate({ -4.0f,5.0f,15.0f });
+				objects3d.at(4)->SetTranslate({ 0.0f, 1.0f,15.0f });
+				numShot = 0;
+				numScene++;
+			}
 		}
 		break;
 	case 2:
-		sprites.at(1)->Update(width, height);
+		sprites.at(1)->Update(width, height, sprites.at(1)->GetColor());
 		if (input_->PushKey(DIK_SPACE))
 		{
-			numScene = 0;
+			sceneFade = 2;
+		}
+
+		if (sceneMove < 41)
+		{
+			sprites.at(1)->SetPositoin({ sprites.at(1)->GetPosition().x, -10.0f });
+		}
+		else if (sceneMove < 80)
+		{
+			sprites.at(1)->SetPositoin({ sprites.at(1)->GetPosition().x, 0.0f });
+		}
+		else if (sceneMove <= 80)
+		{
+			sceneMove = 0;
+		}
+		sceneMove++;
+
+		if (sceneFade == 2)
+		{
+			sprites.at(1)->SetColor({ sprites.at(1)->GetColor().x - 0.015f, sprites.at(1)->GetColor().y - 0.015f, sprites.at(1)->GetColor().z - 0.015f, sprites.at(1)->GetColor().w });
+			if (sprites.at(1)->GetColor().x <= 0.0f && sprites.at(1)->GetColor().y <= 0.0f && sprites.at(1)->GetColor().z <= 0.0f)
+			{
+				sprites.at(0)->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+				sprites.at(1)->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+				sceneFade = 0;
+				numScene = 0;
+			}
 		}
 		break;
 	}
@@ -255,7 +325,10 @@ void GameScene::Draw()
 	if (numScene == 0)
 	{
 		sprites.at(0)->Draw(SPCommon);
-
+		for (int i = 1; i < 5; i++)
+		{
+			objects3d.at(i)->Draw(object3dCommon, true, ModelManager::GetInstance()->GetModelCommon());
+		}
 	}
 	if (numScene == 2)
 	{

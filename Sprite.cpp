@@ -53,7 +53,7 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 	AdjestScreenSize(width, height);
 }
 
-void Sprite::Update(int32_t width, int32_t height)
+void Sprite::Update(int32_t width, int32_t height, Vector4 Color)
 {
 	projectionMatrix =
 		MakeOrthographicMatrix(0.0f, 0.0f, float(width), float(height), 0.0f, 100.0f);

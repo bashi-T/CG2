@@ -22,7 +22,7 @@ public:
 		int32_t height,
 		SpriteCommon* spriteCommon,
 		std::string texturefilePath);
-	void Update(int32_t width, int32_t height);
+	void Update(int32_t width, int32_t height, Vector4 Color);
 	void Draw(SpriteCommon* spriteCommon);
 
 	ComPtr<ID3D12Resource> CreateBufferResource(SpriteCommon* spriteCommon, size_t sizeInBytes);
@@ -44,7 +44,7 @@ public:
 		const DirectX::TexMetadata& metadata);
 	void SetPositoin(const Vector2& position) { this->position = position; }
 	void SetRotation(float rotation) { this->rotation = rotation; }
-	void SetColor(const Vector4& color) { materialData->color = color; }
+	void SetColor(const Vector4& color) { Color = color; }
 	void SetSize(const Vector2& size) { this->size = size; }
 	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
 	void SetIsFlipX(const bool& isFlipX) { this->isFlipX_ = isFlipX; }
@@ -59,7 +59,7 @@ public:
 	Vector4 GetRightTop() { return RightTop; }
 	Vector4 GetRightBottom(){ return RightBottom; }
 	Vector4 GetLeftBottom(){ return LeftBottom; }
-	Vector4 GetColor(){ return LeftTop; }
+	Vector4 GetColor(){ return Color; }
 	Vector2 GetTexcoordLeftTop(){ return coordLeftTop; }
 	Vector2 GetTexcoordRightTop(){ return coordRightTop; }
 	Vector2 GetTexcoordRightBottom(){ return coordRightBottom; }

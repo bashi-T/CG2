@@ -32,7 +32,8 @@ private:
 	Vector2 posSprite = { 0.0f,0.0f };
 	uint32_t numShot = 0;
 	uint32_t numScene = 0;
-
+	uint32_t sceneFade = 0;
+	uint32_t sceneMove = 0;
 	uint32_t hitCount = 0;
 	float v[10]{
 		0.05f,
