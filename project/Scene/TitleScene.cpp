@@ -29,9 +29,9 @@ void TitleScene::Init()
 	for (uint32_t i = 0; i < 2; i++)
 	{
 		Object3d* object3d = new Object3d;
-		Particle* particle = new Particle;
+		//Particle* particle = new Particle;
 		object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-		ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i+1]);
+		ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i + 1]);
 		object3d->SetModel(objFilePath[i]);
 		Model* model = ModelManager::GetInstance()->FindModel(objFilePath[i]);
 		Model::ModelData* modelData = model->GetModelData();
@@ -42,13 +42,16 @@ void TitleScene::Init()
 			vertex.normal.z = vertex.position.z;
 		}
 		model->Memcpy();
-		object3d->SetTranslate({ 1.0f -(2.0f* i), 0.0f, 0.0f });
-		object3d->SetScale({ i + 0.005f, i + 0.005f , i + 0.005f  });
+		object3d->SetTranslate({ 1.0f - (2.0f * i), 0.0f, 0.0f });
+		//object3d->SetScale({ i + 0.005f, i + 0.005f , i + 0.005f  });
 		objects3d.push_back(object3d);
-		particle->Initialize(textureFilePath[i+1], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
-		particles.push_back(particle);
-	};
 
+		//particle->Initialize(textureFilePath[i+1], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
+		//particle->SetScale({ 0.5f,0.5f,0.5f });
+		//particles.push_back(particle);
+	};
+	particle->Initialize(textureFilePath[1], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
+	//particle->SetScale({ 0.5f,0.5f,0.5f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 }
 
@@ -66,10 +69,12 @@ void TitleScene::Update()
 		}
 		object3d->Update(Camera::GetInstance());
 	}
-	for (Particle* particle : particles)
-	{
-		particle->Update();
-	}
+	//for (Particle* particle : particles)
+	//{
+	//	particle->Update();
+	//}
+	particle->Update();
+
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		sceneNo = INGAME;
@@ -78,14 +83,15 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	for (Object3d* object3d : objects3d)
-	{
-		object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	}
-	for (Particle* particle : particles)
-	{
-		particle->Draw();
-	}
+	//for (Object3d* object3d : objects3d)
+	//{
+	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//}
+	//for (Particle* particle : particles)
+	//{
+	//	particle->Draw();
+	//}
+	particle->Draw();
 }
 
 void TitleScene::Finalize()
@@ -94,4 +100,10 @@ void TitleScene::Finalize()
 	{
 		delete object3d;
 	}
+	//for (Particle* particle : particles)
+	//{
+	//	delete particle;
+	//}
+	delete particle;
+
 }

@@ -18,6 +18,8 @@ private:
 	//SRVManager* srvManager;
 	//Camera* camera;
 	std::vector<Object3d*> objects3d;
-	std::vector <Particle*> particles;
+	//std::vector <Particle*> particles;
+	Particle* particle = new Particle;
+
 };
 

@@ -41,11 +41,11 @@ public:
 	void MakePSO();
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	void MakeBufferView();
-	void InputDataPlane(
+	void InputData(
 		Vector4 TopLeft, Vector4 TopRight, Vector4 BottomRight, Vector4 BottomLeft, Vector4 color,
 		Vector2 coordTopLeft, Vector2 coordTopRight, Vector2 coordBottomRight, Vector2 coordBottomLeft);
 
-	void MakeShaderResourceViewInstance(ID3D12Resource* instancingResource);
+	void MakeShaderResourceViewInstance();
 
 	struct VertexData
 	{
@@ -95,24 +95,12 @@ public:
 
 	Particles MakeNewParticle(std::mt19937& randomEngine);
 
-	ComPtr<ID3D12Resource> CreateTextureResource(
-		ID3D12Device* device,
-		const DirectX::TexMetadata& metadata);
-	void UploadTextureData(
-		ID3D12Resource* texture,
-		const DirectX::ScratchImage& mipImages,
-		const DirectX::TexMetadata& metadata);
-
-	//void ParticleRelease();
-
-	//ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
+	void SetScale(Vector3 scale);
+	void SetRotate(Vector3 rotate);
+	void SetTranslate(Vector3 translate);
 	Matrix4x4 GetCameraMatrix() { return cameraMatrix; }
-	D3D12_CPU_DESCRIPTOR_HANDLE GetTextureSrvHandleCPU() { return textureSrvHandleCPU; }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureSrvHandleGPU() { return textureSrvHandleGPU; }
-	D3D12_CPU_DESCRIPTOR_HANDLE GetTextureSrvHandleCPU2() { return textureSrvHandleCPU2; }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureSrvHandleGPU2() { return textureSrvHandleGPU2; }
-	ParticleForGPU* GetInstancingDataPlane() { return instancingDataPlane; }
-	Particles* GetParticlesPlane() { return particlesPlane; }
+	ParticleForGPU* GetInstancingData() { return instancingData; }
+	Particles* GetParticles() { return particles; }
 private:
 	Debug* debug_;
 	WinAPP* sWinApp;
@@ -128,11 +116,11 @@ private:
 	uint32_t kNumMaxInstance = 10;
 	ComPtr<ID3D12Resource> cameraResource;
 
-	Particles particlesPlane[10];
+	Particles particles[10];
 
-	ComPtr<ID3D12Resource> transformationMatrixResourcePlane;
+	ComPtr<ID3D12Resource> transformationMatrixResource;
 
-	ComPtr<ID3D12Resource> instancingResourcePlane;
+	ComPtr<ID3D12Resource> instancingResource;
 
 	ComPtr<IDxcUtils> dxcUtils = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
@@ -140,16 +128,14 @@ private:
 	ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 	ComPtr<ID3D12PipelineState> graphicsPipelineState = NULL;
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
-	ComPtr<ID3DBlob> signatureBlob = nullptr;
-	ComPtr<ID3DBlob> errorBlob = nullptr;
 	ComPtr<IDxcBlob> pixelShaderBlob = nullptr;
 	ComPtr<IDxcBlob> vertexShaderBlob = nullptr;
 
-	ComPtr<ID3D12Resource> vertexResourcePlane = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewPlane{};
-	ComPtr<ID3D12Resource> indexResourcePlane = nullptr;
-	D3D12_INDEX_BUFFER_VIEW indexBufferViewPlane{};
-	ComPtr<ID3D12Resource> colorResourcePlane;
+	ComPtr<ID3D12Resource> vertexResource = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+	ComPtr<ID3D12Resource> indexResource = nullptr;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
+	ComPtr<ID3D12Resource> colorResource;
 
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -162,10 +148,10 @@ private:
 
 	Matrix4x4 cameraMatrix;
 
-	Matrix4x4 viewMatrixPlane;
-	Matrix4x4 projectionMatrixPlane;
+	Matrix4x4 viewMatrix;
+	Matrix4x4 projectionMatrix;
 	Matrix4x4 ViewProjectionMatrix;
-	Matrix4x4 worldViewProjectionMatrixPlane;
+	Matrix4x4 worldViewProjectionMatrix;
 
 	uint32_t kSubdivision = 16;
 
@@ -174,18 +160,12 @@ private:
 
 	uint32_t textureIndex;
 
-	VertexData* vertexDataPlane = nullptr;
-	MaterialData materialDataPlane;
-	Material* colorDataPlane = nullptr;
-	TransformationMatrix* transformationMatrixDataPlane = nullptr;
-	ParticleForGPU* instancingDataPlane = nullptr;
+	VertexData* vertexData = nullptr;
+	MaterialData materialData;
+	Material* colorData = nullptr;
+	TransformationMatrix* transformationMatrixData = nullptr;
+	ParticleForGPU* instancingData = nullptr;
 
-	DirectX::ScratchImage mipImages;
-	DirectX::ScratchImage mipImages2;
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
-	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU2;
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU2;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU;
@@ -198,7 +178,7 @@ private:
 	Vector4 RightTop[1];
 	Vector4 RightBottom[1];
 	Vector4 LeftBottom[1];
-	Vector4 ColorPlane[1];
+	Vector4 Color[1];
 	Vector2 texcoordLeftTop[1];
 	Vector2 texcoordLeftBottom[1];
 	Vector2 texcoordRightTop[1];

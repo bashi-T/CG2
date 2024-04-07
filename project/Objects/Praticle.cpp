@@ -21,7 +21,7 @@ void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvMana
 	RightTop[0] = { 0.5f, 0.5f, 0.0f, 1.0f };
 	RightBottom[0] = { 0.5f, -0.5f, 0.0f, 1.0f };
 	LeftBottom[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-	ColorPlane[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Color[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	
 	texcoordLeftTop[0] = { 0.0f,0.0f };
 	texcoordRightTop[0] = { 0.0f,1.0f };
@@ -30,36 +30,36 @@ void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvMana
 
 	for (uint32_t index = 0; index < kNumMaxInstance; ++index)
 	{
-		particlesPlane[index] = MakeNewParticle(randomEngine);
+		particles[index] = MakeNewParticle(randomEngine);
 	}
-	projectionMatrixPlane = MakePerspectiveFovMatrix(0.65f, float(WinAPP::clientWidth_) / float(WinAPP::clientHeight_), 0.1f, 100.0f);
-	vertexResourcePlane = CreateBufferResource(sizeof(VertexData) * 6);
-	colorResourcePlane = CreateBufferResource(sizeof(Material));
-	indexResourcePlane = CreateBufferResource(sizeof(uint32_t) * 6);
-	instancingResourcePlane = CreateBufferResource(sizeof(ParticleForGPU) * kNumMaxInstance);
+	projectionMatrix = MakePerspectiveFovMatrix(0.65f, float(WinAPP::clientWidth_) / float(WinAPP::clientHeight_), 0.1f, 100.0f);
+	vertexResource = CreateBufferResource(sizeof(VertexData) * 6);
+	colorResource = CreateBufferResource(sizeof(Material));
+	indexResource = CreateBufferResource(sizeof(uint32_t) * 6);
+	instancingResource = CreateBufferResource(sizeof(ParticleForGPU) * kNumMaxInstance);
 	cameraResource = CreateBufferResource(sizeof(CameraTransform));
 
 	MakeBufferView();
 
-	vertexResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataPlane));
-	colorResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&colorDataPlane));
-	instancingResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&instancingDataPlane));
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	colorResource->Map(0, nullptr, reinterpret_cast<void**>(&colorData));
+	instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
 
-	InputDataPlane(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], ColorPlane[0],
+	InputData(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], Color[0],
 		texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0], texcoordLeftBottom[0]);
 
 	for (uint32_t index = 0; index < kNumMaxInstance; ++index)
 	{
-		instancingDataPlane[index].WVP = MakeIdentity4x4();
-		instancingDataPlane[index].World = MakeIdentity4x4();
-		instancingDataPlane[index].color = particlesPlane[index].color;
+		instancingData[index].WVP = MakeIdentity4x4();
+		instancingData[index].World = MakeIdentity4x4();
+		instancingData[index].color = particles[index].color;
 	}
-	MakeShaderResourceViewInstance(instancingResourcePlane.Get());
+	MakeShaderResourceViewInstance();
 
-	materialDataPlane.textureFilePath = textureFilePath;
+	materialData.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
-	materialDataPlane.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
+	materialData.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
 }
 
 void Particle::ResetDXC()
@@ -177,6 +177,8 @@ void Particle::MakePSO()
 	descriptionRootSignature_.pStaticSamplers = staticSamplers;
 	descriptionRootSignature_.NumStaticSamplers = _countof(staticSamplers);
 
+	ComPtr<ID3DBlob> signatureBlob = nullptr;
+	ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(
 		&descriptionRootSignature_, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 
@@ -266,8 +268,8 @@ void Particle::MakePSO()
 
 void Particle::Update()
 {
-	InputDataPlane(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], ColorPlane[0],
-		texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0], texcoordLeftBottom[0]);
+	InputData(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], Color[0],
+		texcoordLeftBottom[0], texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0]);
 }
 
 void Particle::Draw()
@@ -282,17 +284,17 @@ void Particle::DrawPlane()
 	dxCommon->GetCommandList().Get()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	dxCommon->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferViewPlane);
+	dxCommon->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	dxCommon->GetCommandList().Get()->
-		IASetIndexBuffer(&indexBufferViewPlane);
+		IASetIndexBuffer(&indexBufferView);
 
 	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-		0, colorResourcePlane->GetGPUVirtualAddress());
+		0, colorResource->GetGPUVirtualAddress());
 	dxCommon->GetCommandList().Get()->
 		SetGraphicsRootDescriptorTable(
 			1, instancingSrvHandleGPU);
 	srvManager->SetGraphicsRootDescriptorTable(
-		2, materialDataPlane.textureIndex);
+		2, materialData.textureIndex);
 	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		3, cameraResource->GetGPUVirtualAddress());
 
@@ -333,50 +335,55 @@ ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)
 
 void Particle::MakeBufferView()
 {
-	vertexBufferViewPlane.BufferLocation = vertexResourcePlane->GetGPUVirtualAddress();
-	vertexBufferViewPlane.SizeInBytes = UINT(sizeof(VertexData)) * 4;
-	vertexBufferViewPlane.StrideInBytes = sizeof(VertexData);
+	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
+	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData)) * 4;
+	vertexBufferView.StrideInBytes = sizeof(VertexData);
 
-	indexBufferViewPlane.BufferLocation = indexResourcePlane->GetGPUVirtualAddress();
-	indexBufferViewPlane.SizeInBytes = sizeof(uint32_t) * 6;
-	indexBufferViewPlane.Format = DXGI_FORMAT_R32_UINT;
+	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
+	indexBufferView.SizeInBytes = sizeof(uint32_t) * 6;
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 }
 
-void Particle::InputDataPlane(
+void Particle::InputData(
 	Vector4 TopLeft, Vector4 TopRight, Vector4 BottomRight, Vector4 BottomLeft, Vector4 color,
 	Vector2 coordTopLeft, Vector2 coordTopRight, Vector2 coordBottomRight, Vector2 coordBottomLeft)
 {
-	uint32_t* indexDataPlane = nullptr;
-	indexResourcePlane->Map(0, nullptr, reinterpret_cast<void**>(&indexDataPlane));
+	uint32_t* indexData = nullptr;
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 
-	colorDataPlane[0].color = { 1.0f,1.0f,1.0f,1.0f };
+	colorData[0].color = { 1.0f,1.0f,1.0f,1.0f };
 
 	kNumInstance = 0;
 	for (uint32_t index = 0; index <kNumMaxInstance; ++index)
 	{
-		float alpha = 1.0f - (particlesPlane[index].currentTime / particlesPlane[index].lifeTime);
+		float alpha = 1.0f - (particles[index].currentTime / particles[index].lifeTime);
 		Matrix4x4 worldMatrix =
 			MakeAffineMatrix(
-				particlesPlane[index].transform.scale,
-				particlesPlane[index].transform.rotate,
-				particlesPlane[index].transform.translate);
-		if (particlesPlane[index].lifeTime <= particlesPlane[index].currentTime)
+				particles[index].transform.scale,
+				particles[index].transform.rotate,
+				particles[index].transform.translate);
+		if (particles[index].lifeTime <= particles[index].currentTime)
 		{
-			continue;
+			std::random_device seedGenerator;
+			std::mt19937 randomEngine(seedGenerator());
+			std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
+
+			particles[index] = MakeNewParticle(randomEngine);
+			particles[index].currentTime = 0.0f;
 		}
-		particlesPlane[index].transform.translate.x += particlesPlane[index].velocity.x * kDeltaTime;
-		particlesPlane[index].transform.translate.y += particlesPlane[index].velocity.y * kDeltaTime;
-		particlesPlane[index].transform.translate.z += particlesPlane[index].velocity.z * kDeltaTime;
-		particlesPlane[index].currentTime += kDeltaTime;
+		particles[index].transform.translate.x += particles[index].velocity.x * kDeltaTime;
+		particles[index].transform.translate.y += particles[index].velocity.y * kDeltaTime;
+		particles[index].transform.translate.z += particles[index].velocity.z * kDeltaTime;
+		particles[index].currentTime += kDeltaTime;
 		if (camera_)
 		{
 			const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
-			worldViewProjectionMatrixPlane = Multiply(worldMatrix, viewProjectionMatrix);
+			worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
 		}
-		instancingDataPlane[kNumInstance].WVP = worldViewProjectionMatrixPlane;
-		instancingDataPlane[kNumInstance].World = worldMatrix;
-		particlesPlane[index].color.a = alpha;
-		instancingDataPlane[kNumInstance].color = particlesPlane[index].color;
+		instancingData[kNumInstance].WVP = worldViewProjectionMatrix;
+		instancingData[kNumInstance].World = worldMatrix;
+		particles[index].color.a = alpha;
+		instancingData[kNumInstance].color = particles[index].color;
 		++kNumInstance;
 	}
 	cameraData->worldPosition =
@@ -387,46 +394,46 @@ void Particle::InputDataPlane(
 	};
 
 
-	vertexDataPlane[0].position = TopLeft;
-	vertexDataPlane[0].texcoord = coordTopLeft;
-	vertexDataPlane[0].normal.x = vertexDataPlane[0].position.x;
-	vertexDataPlane[0].normal.y = vertexDataPlane[0].position.y;
-	vertexDataPlane[0].normal.z = vertexDataPlane[0].position.z;
+	vertexData[0].position = TopLeft;
+	vertexData[0].texcoord = coordTopLeft;
+	vertexData[0].normal.x = vertexData[0].position.x;
+	vertexData[0].normal.y = vertexData[0].position.y;
+	vertexData[0].normal.z = vertexData[0].position.z;
 
-	vertexDataPlane[1].position = TopRight;
-	vertexDataPlane[1].texcoord = coordTopRight;
-	vertexDataPlane[1].normal.x = vertexDataPlane[1].position.x;
-	vertexDataPlane[1].normal.y = vertexDataPlane[1].position.y;
-	vertexDataPlane[1].normal.z = vertexDataPlane[1].position.z;
+	vertexData[1].position = TopRight;
+	vertexData[1].texcoord = coordTopRight;
+	vertexData[1].normal.x = vertexData[1].position.x;
+	vertexData[1].normal.y = vertexData[1].position.y;
+	vertexData[1].normal.z = vertexData[1].position.z;
 
-	vertexDataPlane[2].position = BottomRight;
-	vertexDataPlane[2].texcoord = coordBottomRight;
-	vertexDataPlane[2].normal.x = vertexDataPlane[2].position.x;
-	vertexDataPlane[2].normal.y = vertexDataPlane[2].position.y;
-	vertexDataPlane[2].normal.z = vertexDataPlane[2].position.z;
+	vertexData[2].position = BottomRight;
+	vertexData[2].texcoord = coordBottomRight;
+	vertexData[2].normal.x = vertexData[2].position.x;
+	vertexData[2].normal.y = vertexData[2].position.y;
+	vertexData[2].normal.z = vertexData[2].position.z;
 
-	vertexDataPlane[3].position = BottomLeft;
-	vertexDataPlane[3].texcoord = coordBottomLeft;
-	vertexDataPlane[3].normal.x = vertexDataPlane[3].position.x;
-	vertexDataPlane[3].normal.y = vertexDataPlane[3].position.y;
-	vertexDataPlane[3].normal.z = vertexDataPlane[3].position.z;
+	vertexData[3].position = BottomLeft;
+	vertexData[3].texcoord = coordBottomLeft;
+	vertexData[3].normal.x = vertexData[3].position.x;
+	vertexData[3].normal.y = vertexData[3].position.y;
+	vertexData[3].normal.z = vertexData[3].position.z;
 
-	indexDataPlane[0] = 0;
-	indexDataPlane[1] = 1;
-	indexDataPlane[2] = 2;
+	indexData[0] = 0;
+	indexData[1] = 1;
+	indexData[2] = 2;
 
-	indexDataPlane[3] = 0;
-	indexDataPlane[4] = 2;
-	indexDataPlane[5] = 3;
+	indexData[3] = 0;
+	indexData[4] = 2;
+	indexData[5] = 3;
 
 }
 
-void Particle::MakeShaderResourceViewInstance(ID3D12Resource* instancingResource)
+void Particle::MakeShaderResourceViewInstance()
 {
 	uint32_t index = srvManager->Allocate();
 	instancingSrvHandleCPU = srvManager->GetCPUDescriptorHandle(index);
 	instancingSrvHandleGPU = srvManager->GetGPUDescriptorHandle(index);
-	srvManager->CreateSRVforStructuredBuffer(index, instancingResourcePlane.Get(), kNumInstance, sizeof(ParticleForGPU));
+	srvManager->CreateSRVforStructuredBuffer(index, instancingResource.Get(), kNumInstance, sizeof(ParticleForGPU));
 }
 
 Particle::Particles Particle::MakeNewParticle(std::mt19937& randomEngine)
@@ -443,4 +450,28 @@ Particle::Particles Particle::MakeNewParticle(std::mt19937& randomEngine)
 	particle.lifeTime = distTime(randomEngine);
 	particle.currentTime = 0;
 	return particle;
+}
+
+void Particle::SetScale(Vector3 scale)
+{
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index)
+	{
+		particles[index].transform.scale = scale;
+	}
+}
+
+void Particle::SetRotate(Vector3 rotate)
+{
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index)
+	{
+		particles[index].transform.rotate = rotate;
+	}
+}
+
+void Particle::SetTranslate(Vector3 translate)
+{
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index)
+	{
+		particles[index].transform.translate = translate;
+	}
 }
