@@ -3,15 +3,14 @@
 const uint32_t SRVManager::kMaxSRVCount = 512;
 const uint32_t SRVManager::kSRVIndexTop = 0;
 
-void SRVManager::Initialize(DX12Common* dxCommon)
+void SRVManager::Initialize()
 {
-	this->dxCommon_ = dxCommon;
 	MakeFence();
-	descriptorHeap = dxCommon_->CreateDescriptorHeap(
+	descriptorHeap = DX12Common::GetInstance()->CreateDescriptorHeap(
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
 		kMaxSRVCount,
 		true);
-	descriptorSize = dxCommon_->GetDevice()->
+	descriptorSize = DX12Common::GetInstance()->GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	viewport.TopLeftX = 0.0f;
 	viewport.TopLeftY = 0.0f;
@@ -61,7 +60,7 @@ void SRVManager::CreateSRVforTexture2D(
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = UINT(MipLevels);
 
-	dxCommon_->GetDevice().Get()->CreateShaderResourceView(
+	DX12Common::GetInstance()->GetDevice().Get()->CreateShaderResourceView(
 		pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
@@ -80,13 +79,13 @@ void SRVManager::CreateSRVforStructuredBuffer(
 	instancingSrvDesc.Buffer.NumElements = numElements;
 	instancingSrvDesc.Buffer.StructureByteStride = structureByteStride;
 
-	dxCommon_->GetDevice().Get()->CreateShaderResourceView(
+	DX12Common::GetInstance()->GetDevice().Get()->CreateShaderResourceView(
 		pResource, &instancingSrvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
 void SRVManager::SetGraphicsRootDescriptorTable(UINT RootParamaterIndex, uint32_t srvIndex)
 {
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(RootParamaterIndex, GetGPUDescriptorHandle(srvIndex));
+	DX12Common::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(RootParamaterIndex, GetGPUDescriptorHandle(srvIndex));
 }
 
 bool SRVManager::CheckNumTexture(uint32_t textureIndex)
@@ -102,24 +101,24 @@ bool SRVManager::CheckNumTexture(uint32_t textureIndex)
 
 void SRVManager::PreDraw()
 {
-	backBufferIndex = dxCommon_->GetSwapChain()->GetCurrentBackBufferIndex();
+	backBufferIndex = DX12Common::GetInstance()->GetSwapChain()->GetCurrentBackBufferIndex();
 
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = dxCommon_->GetSwapChainResources()[backBufferIndex].Get();
+	barrier.Transition.pResource = DX12Common::GetInstance()->GetSwapChainResources()[backBufferIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
+	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 	
-	//dxCommon_->GetCommandList()->OMSetRenderTargets(1,
-	//	&dxCommon_->GetRtvHandles(backBufferIndex), false, nullptr);
+	//DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(1,
+	//	&DX12Common::GetInstance()->GetRtvHandles(backBufferIndex), false, nullptr);
 
-	dxCommon_->GetCommandList()->ClearRenderTargetView(
-		dxCommon_->GetRtvHandles(backBufferIndex),
+	DX12Common::GetInstance()->GetCommandList()->ClearRenderTargetView(
+		DX12Common::GetInstance()->GetRtvHandles(backBufferIndex),
 		clearColor, 0, nullptr);
 
-	dxCommon_->GetCommandList()->ClearDepthStencilView(
-		dxCommon_->GetDsvHandle(),
+	DX12Common::GetInstance()->GetCommandList()->ClearDepthStencilView(
+		DX12Common::GetInstance()->GetDsvHandle(),
 		D3D12_CLEAR_FLAG_DEPTH,
 		1.0f,
 		0,
@@ -130,30 +129,30 @@ void SRVManager::PreDraw()
 	{
 		descriptorHeap.Get()
 	};
-	dxCommon_->GetCommandList()->
+	DX12Common::GetInstance()->GetCommandList()->
 		SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-	dxCommon_->GetCommandList()->RSSetViewports(1, &viewport);
-	dxCommon_->GetCommandList()->RSSetScissorRects(1, &scissorRect);
+	DX12Common::GetInstance()->GetCommandList()->RSSetViewports(1, &viewport);
+	DX12Common::GetInstance()->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 }
 
 void SRVManager::PostDraw()
 {
-	backBufferIndex = dxCommon_->GetSwapChain()->GetCurrentBackBufferIndex();
+	backBufferIndex = DX12Common::GetInstance()->GetSwapChain()->GetCurrentBackBufferIndex();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
+	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 
-	HRESULT hr = dxCommon_->GetCommandList()->Close();
+	HRESULT hr = DX12Common::GetInstance()->GetCommandList()->Close();
 	assert(SUCCEEDED(hr));
 
 	ComPtr<ID3D12CommandList> commandLists[] =
 	{
-		dxCommon_->GetCommandList().Get()
+		DX12Common::GetInstance()->GetCommandList().Get()
 	};
-	dxCommon_->GetCommandQueue()->ExecuteCommandLists(1, commandLists->GetAddressOf());
-	dxCommon_->GetSwapChain()->Present(1, 0);
+	DX12Common::GetInstance()->GetCommandQueue()->ExecuteCommandLists(1, commandLists->GetAddressOf());
+	DX12Common::GetInstance()->GetSwapChain()->Present(1, 0);
 	fenceValue++;
-	dxCommon_->GetCommandQueue()->Signal(fence.Get(), fenceValue);
+	DX12Common::GetInstance()->GetCommandQueue()->Signal(fence.Get(), fenceValue);
 
 	if (fence->GetCompletedValue() < fenceValue)
 	{
@@ -161,9 +160,9 @@ void SRVManager::PostDraw()
 		WaitForSingleObject(fenceEvent, INFINITE);
 	}
 
-	hr = dxCommon_->GetCommandAllocator()->Reset();
+	hr = DX12Common::GetInstance()->GetCommandAllocator()->Reset();
 	assert(SUCCEEDED(hr));
-	hr = dxCommon_->GetCommandList()->Reset(dxCommon_->GetCommandAllocator().Get(), nullptr);
+	hr = DX12Common::GetInstance()->GetCommandList()->Reset(DX12Common::GetInstance()->GetCommandAllocator().Get(), nullptr);
 	assert(SUCCEEDED(hr));
 }
 SRVManager* SRVManager::GetInstance()
@@ -176,7 +175,7 @@ SRVManager* SRVManager::GetInstance()
 }
 void SRVManager::MakeFence()
 {
-	HRESULT hr = dxCommon_->GetDevice()->CreateFence(fenceValue,
+	HRESULT hr = DX12Common::GetInstance()->GetDevice()->CreateFence(fenceValue,
 		D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
 	fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);

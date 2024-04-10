@@ -13,7 +13,7 @@
 class Object3dCommon
 {
 public:
-	void Initialize(DX12Common* dxcommon);
+	void Initialize();
 	ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,
@@ -21,8 +21,8 @@ public:
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
-	void MakePSO(DX12Common* dxcommon);
-	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
+	void MakePSO();
+	void SetDefaultCamera() { this->defaultCamera = Camera::GetInstance(); }
 	static Object3dCommon* GetInstance();
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
 	ComPtr<ID3D12PipelineState> GetGraphicsPipelineState() { return graphicsPipelineState; }

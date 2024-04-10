@@ -6,7 +6,7 @@
 class WinAPP
 {
 public:
-	static void Initialize(int32_t width, int32_t height, const wchar_t* title);
+	static void Initialize(const wchar_t* title);
 	static LRESULT CALLBACK WindowProc(HWND hwnd,
 		UINT msg, WPARAM wparam, LPARAM lparam);
 	bool ProcessMessage();

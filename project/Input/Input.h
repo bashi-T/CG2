@@ -11,7 +11,7 @@ class Input
 {
 public:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	void Initialize(WinAPP* winApp);
+	void Initialize();
 	void Update();
 	bool PushKey(BYTE keyNumber);
 	bool TriggerKey(BYTE keyNumber);

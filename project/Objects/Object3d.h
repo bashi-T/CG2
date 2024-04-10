@@ -53,9 +53,9 @@ private:
 
 	ComPtr<ID3D12Resource> directionalLightResource;
 public:
-	void Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager);
+	void Initialize();
 	void Update(Camera* camera);
-	void Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon);
+	void Draw();
 	
 	ComPtr<ID3D12Resource> CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes);
 

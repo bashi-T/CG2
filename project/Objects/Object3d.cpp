@@ -1,15 +1,12 @@
 #include "Object3d.h"
 #include "Commons/Object3dCommon.h"
 
-void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager)
+void Object3d::Initialize()
 {
-	this->object3dCommon_ = object3dCommon;
-	this->srvManager = srvManager;
-
-	transformationMatrixResource = CreateBufferResource(object3dCommon_,sizeof(TransformationMatrix));
-	directionalLightResource = CreateBufferResource(object3dCommon_, sizeof(DirectionalLight));
-	this->camera = object3dCommon_->GetDefaultCamera();
-	cameraResource = CreateBufferResource(object3dCommon_, sizeof(CameraTransform));
+	transformationMatrixResource = CreateBufferResource(Object3dCommon::GetInstance(), sizeof(TransformationMatrix));
+	directionalLightResource = CreateBufferResource(Object3dCommon::GetInstance(), sizeof(DirectionalLight));
+	this->camera = Object3dCommon::GetInstance()->GetDefaultCamera();
+	cameraResource = CreateBufferResource(Object3dCommon::GetInstance(), sizeof(CameraTransform));
 	transformMatrix =
 	{
 	{1.0f, 1.0f, 1.0f},
@@ -28,7 +25,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 
 void Object3d::Update(Camera* camera)
 {
-	transformMatrix.rotate.y -= 0.02f;
+	//transformMatrix.rotate.y -= 0.02f;
 		Matrix4x4 worldMatrix = MakeAffineMatrix(
 		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
 
@@ -48,48 +45,45 @@ void Object3d::Update(Camera* camera)
 	transformationMatrixData->World = worldMatrix;
 }
 
-void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
+void Object3d::Draw()
 {
-	this->object3dCommon_ = object3dCommon;
-	this->modelCommon_ = modelCommon;
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetPipelineState(object3dCommon_->GetGraphicsPipelineState().Get());
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
+		SetPipelineState(Object3dCommon::GetInstance()->GetGraphicsPipelineState().Get());
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootSignature(object3dCommon_->GetRootSignature().Get());
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootSignature(Object3dCommon::GetInstance()->GetRootSignature().Get());
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv = object3dCommon_->GetDx12Common()->GetRtvHandles(
-		srvManager->GetBackBufferIndex());
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv = Object3dCommon::GetInstance()->GetDx12Common()->GetRtvHandles(
+		SRVManager::GetInstance()->GetBackBufferIndex());
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = object3dCommon_->GetDx12Common()->GetDsvHandle();
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = Object3dCommon::GetInstance()->GetDx12Common()->GetDsvHandle();
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		OMSetRenderTargets(1, &rtv, false, &dsv);
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 		1, transformationMatrixResource->GetGPUVirtualAddress());
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 		3, directionalLightResource->GetGPUVirtualAddress());
 
-	object3dCommon_->GetDx12Common()->GetCommandList()->
+	Object3dCommon::GetInstance()->GetDx12Common()->GetCommandList()->
 		SetGraphicsRootConstantBufferView(
 		4, cameraResource->GetGPUVirtualAddress());
 
 	if (model_)
 	{
-		model_->Draw(modelCommon_,srvManager);
+		model_->Draw(modelCommon_, SRVManager::GetInstance());
 	}
 }
 
 ComPtr<ID3D12Resource> Object3d::CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes)
 {
-	this->object3dCommon_ = object3dCommon;
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -108,7 +102,7 @@ ComPtr<ID3D12Resource> Object3d::CreateBufferResource(Object3dCommon* object3dCo
 
 	ComPtr<ID3D12Resource> Resource = nullptr;
 
-	hr = object3dCommon_->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
+	hr = Object3dCommon::GetInstance()->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
 		&uploadHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc,

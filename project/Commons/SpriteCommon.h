@@ -13,7 +13,7 @@ class SpriteCommon
 {
 public:
 	~SpriteCommon();
-	void Initialize(DX12Common* dxcommon);
+	void Initialize();
 	//void Update();
 	//void Draw(int32_t width, int32_t height);
 	ComPtr<IDxcBlob> CompileShader(
@@ -23,7 +23,7 @@ public:
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
-	void MakePSO(DX12Common* dxcommon);
+	void MakePSO();
 	static SpriteCommon* GetInstance();
 
 	//void InputDataTriangle(

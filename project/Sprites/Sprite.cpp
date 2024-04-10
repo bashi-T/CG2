@@ -1,19 +1,16 @@
 #include "Sprite.h"
 #include"Commons/SpriteCommon.h"
 
-
 Sprite::~Sprite()
 {
 }
 
-void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommon,SRVManager* srvManager, std::string textureFilePath)
+void Sprite::Initialize(std::string textureFilePath)
 {
-	this->spriteCommon_ = spriteCommon;
-	this->srvManager = srvManager;
-	vertexResource = CreateBufferResource(spriteCommon_, sizeof(VertexData) * 6);
-	indexResource = CreateBufferResource(spriteCommon_, sizeof(uint32_t) * 6);
-	materialResource = CreateBufferResource(spriteCommon_, sizeof(Material));
-	transformationMatrixResource = CreateBufferResource(spriteCommon_, sizeof(TransformationMatrix));
+	vertexResource = CreateBufferResource(SpriteCommon::GetInstance(), sizeof(VertexData) * 6);
+	indexResource = CreateBufferResource(SpriteCommon::GetInstance(), sizeof(uint32_t) * 6);
+	materialResource = CreateBufferResource(SpriteCommon::GetInstance(), sizeof(Material));
+	transformationMatrixResource = CreateBufferResource(SpriteCommon::GetInstance(), sizeof(TransformationMatrix));
 
 	uvTransform =
 	{
@@ -44,9 +41,9 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 
 
 	LeftTop = { 0.0f, 0.0f, 0.0f, 1.0f };
-	RightTop = { float(width) / 3, 0.0f, 0.0f, 1.0f };
-	RightBottom = { float(width) / 3, float(height) / 3, 0.0f, 1.0f };
-	LeftBottom = { 0.0f, float(height) / 3, 0.0f, 1.0f };
+	RightTop = { float(WinAPP::clientWidth_) / 3, 0.0f, 0.0f, 1.0f };
+	RightBottom = { float(WinAPP::clientWidth_) / 3, float(WinAPP::clientHeight_) / 3, 0.0f, 1.0f };
+	LeftBottom = { 0.0f, float(WinAPP::clientHeight_) / 3, 0.0f, 1.0f };
 	Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	coordLeftTop = { 0.0f, 0.0f };
 	coordRightTop = { 1.0f, 0.0f };
@@ -57,16 +54,16 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 	materialData->material.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
-	//AdjestTextureSize();
+	AdjestTextureSize();
 }
 
-void Sprite::Update(int32_t width, int32_t height)
+void Sprite::Update()
 {
 
 	cameraMatrix =
 		MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	projectionMatrix =
-		MakeOrthographicMatrix(0.0f, 0.0f, float(width), float(height), 0.0f, 100.0f);
+		MakeOrthographicMatrix(0.0f, 0.0f, float(WinAPP::clientWidth_), float(WinAPP::clientHeight_), 0.0f, 100.0f);
 	transformMatrix.translate = { position.x,position.y,0.0f };
 	transformMatrix.rotate = { 0.0f,0.0f,rotation };
 	transformMatrix.scale = { size.x,size.y,1.0f };
@@ -163,42 +160,40 @@ void Sprite::InputData(Vector4 color)
 
 void Sprite::Draw(SpriteCommon* spriteCommon)
 {
-	this->spriteCommon_ = spriteCommon;
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetPipelineState(spriteCommon_->GetGraphicsPipelineState().Get());
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootSignature(spriteCommon_->GetRootSignature().Get());
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
+		SetPipelineState(SpriteCommon::GetInstance()->GetGraphicsPipelineState().Get());
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootSignature(SpriteCommon::GetInstance()->GetRootSignature().Get());
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		IASetVertexBuffers(0, 1, &vertexBufferView);
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		IASetIndexBuffer(&indexBufferView);
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 		0, materialResource->GetGPUVirtualAddress());
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 		1, transformationMatrixResource->GetGPUVirtualAddress());
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-		spriteCommon_->GetDx12Common()->
-		GetRtvHandles(srvManager->GetBackBufferIndex());
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = spriteCommon_->GetDx12Common()->GetDsvHandle();
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+		SpriteCommon::GetInstance()->GetDx12Common()->
+		GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = SpriteCommon::GetInstance()->GetDx12Common()->GetDsvHandle();
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		OMSetRenderTargets(1, &rtv, false, &dsv);
 
-	srvManager->SetGraphicsRootDescriptorTable(
+	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);
 
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	SpriteCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 ComPtr<ID3D12Resource> Sprite::CreateBufferResource(SpriteCommon* spriteCommon, size_t sizeInBytes)
 {
-	this->spriteCommon_ = spriteCommon;
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -217,7 +212,7 @@ ComPtr<ID3D12Resource> Sprite::CreateBufferResource(SpriteCommon* spriteCommon, 
 
 	ComPtr<ID3D12Resource> Resource = nullptr;
 
-	hr = spriteCommon_->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
+	hr = SpriteCommon::GetInstance()->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
 		&uploadHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc,

@@ -20,7 +20,7 @@ public:
 
 	static TextureManager* GetInstance();
 	void Finalize();
-	void Initialize(DX12Common* dxcommon, SRVManager* srvManager_);
+	void Initialize();
 	void LoadTexture(const std::string& filePath);
 	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 	uint32_t GetTextureIndexByFilePath(const std::string& filePath);

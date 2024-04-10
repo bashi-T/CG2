@@ -29,9 +29,10 @@ public:
 		std::vector<VertexData> vertices;
 		MaterialData material;
 	};
-	void Initialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
+	void Initialize(std::string objFilePath, std::string TextureFilePath);
 	void Draw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void Memcpy();
+	void InputTexture(std::string TextureFilePath);
 	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
 	ModelData LoadObjFile(const std::string& directryPath, const std::string& filename);
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);

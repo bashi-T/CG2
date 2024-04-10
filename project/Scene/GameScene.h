@@ -3,6 +3,10 @@
 #include"SceneManager.h"
 #include"Sprites/Sprite.h"
 #include"Commons/SpriteCommon.h"
+#include"Objects/Object3d.h"
+#include"Commons/Object3dCommon.h"
+#include"Objects/Particle.h"
+#include"GameEntity/Player.h"
 
 class GameScene:public SceneManager
 {
@@ -16,6 +20,8 @@ private:
 	//SpriteCommon* SPCommon;
 	//SRVManager* srvManager;
 	std::vector<Sprite*> sprites;
-
+	std::vector<Object3d*> objects3d;
+	std::vector <Particle*> particles;
+	Player* player = new Player;
 };
 

@@ -1,22 +1,19 @@
 #include "Model.h"
 
-void Model::Initialize(ModelCommon* modelCommon,std::string objFilePath, std::string TextureFilePath)
+void Model::Initialize(std::string objFilePath, std::string TextureFilePath)
 {
-	this->modelCommon_ = modelCommon;
 
 	modelData = LoadObjFile("Resource", objFilePath);
 
-	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
-	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
+	vertexResource = CreateBufferResource(ModelCommon::GetInstance(), sizeof(VertexData) * modelData.vertices.size());
+	materialResource = CreateBufferResource(ModelCommon::GetInstance(), sizeof(Material));
 
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 
-	modelData.material.textureFilePath = TextureFilePath;
-	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
-	modelData.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
+	InputTexture(TextureFilePath);
 
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData[0].enableLighting = true;
@@ -28,22 +25,20 @@ void Model::Initialize(ModelCommon* modelCommon,std::string objFilePath, std::st
 
 void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
 {
-	this->modelCommon_ = modelCommon;
-	this->srvManager_ = srvManager;
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakerotateZMatrix(uvTransform.rotate.z));
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransform.translate));
 	materialData[0].uvTransform = uvTransformMatrix;
 
-	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+	ModelCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 			0, materialResource->GetGPUVirtualAddress());
-	modelCommon_->GetDx12Common()->GetCommandList().Get()->IASetVertexBuffers(
+	ModelCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->IASetVertexBuffers(
 		0, 1, &vertexBufferView);
-	srvManager_->SetGraphicsRootDescriptorTable(
+	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, modelData.material.textureIndex);
 
-	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawInstanced(
+	ModelCommon::GetInstance()->GetDx12Common()->GetCommandList().Get()->DrawInstanced(
 		UINT(modelData.vertices.size()), 1, 0, 0);
 }
 
@@ -52,9 +47,15 @@ void Model::Memcpy()
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 }
 
+void Model::InputTexture(std::string TextureFilePath)
+{
+	modelData.material.textureFilePath = TextureFilePath;
+	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
+	modelData.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
+}
+
 ComPtr<ID3D12Resource> Model::CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes)
 {
-	this->modelCommon_ = modelCommon;
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -73,7 +74,7 @@ ComPtr<ID3D12Resource> Model::CreateBufferResource(ModelCommon* modelCommon, siz
 
 	ComPtr<ID3D12Resource> Resource = nullptr;
 
-	hr = modelCommon_->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
+	hr = ModelCommon::GetInstance()->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
 		&uploadHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc,

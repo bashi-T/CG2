@@ -1,11 +1,10 @@
 #include "Object3dCommon.h"
 
-void Object3dCommon::Initialize(DX12Common* dxcommon)
+void Object3dCommon::Initialize()
 {
-	dx12Common_ = dxcommon;
 	ResetDXC();
 
-	MakePSO(dx12Common_);
+	MakePSO();
 
 }
 
@@ -62,7 +61,7 @@ ComPtr<IDxcBlob> Object3dCommon::CompileShader(
 	return shaderBlob;
 }
 
-void Object3dCommon::MakePSO(DX12Common* dxcommon)
+void Object3dCommon::MakePSO()
 {
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
 	descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -119,7 +118,7 @@ void Object3dCommon::MakePSO(DX12Common* dxcommon)
 		assert(false);
 	}
 
-	hr = dxcommon->GetDevice().Get()->CreateRootSignature(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
@@ -190,7 +189,7 @@ void Object3dCommon::MakePSO(DX12Common* dxcommon)
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = dxcommon->GetDevice().Get()->CreateGraphicsPipelineState(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 }

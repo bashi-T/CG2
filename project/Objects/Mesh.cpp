@@ -4,7 +4,7 @@ Mesh::~Mesh() {
 }
 
 void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height) {
-	spriteCom_->Initialize(DX12Common::GetInstance());
+	spriteCom_->Initialize();
 	kSubdivision = 16;
 	
 	ResetDXC();

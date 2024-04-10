@@ -24,6 +24,7 @@ private:
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 	ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 	ComPtr<ID3D12PipelineState> graphicsPipelineState = NULL;
+	static inline ModelCommon* instance;
 
 public:
 	void Initialize(DX12Common* dxCommon);
@@ -37,5 +38,7 @@ public:
 	void MakePSO(DX12Common* dxcommon);
 
 	DX12Common* GetDx12Common()const { return dxCommon_; }
+	static ModelCommon* GetInstance();
+
 };
 

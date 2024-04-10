@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera()
-:transformMatrix({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
+:transformMatrix({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,-50.0f} })
 , fovY(0.45f)
 , aspectRetio((float(WinAPP::clientWidth_) / float(WinAPP::clientHeight_)))
 , nearClip(0.1f)

@@ -3,7 +3,7 @@
 int32_t WinAPP::clientWidth_ = 1280;
 int32_t WinAPP::clientHeight_ = 720;
 
-void WinAPP::Initialize(int32_t width, int32_t height, const wchar_t* title)
+void WinAPP::Initialize(const wchar_t* title)
 {
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	wc_.lpfnWndProc = WindowProc;
@@ -11,9 +11,6 @@ void WinAPP::Initialize(int32_t width, int32_t height, const wchar_t* title)
 	wc_.hInstance = GetModuleHandle(nullptr);
 	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	RegisterClass(&wc_);
-
-	clientWidth_ = width;
-	clientHeight_ = height;
 
 	RECT wtc = {
 		0,

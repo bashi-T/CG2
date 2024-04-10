@@ -17,21 +17,19 @@ void ModelManager::Finalize()
 	instance = nullptr;
 }
 
-void ModelManager::Initialize(DX12Common* dxCommon)
+void ModelManager::Initialize()
 {
-	modelCommon_ = new ModelCommon;
-	modelCommon_->Initialize(dxCommon);
+	ModelCommon::GetInstance()->Initialize(DX12Common::GetInstance());
 }
 
 void ModelManager::LoadModel(const std::string& filePath, const std::string& TextureFilePath)
 {
+	std::unique_ptr<Model> model = std::make_unique<Model>();
 	if (models.contains(filePath))
 	{
 		return;
 	}
-
-	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->Initialize(modelCommon_,filePath, TextureFilePath);
+	model->Initialize(filePath, TextureFilePath);
 	models.insert(std::make_pair(filePath, std::move(model)));
 }
 

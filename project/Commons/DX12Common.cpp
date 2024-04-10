@@ -39,9 +39,9 @@ void DX12Common::UpdateFixFPS()
 	reference_ = std::chrono::steady_clock::now();
 }
 
-void DX12Common::Initialize(int32_t width, int32_t height, WinAPP* winApp)
+void DX12Common::Initialize()
 {
-	this->winApp_ = winApp;
+	this->winApp_ = WinAPP::GetInstance();
 	assert(winApp_);
 #ifdef _DEBUG
 	DebugLayer();
@@ -51,8 +51,8 @@ void DX12Common::Initialize(int32_t width, int32_t height, WinAPP* winApp)
 	ChoseUseAdapter();
 	MakeD3D12Device();
 	depthStencilResource = CreatedepthstencilTextureResource(
-		width,
-		height);
+		WinAPP::clientWidth_,
+		WinAPP::clientHeight_);
 
 #ifdef _DEBUG
 	InfoQueue(device.Get());

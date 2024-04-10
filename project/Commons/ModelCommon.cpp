@@ -193,3 +193,12 @@ void ModelCommon::MakePSO(DX12Common* dxcommon)
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 }
+
+ModelCommon* ModelCommon::GetInstance()
+{
+	if (instance == NULL)
+	{
+		instance = new ModelCommon;
+	}
+	return instance;
+}

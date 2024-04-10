@@ -3,14 +3,10 @@
 Particle::~Particle() {
 }
 
-void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvManager, Object3dCommon* object3dCommon, DX12Common* dxCommon)
+void Particle::Initialize(const std::string& textureFilePath)
 {
-	this->dxCommon = dxCommon;
-	this->object3dCommon_ = object3dCommon;
-	this->srvManager = srvManager;
-	this->camera_ = object3dCommon_->GetDefaultCamera();
-	kNumMaxInstance = 10;
-	kSubdivision = 16;
+	this->camera_ = Object3dCommon::GetInstance()->GetDefaultCamera();
+	kNumMaxInstance = 10;//11枚以上のパーティクルが出せない
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
@@ -60,6 +56,46 @@ void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvMana
 	materialData.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
+}
+
+void Particle::Update()
+{
+	InputData(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], Color[0],
+		texcoordLeftBottom[0], texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0]);
+}
+
+void Particle::Draw()
+{
+	DrawPlane();
+}
+
+void Particle::DrawPlane()
+{
+	DX12Common::GetInstance()->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
+	DX12Common::GetInstance()->GetCommandList().Get()->IASetPrimitiveTopology(
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DX12Common::GetInstance()->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DX12Common::GetInstance()->GetCommandList().Get()->
+		IASetIndexBuffer(&indexBufferView);
+
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+		0, colorResource->GetGPUVirtualAddress());
+	DX12Common::GetInstance()->GetCommandList().Get()->
+		SetGraphicsRootDescriptorTable(
+			1, instancingSrvHandleGPU);
+	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
+		2, materialData.textureIndex);
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+		3, cameraResource->GetGPUVirtualAddress());
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
+		DX12Common::GetInstance()->GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
+	DX12Common::GetInstance()->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
+
+	DX12Common::GetInstance()->GetCommandList().Get()->DrawIndexedInstanced(6, kNumInstance, 0, 0, 0);
 }
 
 void Particle::ResetDXC()
@@ -188,7 +224,7 @@ void Particle::MakePSO()
 		assert(false);
 	}
 
-	hr = dxCommon->GetDevice().Get()->CreateRootSignature(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
@@ -222,7 +258,7 @@ void Particle::MakePSO()
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
 	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
@@ -261,49 +297,9 @@ void Particle::MakePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(
+	hr = DX12Common::GetInstance()->GetDevice()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
-}
-
-void Particle::Update()
-{
-	InputData(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], Color[0],
-		texcoordLeftBottom[0], texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0]);
-}
-
-void Particle::Draw()
-{
-	DrawPlane();
-}
-
-void Particle::DrawPlane()
-{
-	dxCommon->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
-	dxCommon->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
-	dxCommon->GetCommandList().Get()->IASetPrimitiveTopology(
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	dxCommon->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
-	dxCommon->GetCommandList().Get()->
-		IASetIndexBuffer(&indexBufferView);
-
-	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-		0, colorResource->GetGPUVirtualAddress());
-	dxCommon->GetCommandList().Get()->
-		SetGraphicsRootDescriptorTable(
-			1, instancingSrvHandleGPU);
-	srvManager->SetGraphicsRootDescriptorTable(
-		2, materialData.textureIndex);
-	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-		3, cameraResource->GetGPUVirtualAddress());
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-		dxCommon->GetRtvHandles(srvManager->GetBackBufferIndex());
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = dxCommon->GetDsvHandle();
-	dxCommon->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
-
-	dxCommon->GetCommandList().Get()->DrawIndexedInstanced(6, kNumInstance, 0, 0, 0);
 }
 
 ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)
@@ -326,7 +322,7 @@ ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)
 
 	ComPtr<ID3D12Resource> Resource = nullptr;
 
-	hr = dxCommon->GetDevice().Get()->CreateCommittedResource(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateCommittedResource(
 		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &ResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&Resource));
 	assert(SUCCEEDED(hr));
@@ -430,10 +426,10 @@ void Particle::InputData(
 
 void Particle::MakeShaderResourceViewInstance()
 {
-	uint32_t index = srvManager->Allocate();
-	instancingSrvHandleCPU = srvManager->GetCPUDescriptorHandle(index);
-	instancingSrvHandleGPU = srvManager->GetGPUDescriptorHandle(index);
-	srvManager->CreateSRVforStructuredBuffer(index, instancingResource.Get(), kNumInstance, sizeof(ParticleForGPU));
+	uint32_t index = SRVManager::GetInstance()->Allocate();
+	instancingSrvHandleCPU = SRVManager::GetInstance()->GetCPUDescriptorHandle(index);
+	instancingSrvHandleGPU = SRVManager::GetInstance()->GetGPUDescriptorHandle(index);
+	SRVManager::GetInstance()->CreateSRVforStructuredBuffer(index, instancingResource.Get(), kNumInstance, sizeof(ParticleForGPU));
 }
 
 Particle::Particles Particle::MakeNewParticle(std::mt19937& randomEngine)
@@ -442,11 +438,12 @@ Particle::Particles Particle::MakeNewParticle(std::mt19937& randomEngine)
 	std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
 	std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
 	Particles particle;
-	particle.transform.scale = { 1.0f,1.0f,1.0f };
+	particle.transform.scale = { 0.25f,0.25f,0.25f };
 	particle.transform.rotate = { 0.0f,0.0f,0.0f };
-	particle.transform.translate = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
+	particle.transform.translate = { 0.0f,0.0f,0.0f };
 	particle.velocity = { distribution(randomEngine) ,distribution(randomEngine) ,distribution(randomEngine) };
-	particle.color = { distColor(randomEngine) ,distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
+	//particle.color = { distColor(randomEngine) ,distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
+	particle.color = { 1.0f,1.0f,1.0f ,1.0f };
 	particle.lifeTime = distTime(randomEngine);
 	particle.currentTime = 0;
 	return particle;

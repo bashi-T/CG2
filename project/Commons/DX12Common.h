@@ -15,7 +15,7 @@ class DX12Common final
 {
 public:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	void Initialize(int32_t width, int32_t height, WinAPP* winApp);
+	void Initialize();
 	void update();
 	void MakeDXGIFactory();
 	void ChoseUseAdapter();
