@@ -20,17 +20,23 @@ private:
 	std::unique_ptr<SceneManager> sceneArr_[2];
 	int currentSceneNo_ = 0;
 	int prevSceneNo_ = 0;
-	WinAPP* winAPP;
-	DX12Common* dx12Common;
-	SRVManager* srvManager;
-	Input* input;
-	MyImGui* imgui;
-	SpriteCommon* SPCommon;
-	Object3dCommon* object3dCommon;
-	ModelCommon* modelCommon;
-	Camera* camera;
-	Particle* particle;
 
+	WinAPP* winAPP = WinAPP::GetInstance();
+	DX12Common* dx12Common = DX12Common::GetInstance();
+	SRVManager* srvManager = SRVManager::GetInstance();
+	TextureManager* textureManager = TextureManager::GetInstance();
+	Input* input = Input::GetInstance();
+	Camera* camera = Camera::GetInstance();
+
+	SpriteCommon* SPCommon = SpriteCommon::GetInstance();
+
+	Object3dCommon* object3dCommon = Object3dCommon::GetInstance();
+	ModelManager* modelManager = ModelManager::GetInstance();
+	ModelCommon* modelCommon = ModelCommon::GetInstance();
+	
+
+	MyImGui* imgui;
+	Particle* particle;
 public: 
 	GameManager();
 	~GameManager();

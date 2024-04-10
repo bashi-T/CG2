@@ -23,5 +23,13 @@ private:
 	std::vector <Particle*> particles;
 	std::vector<Sprite*> sprites;
 
+	Input* input = Input::GetInstance();
+	Camera* camera = Camera::GetInstance();
+
+	SpriteCommon* SPCommon = SpriteCommon::GetInstance();
+
+	Object3dCommon* object3dCommon = Object3dCommon::GetInstance();
+	ModelManager* modelManager = ModelManager::GetInstance();
+
 };
 

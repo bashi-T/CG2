@@ -19,7 +19,7 @@ void ModelManager::Finalize()
 
 void ModelManager::Initialize()
 {
-	ModelCommon::GetInstance()->Initialize(DX12Common::GetInstance());
+	ModelCommon::GetInstance()->Initialize();
 }
 
 void ModelManager::LoadModel(const std::string& filePath, const std::string& TextureFilePath)

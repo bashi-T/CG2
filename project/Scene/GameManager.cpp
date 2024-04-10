@@ -16,34 +16,30 @@ int GameManager::Run()
 	Debug::D3DResourceLeakChecker* leakCheck = new Debug::D3DResourceLeakChecker;
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	MSG NewMSG = WinAPP::GetInstance()->GetMSG();
+	MSG NewMSG = winAPP->GetMSG();
 	imgui = new MyImGui;
-	modelCommon = new ModelCommon;
 	particle = new Particle;
 	std::vector<Model*> models;
-	//bool useWorldMap = true;
 
-
-
-	WinAPP::GetInstance()->Initialize(L"GE3");
-	DX12Common::GetInstance()->Initialize();
-	SRVManager::GetInstance()->Initialize();
-	Input::GetInstance()->Initialize();
+	winAPP->Initialize(L"GE3");
+	dx12Common->Initialize();
+	srvManager->Initialize();
+	input->Initialize();
 	imgui->Initialize(
-		WinAPP::GetInstance()->GetHWND(),
-		DX12Common::GetInstance()->GetDevice().Get(),
-		DX12Common::GetInstance()->GetSwapChainDesc(),
-		DX12Common::GetInstance()->GetRtvDesc(),
-		SRVManager::GetInstance()->GetSrvDescriptorHeap().Get());
-	TextureManager::GetInstance()->Initialize();
+		winAPP->GetHWND(),
+		dx12Common->GetDevice().Get(),
+		dx12Common->GetSwapChainDesc(),
+		dx12Common->GetRtvDesc(),
+		srvManager->GetSrvDescriptorHeap().Get());
+	textureManager->Initialize();
 
-	Object3dCommon::GetInstance()->Initialize();
-	ModelManager::GetInstance()->Initialize();
-	Camera::GetInstance()->SetRotate({0.0f,0.0f,0.0f});
-	Camera::GetInstance()->SetTranslate({ 0.0f,0.0f,-10.0f });
+	object3dCommon->Initialize();
+	modelManager->Initialize();
+	camera->SetRotate({0.0f,0.0f,0.0f});
+	camera->SetTranslate({ 0.0f,0.0f,-10.0f });
 
-	Object3dCommon::GetInstance()->SetDefaultCamera();
-	SpriteCommon::GetInstance()->Initialize();
+	object3dCommon->SetDefaultCamera();
+	SPCommon->Initialize();
 
 	sceneArr_[TITLE]->Init();
 	sceneArr_[INGAME]->Init();
@@ -51,24 +47,25 @@ int GameManager::Run()
 	Vector3 directionlLight = { 0.0f,-1.0f,0.0f };
 	while (NewMSG.message != WM_QUIT)
 	{
-		DX12Common::GetInstance()->update();
-		Input::GetInstance()->Update();
-		if (Input::GetInstance()->PushKey(DIK_RIGHT))
+		dx12Common->update();
+		input->Update();
+		if (input->PushKey(DIK_RIGHT))
 		{
-			Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x + 0.2f, Camera::GetInstance()->GetTranslate().y, Camera::GetInstance()->GetTranslate().z });
+			camera->SetTranslate({ camera->GetTranslate().x + 0.2f, camera->GetTranslate().y, camera->GetTranslate().z });
 		}
-		if (Input::GetInstance()->PushKey(DIK_LEFT))
+		if (input->PushKey(DIK_LEFT))
 		{
-			Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x - 0.2f, Camera::GetInstance()->GetTranslate().y, Camera::GetInstance()->GetTranslate().z});
+			camera->SetTranslate({ camera->GetTranslate().x - 0.2f, camera->GetTranslate().y, camera->GetTranslate().z});
 		}
-		Camera::GetInstance()->Update();
+		camera->Update();
+		imgui->Update();
+
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
 		//if (prevSceneNo_ != currentSceneNo_) {
 		//	sceneArr_[currentSceneNo_]->Init();
 		//}
 		sceneArr_[currentSceneNo_]->Update();
-		imgui->Update();
 
 		//ImGui::Begin("sphereEdit");
 		//	ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
@@ -89,15 +86,15 @@ int GameManager::Run()
 			ImGui::Render();
 			break;
 		}
-		SRVManager::GetInstance()->PreDraw();
+		srvManager->PreDraw();
 		sceneArr_[currentSceneNo_]->Draw();
 
-		imgui->Endframe(DX12Common::GetInstance()->GetCommandList().Get());
+		imgui->Endframe(dx12Common->GetCommandList().Get());
 
-		SRVManager::GetInstance()->PostDraw();
+		srvManager->PostDraw();
 	}
 
-	CloseHandle(SRVManager::GetInstance()->GetFenceEvent());
+	CloseHandle(srvManager->GetFenceEvent());
 	delete particle;
 	sceneArr_[TITLE]->Finalize();
 	for (Model* model : models)
@@ -105,13 +102,13 @@ int GameManager::Run()
 		delete model;
 	}
 	sceneArr_[INGAME]->Finalize();
-	ModelManager::GetInstance()->Finalize();
-	delete Object3dCommon::GetInstance();
-	TextureManager::GetInstance()->Finalize();
+	modelManager->Finalize();
+	delete object3dCommon;
+	textureManager->Finalize();
 	imgui->Finalize();
-	delete SRVManager::GetInstance();
-	DX12Common::GetInstance()->DeleteInstance();
-	WinAPP::GetInstance()->Finalize();
+	delete srvManager;
+	dx12Common->DeleteInstance();
+	winAPP->Finalize();
 	CoUninitialize();
 	delete leakCheck;
 	return 0;

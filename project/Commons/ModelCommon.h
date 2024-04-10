@@ -27,7 +27,7 @@ private:
 	static inline ModelCommon* instance;
 
 public:
-	void Initialize(DX12Common* dxCommon);
+	void Initialize();
 	ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,
@@ -35,9 +35,9 @@ public:
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
-	void MakePSO(DX12Common* dxcommon);
+	void MakePSO();
 
-	DX12Common* GetDx12Common()const { return dxCommon_; }
+	DX12Common* GetDx12Common()const { return DX12Common::GetInstance(); }
 	static ModelCommon* GetInstance();
 
 };

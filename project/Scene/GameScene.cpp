@@ -45,9 +45,9 @@ void GameScene::Init()
 		Object3d* object3d = new Object3d;
 		Particle* particle = new Particle;
 		object3d->Initialize();
-		ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i + 1]);
+		modelManager->LoadModel(objFilePath[i], textureFilePath[i + 1]);
 		object3d->SetModel(objFilePath[i]);
-		Model* model = ModelManager::GetInstance()->FindModel(objFilePath[i]);
+		Model* model = modelManager->FindModel(objFilePath[i]);
 		Model::ModelData* modelData = model->GetModelData();
 		for (Model::VertexData& vertex : modelData->vertices)
 		{
@@ -73,26 +73,27 @@ void GameScene::Init()
 	objects3d[0]->SetScale({ 10.0f,10.0f,10.0f });
 	//objects3d[1]->SetScale({ 0.0025f,0.0025f,0.0025f });
 	//objects3d[2]->SetScale({ 0.0025f,0.0025f,0.0025f });
-	Object3dCommon::GetInstance()->SetDefaultCamera();
+	object3dCommon->SetDefaultCamera();
 	player->Initialize();
 }
 
 void GameScene::Update()
 {
-	//if (Input::GetInstance()->PushKey(DIK_D))
+	//if (input->PushKey(DIK_D))
 	//{
 	//	objects3d[1]->SetTranslate({ objects3d[1]->GetTranslate().x + 0.1f ,objects3d[1]->GetTranslate().y ,objects3d[1]->GetTranslate().z });
-	//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x + 0.1f, Camera::GetInstance()->GetTranslate().y,Camera::GetInstance()->GetTranslate().z });
+	//	camera->SetTranslate({ camera->GetTranslate().x + 0.1f, camera->GetTranslate().y,camera->GetTranslate().z });
 	//}
-	//if (Input::GetInstance()->PushKey(DIK_A))
+	//if (input->PushKey(DIK_A))
 	//{
 	//	objects3d[1]->SetTranslate({ objects3d[1]->GetTranslate().x - 0.1f ,objects3d[1]->GetTranslate().y ,objects3d[1]->GetTranslate().z });
-	//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x - 0.1f, Camera::GetInstance()->GetTranslate().y,Camera::GetInstance()->GetTranslate().z });
+	//	camera->SetTranslate({ camera->GetTranslate().x - 0.1f, camera->GetTranslate().y,camera->GetTranslate().z });
 	//}
 	objects3d[0]->SetRotate({ objects3d[0]->GetRotate().x, objects3d[0]->GetRotate().y - 0.005f, objects3d[0]->GetRotate().z });
+	
 	for (Object3d* object3d : objects3d)
 	{
-		object3d->Update(Camera::GetInstance());
+		object3d->Update(camera);
 	}
 	for (Sprite* sprite : sprites)
 	{
@@ -103,10 +104,13 @@ void GameScene::Update()
 	{
 		particle->Update();
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		sceneNo = TITLE;
 	}
+	ImGui::Begin("player");
+	ImGui::DragFloat3("player.translate", (float*)&player->GetTranslate().x, 0.01f);
+	ImGui::End();
 }
 
 void GameScene::Draw()
@@ -116,15 +120,15 @@ void GameScene::Draw()
 		object3d->Draw();
 	}
 	player->Draw();
-	for (Particle* particle : particles)
-	{
-		particle->Draw();
-	}
+	//for (Particle* particle : particles)
+	//{
+	//	particle->Draw();
+	//}
 	for (Sprite* sprite : sprites)
 	{
-		//sprite->Draw(SpriteCommon::GetInstance());
+		//sprite->Draw(SPCommon);
 	}
-	//sprites[8]->Draw(SpriteCommon::GetInstance());
+	//sprites[8]->Draw(SPCommon);
 }
 
 void GameScene::Finalize()

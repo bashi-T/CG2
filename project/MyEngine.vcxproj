@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="GameEntity\Player.cpp" />
+    <ClCompile Include="GameEntity\PlayerBullet.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Math\CGVector.cpp" />
@@ -46,6 +47,7 @@
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="GameEntity\Player.h" />
+    <ClInclude Include="GameEntity\PlayerBullet.h" />
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Objects\Particle.h" />

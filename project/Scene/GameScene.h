@@ -6,6 +6,7 @@
 #include"Objects/Object3d.h"
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
+#include"GameEntity/PlayerBullet.h"
 #include"GameEntity/Player.h"
 
 class GameScene:public SceneManager
@@ -22,6 +23,16 @@ private:
 	std::vector<Sprite*> sprites;
 	std::vector<Object3d*> objects3d;
 	std::vector <Particle*> particles;
+
 	Player* player = new Player;
+
+	Input* input = Input::GetInstance();
+	Camera* camera = Camera::GetInstance();
+
+	SpriteCommon* SPCommon = SpriteCommon::GetInstance();
+
+	Object3dCommon* object3dCommon = Object3dCommon::GetInstance();
+	ModelManager* modelManager = ModelManager::GetInstance();
+
 };
 

@@ -32,9 +32,9 @@ void TitleScene::Init()
 	{
 		Object3d* object3d = new Object3d;
 		object3d->Initialize();
-		ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i + 1]);
+		modelManager->LoadModel(objFilePath[i], textureFilePath[i + 1]);
 		object3d->SetModel(objFilePath[i]);
-		Model* model = ModelManager::GetInstance()->FindModel(objFilePath[i]);
+		Model* model = modelManager->FindModel(objFilePath[i]);
 		Model::ModelData* modelData = model->GetModelData();
 		for (Model::VertexData& vertex : modelData->vertices)
 		{
@@ -50,7 +50,7 @@ void TitleScene::Init()
 		particle->Initialize(textureFilePath[9-i]);
 		particles.push_back(particle);
 	};
-	Object3dCommon::GetInstance()->SetDefaultCamera();
+	object3dCommon->SetDefaultCamera();
 }
 
 void TitleScene::Update()
@@ -58,34 +58,34 @@ void TitleScene::Update()
 	objects3d[0]->SetRotate({ objects3d[0]->GetRotate().x, objects3d[0]->GetRotate().y - 0.005f ,objects3d[0]->GetRotate().z });
 	for (Object3d* object3d : objects3d)
 	{
-		//if (Input::GetInstance()->PushKey(DIK_D))
+		//if (input->PushKey(DIK_D))
 		//{
 		//	object3d->SetTranslate({ object3d->GetTranslate().x + 0.1f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
-		//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x + 0.1f, Camera::GetInstance()->GetTranslate().y,Camera::GetInstance()->GetTranslate().z });
+		//	camera->SetTranslate({ camera->GetTranslate().x + 0.1f, camera->GetTranslate().y,camera->GetTranslate().z });
 		//}
-		//if (Input::GetInstance()->PushKey(DIK_A))
+		//if (input->PushKey(DIK_A))
 		//{
 		//	object3d->SetTranslate({ object3d->GetTranslate().x - 0.1f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
-		//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x - 0.1f, Camera::GetInstance()->GetTranslate().y,Camera::GetInstance()->GetTranslate().z });
+		//	camera->SetTranslate({ camera->GetTranslate().x - 0.1f, camera->GetTranslate().y,camera->GetTranslate().z });
 		//}
-		//if (Input::GetInstance()->PushKey(DIK_S))
+		//if (input->PushKey(DIK_S))
 		//{
 		//	object3d->SetTranslate({ object3d->GetTranslate().x ,object3d->GetTranslate().y - 0.1f ,object3d->GetTranslate().z });
-		//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x, Camera::GetInstance()->GetTranslate().y - 0.1f,Camera::GetInstance()->GetTranslate().z });
+		//	camera->SetTranslate({ camera->GetTranslate().x, camera->GetTranslate().y - 0.1f,camera->GetTranslate().z });
 		//}
-		//if (Input::GetInstance()->PushKey(DIK_W))
+		//if (input->PushKey(DIK_W))
 		//{
 		//	object3d->SetTranslate({ object3d->GetTranslate().x ,object3d->GetTranslate().y + 0.1f ,object3d->GetTranslate().z });
-		//	Camera::GetInstance()->SetTranslate({ Camera::GetInstance()->GetTranslate().x, Camera::GetInstance()->GetTranslate().y + 0.1f,Camera::GetInstance()->GetTranslate().z });
+		//	camera->SetTranslate({ camera->GetTranslate().x, camera->GetTranslate().y + 0.1f,camera->GetTranslate().z });
 		//}
-		object3d->Update(Camera::GetInstance());
+		object3d->Update(camera);
 	}
 	for (Particle* particle : particles)
 	{
 		particle->Update();
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		sceneNo = INGAME;
 	}
