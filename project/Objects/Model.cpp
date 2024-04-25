@@ -196,7 +196,7 @@ Model::Node Model::ReadNode(aiNode* node)
 	result.qTransform.scale = { scale.x,scale.y,scale.z };
 	result.qTransform.rotate = { rotate.x,-rotate.y,-rotate.z,rotate.w };
 	result.qTransform.translate = { -translate.x,translate.y,translate.z };
-	result.localMatrix = MakeAffineMatrix(result.qTransform.scale, { result.qTransform.rotate.x,result.qTransform.rotate.y,result.qTransform.rotate.z }, result.qTransform.translate);
+	result.localMatrix = MakeAffineMatrix(result.qTransform.scale, result.qTransform.rotate, result.qTransform.translate);
 	//aiMatrix4x4 aiLocalMatrix = node->mTransformation;
 	//aiLocalMatrix.Transpose();
 	//result.localMatrix.m[0][0] = aiLocalMatrix[0][0];

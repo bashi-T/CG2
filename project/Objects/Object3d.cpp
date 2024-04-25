@@ -72,7 +72,7 @@ void Object3d::AnimationUpdate(Camera* camera)
 	Vector3 translate = CalculatevalueV(rootNodeAnimation.translate.keyframes, animationTime);
 	Quaternion rotate = CalculatevalueQ(rootNodeAnimation.rotate.keyframes, animationTime);
 	Vector3 scale = CalculatevalueV(rootNodeAnimation.scale.keyframes, animationTime);
-	Matrix4x4 localMatrix = MakeAffineMatrix(scale, { rotate.x,rotate.y,rotate.z }, translate);
+	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
 
 	transformationMatrixData->WVP = Multiply(localMatrix, worldViewProjectionMatrix);
 	transformationMatrixData->World = Multiply(localMatrix, worldMatrix);

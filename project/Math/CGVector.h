@@ -415,3 +415,5 @@ Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion);
 Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
 
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
+
+Matrix4x4 MakeAffineMatrix(Vector3 scale, Quaternion rotate, Vector3 translate);
