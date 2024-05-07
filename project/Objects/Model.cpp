@@ -30,7 +30,7 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	this->modelCommon_ = modelCommon;
 
 	modelData = LoadModelFile("Resource", objFilePath);
-	animation = LoadAnimationFile("Resource", objFilePath);//animationの活かし方？
+	animation = LoadAnimationFile("Resource", objFilePath);
 	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
 	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
 
@@ -196,25 +196,8 @@ Model::Node Model::ReadNode(aiNode* node)
 	result.qTransform.scale = { scale.x,scale.y,scale.z };
 	result.qTransform.rotate = { rotate.x,-rotate.y,-rotate.z,rotate.w };
 	result.qTransform.translate = { -translate.x,translate.y,translate.z };
-	result.localMatrix = MakeAffineMatrix(result.qTransform.scale, result.qTransform.rotate, result.qTransform.translate);
-	//aiMatrix4x4 aiLocalMatrix = node->mTransformation;
-	//aiLocalMatrix.Transpose();
-	//result.localMatrix.m[0][0] = aiLocalMatrix[0][0];
-	//result.localMatrix.m[0][1] = aiLocalMatrix[0][1];
-	//result.localMatrix.m[0][2] = aiLocalMatrix[0][2];
-	//result.localMatrix.m[0][3] = aiLocalMatrix[0][3];
-	//result.localMatrix.m[1][0] = aiLocalMatrix[1][0];
-	//result.localMatrix.m[1][1] = aiLocalMatrix[1][1];
-	//result.localMatrix.m[1][2] = aiLocalMatrix[1][2];
-	//result.localMatrix.m[1][3] = aiLocalMatrix[1][3];
-	//result.localMatrix.m[2][0] = aiLocalMatrix[2][0];
-	//result.localMatrix.m[2][1] = aiLocalMatrix[2][1];
-	//result.localMatrix.m[2][2] = aiLocalMatrix[2][2];
-	//result.localMatrix.m[2][3] = aiLocalMatrix[2][3];
-	//result.localMatrix.m[3][0] = aiLocalMatrix[3][0];
-	//result.localMatrix.m[3][1] = aiLocalMatrix[3][1];
-	//result.localMatrix.m[3][2] = aiLocalMatrix[3][2];
-	//result.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+	result.localMatrix = 
+		MakeAffineMatrix(result.qTransform.scale, result.qTransform.rotate, result.qTransform.translate);
 
 	result.name = node->mName.C_Str();
 	result.children.resize(node->mNumChildren);
@@ -268,4 +251,32 @@ Model::Animation Model::LoadAnimationFile(const std::string& directoryPath, cons
 		}
 	}
 	return animation;
+}
+
+Model::Skelton Model::CreateSkelton(const Node& rootNode)
+{
+	Skelton skelton;
+	skelton.root = CreateJoint(rootNode, {}, skelton.joints);
+	for (const Joint& joint : skelton.joints)
+	{
+		skelton.jointMap.emplace(joint.name, joint.index);
+	}
+}
+
+int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>parent, std::vector<Joint>& joints)
+{
+	 Joint joint;
+	 joint.name = node.name;
+	 joint.localMatrix = node.localMatrix;
+	 joint.skeltonSpaceMatrix = MakeIdentity4x4();
+	 joint.transform = node.qTransform;
+	 joint.index = int32_t(joints.size());
+	 joint.parent = parent;
+	 joints.push_back(joint);
+	 for (const Node& child : node.children)
+	 {
+		 int32_t childIndex = CreateJoint(child, joint.index, joints);
+		 joints[joint.index].children.push_back(childIndex);
+	 }
+	 return joint.index;
 }

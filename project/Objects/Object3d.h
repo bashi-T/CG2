@@ -54,6 +54,8 @@ private:
 	TransformMatrix transformMatrix;
 	Matrix4x4 worldViewProjectionMatrix;
 
+	Matrix4x4 skeltonSpaceMatrix;
+
 	ComPtr<ID3D12Resource> directionalLightResource;
 public:
 	void Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager);

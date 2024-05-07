@@ -28,7 +28,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 
 void Object3d::Update(Camera* camera)
 {
-	//transformMatrix.rotate.y -= 0.02f;
+	transformMatrix.rotate.y -= 0.02f;
 	Matrix4x4 worldMatrix = MakeAffineMatrix(
 		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
 

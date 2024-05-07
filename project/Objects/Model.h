@@ -42,16 +42,22 @@ public:
 		MaterialData material;
 		Node rootNode;
 	};
-	//struct KeyFrameVector3
-	//{
-	//	Vector3 value;//キーフレームの値
-	//	float time;//キーフレームの時刻
-	//};
-	//struct keyframeQuaternion
-	//{
-	//	Quaternion value;//キーフレームの値
-	//	float time;//キーフレームの時刻
-	//};
+	struct Joint
+	{
+		QuaternionTransform transform;
+		Matrix4x4 localMatrix;
+		Matrix4x4 skeltonSpaceMatrix;
+		std::string name;
+		std::vector<int32_t>children;
+		int32_t index;
+		std::optional<int32_t>parent;
+	};
+	struct Skelton
+	{
+		int32_t root;
+		std::map<std::string, int32_t>jointMap;
+		std::vector<Joint>joints;
+	};
 	template<typename tValue>
 	struct Keyframe
 	{
@@ -94,6 +100,10 @@ public:
 	void MakeBufferView();
 	Node ReadNode(aiNode* node);
 	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+	Skelton CreateSkelton(const Node& rootNode);
+	int32_t CreateJoint(const Node& node,
+		const std::optional<int32_t>parent,
+		std::vector<Joint>&joints);
 
 	ModelData* GetModelData() { return &modelData; }
 	Animation* GetAnimation() { return &animation; }

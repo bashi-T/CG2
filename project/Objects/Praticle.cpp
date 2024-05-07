@@ -266,7 +266,7 @@ void Particle::MakePSO()
 
 void Particle::Update()
 {
-	InputData(LeftTop[0], RightTop[0], RightBottom[0], LeftBottom[0], Color[0],
+	InputData(RightTop[0], LeftTop[0], LeftBottom[0], RightBottom[0], Color[0],
 		texcoordLeftBottom[0], texcoordLeftTop[0], texcoordRightTop[0], texcoordRightBottom[0]);
 }
 
@@ -357,7 +357,9 @@ void Particle::InputData(
 				particles[index].transform.translate);
 		if (particles[index].lifeTime <= particles[index].currentTime)
 		{
-			continue;
+			std::random_device seedGenerator;
+			std::mt19937 randomEngine(seedGenerator());
+			particles[index] = MakeNewParticle(randomEngine);
 		}
 		particles[index].transform.translate.x += particles[index].velocity.x * kDeltaTime;
 		particles[index].transform.translate.y += particles[index].velocity.y * kDeltaTime;

@@ -122,14 +122,15 @@ void Sprite::InputData(Vector4 color)
 	float tex_top = textureLeftTop.y / metadata.width;
 	float tex_bottom = (textureLeftTop.y + textureSize.y) / metadata.width;
 
-	vertexData[0].position = { left,top,0.0f,1.0f };
-	vertexData[1].position = { right,top,0.0f,1.0f };
+	vertexData[0].position = { left,bottom,0.0f,1.0f };
+	vertexData[1].position = { left,top,0.0f,1.0f };
 	vertexData[2].position = { right,bottom,0.0f,1.0f };
-	vertexData[3].position = { left,bottom,0.0f,1.0f };
-	vertexData[0].texcoord = { tex_left,tex_top };
-	vertexData[1].texcoord = { tex_right,tex_top };
+	vertexData[3].position = { right,top,0.0f,1.0f };
+
+	vertexData[0].texcoord = { tex_left,tex_bottom };
+	vertexData[1].texcoord = { tex_left,tex_top };
 	vertexData[2].texcoord = { tex_right,tex_bottom };
-	vertexData[3].texcoord = { tex_left,tex_bottom };
+	vertexData[3].texcoord = { tex_right,tex_top };
 
 	vertexData[0].normal = { 0.0f, 0.0f, -1.0f };
 	vertexData[1].normal = { 0.0f, 0.0f, -1.0f };
