@@ -81,7 +81,7 @@ public:
 	//void MeshRelease();
 
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
-	TransformMatrix GetCameraTransform() { return cameraTransform; }
+	EulerTransform GetCameraTransform() { return cameraTransform; }
 	Matrix4x4 GetCameraMatrix() { return cameraMatrix; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetTextureSrvHandleCPU() { return textureSrvHandleCPU; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetTextureSrvHandleGPU() { return textureSrvHandleGPU; }
@@ -102,8 +102,8 @@ private:
 	MyImGui* imgui_;
 	SpriteCommon* spriteCom_;
 	HRESULT hr = NULL;
-	TransformMatrix transformMatrix;
-	TransformMatrix transformMatrixSphere;
+	EulerTransform transformMatrix;
+	EulerTransform transformMatrixSphere;
 
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	ComPtr<ID3D12Resource> transformationMatrixResourceSphere;
@@ -151,13 +151,13 @@ private:
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
-	TransformMatrix uvTransformSphere{
+	EulerTransform uvTransformSphere{
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
 	};
 
-	TransformMatrix cameraTransform;
+	EulerTransform cameraTransform;
 	DirectionalLight* DirectionalLightData = nullptr;
 	TransformationMatrix* transformationMatrixDataSphere = nullptr;
 

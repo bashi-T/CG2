@@ -30,12 +30,12 @@ struct Vector4 final {
 	float a;
 };
 
-struct TransformMatrix {
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
-};
-
+//struct TransformMatrix {
+//	Vector3 scale;
+//	Vector3 rotate;
+//	Vector3 translate;
+//};
+//
 struct Line//直線
 {
 	Vector3 origin;//始点
@@ -76,6 +76,7 @@ struct Quaternion
 	float z;
 	float w;
 };
+
 struct AABB {
 	Vector3 min;
 	Vector3 max;

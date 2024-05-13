@@ -36,7 +36,7 @@ private:
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
 	DX12Common* dx12Common_;
-	TransformMatrix transformMatrix;
+	EulerTransform transformMatrix;
 	Camera* defaultCamera = nullptr;
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	static inline Object3dCommon* instance;

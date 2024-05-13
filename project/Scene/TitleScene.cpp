@@ -23,7 +23,7 @@ void TitleScene::Init()
 	std::string objFilePath[100] =
 	{
 		"AnimatedCube/AnimatedCube.gltf",
-		"world/world.obj",
+		"human/sneakWalk.gltf",
 		"axis/axis.obj",
 		"plane/plane.gltf",
 	};
@@ -35,6 +35,12 @@ void TitleScene::Init()
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
 			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[i + 1]);
+			object3d->SetModel(objFilePath[i]);
+		}
+		else if (i == 1)
+		{
+			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
+			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i + 1]);
 			object3d->SetModel(objFilePath[i]);
 		}else
 		{
@@ -56,7 +62,7 @@ void TitleScene::Init()
 		particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
 		particles.push_back(particle);
 	};
-	objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
+	//objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 }
@@ -75,7 +81,7 @@ void TitleScene::Update()
 		}
 	}
 	objects3d[0]->AnimationUpdate(Camera::GetInstance());
-	objects3d[1]->Update(Camera::GetInstance());
+	objects3d[1]->SkeltonUpdate(Camera::GetInstance());
 	objects3d[2]->Update(Camera::GetInstance());
 	objects3d[3]->Update(Camera::GetInstance());
 	for (Particle* particle : particles)
@@ -90,14 +96,15 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	for (Object3d* object3d : objects3d)
-	{
-		object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	}
-	for (Particle* particle : particles)
-	{
-		particle->Draw();
-	}
+	//for (Object3d* object3d : objects3d)
+	//{
+	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//}
+	objects3d[1]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//for (Particle* particle : particles)
+	//{
+	//	particle->Draw();
+	//}
 }
 
 void TitleScene::Finalize()

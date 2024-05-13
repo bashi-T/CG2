@@ -47,6 +47,7 @@ public:
 		QuaternionTransform transform;
 		Matrix4x4 localMatrix;
 		Matrix4x4 skeltonSpaceMatrix;
+		Matrix4x4 worldMatrix;
 		std::string name;
 		std::vector<int32_t>children;
 		int32_t index;
@@ -92,6 +93,7 @@ public:
 
 	void ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void AnimationInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
+	void SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void Draw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void Memcpy();
 	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
@@ -107,6 +109,7 @@ public:
 
 	ModelData* GetModelData() { return &modelData; }
 	Animation* GetAnimation() { return &animation; }
+	Skelton GetSkelton() { return skelton; }
 private:
 	ModelData modelData;
 	ModelCommon* modelCommon_;
@@ -122,7 +125,9 @@ private:
 
 	Animation animation;
 
-	TransformMatrix uvTransform
+	Skelton skelton;
+
+	EulerTransform uvTransform
 	{
 			{1.0f,1.0f,1.0f},
 			{0.0f,0.0f,0.0f},

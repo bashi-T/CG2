@@ -55,7 +55,7 @@ public:
 	void AdjestTextureSize();
 
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
-	TransformMatrix GetCameraTransform() { return cameraTransform; }
+	EulerTransform GetCameraTransform() { return cameraTransform; }
 	Matrix4x4 GetCameraMatrix() { return cameraMatrix; }
 	Vector4 GetLeftTop() { return LeftTop; }
 	Vector4 GetRightTop() { return RightTop; }
@@ -92,7 +92,7 @@ private:
 	uint32_t textureIndex = 0;
 	SRVManager* srvManager = nullptr;
 
-	TransformMatrix transformMatrix;
+	EulerTransform transformMatrix;
 	Vector2 position = { 0.0f,0.0f };
 	float rotation = 0.0f;
 	Vector2 size = { 100.0f,100.0f };
@@ -121,7 +121,7 @@ private:
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
-	TransformMatrix uvTransform{
+	EulerTransform uvTransform{
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
@@ -139,7 +139,7 @@ private:
 	Vector2 coordRightBottom;
 	Vector2 coordLeftBottom;
 
-	TransformMatrix cameraTransform;
+	EulerTransform cameraTransform;
 	DirectionalLight* DirectionalLightData = nullptr;
 
 	Matrix4x4 cameraMatrix;

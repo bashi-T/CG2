@@ -5,7 +5,7 @@
 class Camera
 {
 private:
-	TransformMatrix transformMatrix;
+	EulerTransform transformMatrix;
 	Matrix4x4 worldMatrix;
 	Matrix4x4 viewMatrix;
 	Matrix4x4 projectionMatrix;

@@ -51,6 +51,33 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 }
 
+void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
+{
+	this->modelCommon_ = modelCommon;
+
+	modelData = LoadModelFile("Resource", objFilePath);
+	animation = LoadAnimationFile("Resource", objFilePath);
+	skelton = CreateSkelton(modelData.rootNode);
+	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
+	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
+
+	MakeBufferView();
+
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+
+	modelData.material.textureFilePath = TextureFilePath;
+	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
+	modelData.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
+
+	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialData[0].enableLighting = false;
+	materialData[0].uvTransform = MakeIdentity4x4();
+	materialData[0].shininess = 50.0f;
+
+	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
+}
+
 void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
 {
 	this->modelCommon_ = modelCommon;
@@ -261,6 +288,7 @@ Model::Skelton Model::CreateSkelton(const Node& rootNode)
 	{
 		skelton.jointMap.emplace(joint.name, joint.index);
 	}
+	return skelton;
 }
 
 int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>parent, std::vector<Joint>& joints)

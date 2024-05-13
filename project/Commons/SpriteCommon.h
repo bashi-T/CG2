@@ -51,7 +51,7 @@ private:
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
 	DX12Common* dx12Common_;
-	TransformMatrix transformMatrix;
+	EulerTransform transformMatrix;
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	static inline SpriteCommon* instance;
 

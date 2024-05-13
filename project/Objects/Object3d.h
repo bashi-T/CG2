@@ -26,6 +26,7 @@ private:
 	
 	Model::Animation animation;
 	float animationTime = 0.0f;
+	float skeltonAnimationTime = 0.0f;
 
 	struct DirectionalLight
 	{
@@ -44,14 +45,15 @@ private:
 		Matrix4x4 World;
 	};
 
-	struct CameraTransform {
+	struct CameraTransform 
+	{
 		Vector3 worldPosition;
 	};
 
 	TransformationMatrix* transformationMatrixData = nullptr;
 	CameraTransform* cameraData = nullptr;
 
-	TransformMatrix transformMatrix;
+	EulerTransform transformMatrix;
 	Matrix4x4 worldViewProjectionMatrix;
 
 	Matrix4x4 skeltonSpaceMatrix;
@@ -60,13 +62,14 @@ private:
 public:
 	void Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager);
 	void Update(Camera* camera);
+	void SkeltonUpdate(Camera* camera);
 	void AnimationUpdate(Camera* camera);
 	void Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon);
 	
 	ComPtr<ID3D12Resource> CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes);
 	Vector3 CalculatevalueV(const std::vector<Model::KeyFrameVector3>& keyframes, float time);
 	Quaternion CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion>& keyframes, float time);
-	DirectionalLight* GetDirectionalLightData() { return DirectionalLightData; }
+	void ApplyAnimation(Model::Skelton skelton, const Model::Animation& animation, float animationTime);
 
 	void SetModel(const std::string& filePath);
 	void SetModel(Model* model) { this->model_ = model; }
@@ -77,6 +80,7 @@ public:
 	const Vector3& GetScale()const { return transformMatrix.scale; }
 	const Vector3& GetRotate()const { return transformMatrix.rotate; }
 	const Vector3& GetTranslate()const { return transformMatrix.translate; }
+	DirectionalLight* GetDirectionalLightData() { return DirectionalLightData; }
 
 
 };

@@ -74,22 +74,22 @@ int GameManager::Run()
 		//if (prevSceneNo_ != currentSceneNo_) {
 		//	sceneArr_[currentSceneNo_]->Init();
 		//}
-		sceneArr_[currentSceneNo_]->Update();
 		imgui->Update();
 
-		//ImGui::Begin("sphereEdit");
-		//	ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
-		//	ImGui::DragFloat3("object.translate", (float*)&object3d->GetTranslate(), 0.01f);
-		//	ImGui::DragFloat3("camera.rotate", (float*)&camera->GetRotate(), 0.01f);
-		//	ImGui::DragFloat3("camera.translate", (float*)&camera->GetTranslate(), 0.01f);
-		//	ImGui::DragFloat4("light.color", (float*)&object3d->GetDirectionalLightData()->color, 0.01f);
-		//	ImGui::DragFloat("light.intensity", (float*)&object3d->GetDirectionalLightData()->intensity, 0.01f);
-		//	ImGui::DragFloat3("light.direction", (float*)&directionlLight, 0.01f,-1.0f,1.0f);
-		//	object3d->GetDirectionalLightData()->direction = Normalize(directionlLight);
-		//
+		ImGui::Begin("sphereEdit");
+		sceneArr_[currentSceneNo_]->Update();
+			//ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
+			//ImGui::DragFloat3("object.translate", (float*)&object3d->GetTranslate(), 0.01f);
+			ImGui::DragFloat3("camera.rotate", (float*)&camera->GetInstance()->GetRotate(), 0.01f);
+			ImGui::DragFloat3("camera.translate", (float*)&camera->GetInstance()->GetTranslate(), 0.01f);
+			//ImGui::DragFloat4("light.color", (float*)&object3d->GetDirectionalLightData()->color, 0.01f);
+			//ImGui::DragFloat("light.intensity", (float*)&object3d->GetDirectionalLightData()->intensity, 0.01f);
+			ImGui::DragFloat3("light.direction", (float*)&directionlLight, 0.01f,-1.0f,1.0f);
+			//object3d->GetDirectionalLightData()->direction = Normalize(directionlLight);
+		
 		//ImGui::DragFloat4("particles.color", (float*)&particle->GetInstancingDataPlane()->color, 0.01f);
 		//ImGui::ColorEdit4("particles.color", (float*)&particle->GetParticlesPlane()->color, 0.01f);
-		//ImGui::End();
+		ImGui::End();
 
 		if (winAPP->ProcessMessage())
 		{

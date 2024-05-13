@@ -78,6 +78,43 @@ void Object3d::AnimationUpdate(Camera* camera)
 	transformationMatrixData->World = Multiply(localMatrix, worldMatrix);
 }
 
+void Object3d::SkeltonUpdate(Camera* camera)
+{
+	Matrix4x4 worldMatrix = MakeAffineMatrix(
+		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
+	if (camera)
+	{
+		const Matrix4x4& viewProjectionMatrix = camera->GetViewProjectionMatrix();
+		worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
+	}
+
+	cameraData->worldPosition =
+	{
+		camera->GetWorldMatrix().m[3][0],
+		camera->GetWorldMatrix().m[3][1],
+		camera->GetWorldMatrix().m[3][2]
+	};
+	skeltonAnimationTime += 1.0f / 60.0f;
+	skeltonAnimationTime = std::fmod(skeltonAnimationTime, model_->GetAnimation()->duration);
+	ApplyAnimation(model_->GetSkelton(), *model_->GetAnimation(), skeltonAnimationTime);
+
+	for (Model::Joint& joint : model_->GetSkelton().joints)
+	{
+		joint.localMatrix = MakeAffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+		if (joint.parent)
+		{
+			joint.skeltonSpaceMatrix = Multiply(joint.localMatrix, model_->GetSkelton().joints[*joint.parent].skeltonSpaceMatrix);
+		}
+		else
+		{
+			joint.skeltonSpaceMatrix = joint.localMatrix;
+		}
+		joint.worldMatrix = Multiply(joint.skeltonSpaceMatrix, worldMatrix);
+	}
+	transformationMatrixData->WVP = worldViewProjectionMatrix;
+	//transformationMatrixData->World = worldViewProjectionMatrix;
+}
+
 void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
 {
 	this->object3dCommon_ = object3dCommon;
@@ -186,6 +223,20 @@ Quaternion Object3d::CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion
 		return (*keyframes.rbegin()).value;
 	}
 
+}
+
+void Object3d::ApplyAnimation(Model::Skelton skelton, const Model::Animation& animation, float animationTime)
+{
+	for (Model::Joint joint : skelton.joints)
+	{
+		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end())
+		{
+			const Model::NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate = CalculatevalueV(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotate = CalculatevalueQ(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.scale = CalculatevalueV(rootNodeAnimation.scale.keyframes, animationTime);
+		}
+	}
 }
 
 void Object3d::SetModel(const std::string& filePath)

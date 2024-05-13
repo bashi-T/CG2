@@ -25,6 +25,7 @@ public:
 	void Initialize(DX12Common* dxCommon);
 	void LoadModel(const std::string& filePath, const std::string& TextureFilePath);
 	void LoadAnimationModel(const std::string& filePath, const std::string& TextureFilePath);
+	void LoadSkeltonAnimation(const std::string& filePath, const std::string& TextureFilePath);
 
 	Model* FindModel(const std::string& filePath);
 
