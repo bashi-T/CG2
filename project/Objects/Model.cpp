@@ -71,7 +71,7 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 	modelData.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
 
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData[0].enableLighting = false;
+	materialData[0].enableLighting = true;
 	materialData[0].uvTransform = MakeIdentity4x4();
 	materialData[0].shininess = 50.0f;
 

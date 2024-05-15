@@ -28,7 +28,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 
 void Object3d::Update(Camera* camera)
 {
-	transformMatrix.rotate.y -= 0.02f;
+	//transformMatrix.rotate.y -= 0.02f;
 	Matrix4x4 worldMatrix = MakeAffineMatrix(
 		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
 
@@ -46,6 +46,7 @@ void Object3d::Update(Camera* camera)
 	};
 	transformationMatrixData->WVP = Multiply(model_->GetModelData()->rootNode.localMatrix, worldViewProjectionMatrix);
 	transformationMatrixData->World = Multiply(model_->GetModelData()->rootNode.localMatrix, worldMatrix);
+	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(transformationMatrixData->World));
 }
 
 void Object3d::AnimationUpdate(Camera* camera)
@@ -76,6 +77,7 @@ void Object3d::AnimationUpdate(Camera* camera)
 
 	transformationMatrixData->WVP = Multiply(localMatrix, worldViewProjectionMatrix);
 	transformationMatrixData->World = Multiply(localMatrix, worldMatrix);
+	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(transformationMatrixData->World));
 }
 
 void Object3d::SkeltonUpdate(Camera* camera)

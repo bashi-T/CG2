@@ -24,7 +24,7 @@ void TitleScene::Init()
 	{
 		"AnimatedCube/AnimatedCube.gltf",
 		"human/sneakWalk.gltf",
-		"axis/axis.obj",
+		"human/Walk.gltf",
 		"plane/plane.gltf",
 	};
 	for (uint32_t i = 0; i < 4; i++)
@@ -37,7 +37,7 @@ void TitleScene::Init()
 			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[i + 1]);
 			object3d->SetModel(objFilePath[i]);
 		}
-		else if (i == 1)
+		else if (i == 1||i==2)
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
 			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i + 1]);
@@ -82,7 +82,7 @@ void TitleScene::Update()
 	}
 	objects3d[0]->AnimationUpdate(Camera::GetInstance());
 	objects3d[1]->SkeltonUpdate(Camera::GetInstance());
-	objects3d[2]->Update(Camera::GetInstance());
+	objects3d[2]->SkeltonUpdate(Camera::GetInstance());
 	objects3d[3]->Update(Camera::GetInstance());
 	for (Particle* particle : particles)
 	{
@@ -96,11 +96,12 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	//for (Object3d* object3d : objects3d)
-	//{
-	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	//}
-	objects3d[1]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	for (Object3d* object3d : objects3d)
+	{
+		object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	}
+	//objects3d[1]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//objects3d[3]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
 	//for (Particle* particle : particles)
 	//{
 	//	particle->Draw();
