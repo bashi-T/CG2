@@ -39,6 +39,7 @@ public:
 	struct ModelData
 	{
 		std::vector<VertexData> vertices;
+		std::vector<uint32_t> indices;
 		MaterialData material;
 		Node rootNode;
 	};
@@ -119,6 +120,10 @@ private:
 	VertexData* vertexData = nullptr;
 	ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+
+	uint32_t* indexData = nullptr;
+	ComPtr<ID3D12Resource> indexResource = nullptr;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
 
 	Material* materialData = nullptr;
 	ComPtr<ID3D12Resource> materialResource = nullptr;

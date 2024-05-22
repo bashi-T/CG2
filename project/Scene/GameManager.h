@@ -1,5 +1,6 @@
 #pragma once
 #include<memory>
+#include<iostream>
 #include"SceneManager.h"
 #include"TitleScene.h"
 #include"GameScene.h"
@@ -27,6 +28,7 @@ private:
 	MyImGui* imgui;
 	SpriteCommon* SPCommon;
 	Object3dCommon* object3dCommon;
+	Object3d* object3d;
 	ModelCommon* modelCommon;
 	Camera* camera;
 	Particle* particle;

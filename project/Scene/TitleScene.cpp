@@ -10,11 +10,12 @@ void TitleScene::Init()
 	{
 		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
 		"Resource/monsterBall.png",
+		"Resource/white.png",
 		"Resource/worldMap.png",
 		"Resource/AnimatedCube/AnimatedCube_BaseColor.png",
 		"Resource/world.png",
-		"Resource/ganban.png",
 		"Resource/uvChecker.png",
+		"Resource/ganban.png",
 		"Resource/cursor.png",
 		"Resource/circle.png",
 		"Resource/particle.png",
@@ -57,7 +58,7 @@ void TitleScene::Init()
 			vertex.normal.z = vertex.position.z;
 		}
 		model->Memcpy();
-		object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 0.0f });
+		object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 1.0f });
 		objects3d.push_back(object3d);
 		particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
 		particles.push_back(particle);

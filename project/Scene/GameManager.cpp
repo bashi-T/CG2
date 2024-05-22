@@ -24,6 +24,7 @@ int GameManager::Run()
 	imgui = new MyImGui;
 	SPCommon = SpriteCommon::GetInstance();
 	object3dCommon = Object3dCommon::GetInstance();
+	object3d = new Object3d;
 	modelCommon = new ModelCommon;
 	camera = new Camera();
 	particle = new Particle;
@@ -55,7 +56,6 @@ int GameManager::Run()
 	sceneArr_[TITLE]->Init();
 	sceneArr_[INGAME]->Init();
 
-	Vector3 directionlLight = { 0.0f,-1.0f,0.0f };
 	while (NewMSG.message != WM_QUIT)
 	{
 		dx12Common->update();
@@ -75,22 +75,22 @@ int GameManager::Run()
 		//	sceneArr_[currentSceneNo_]->Init();
 		//}
 		imgui->Update();
-
+#ifdef _DEBUG
 		ImGui::Begin("sphereEdit");
 		sceneArr_[currentSceneNo_]->Update();
-			//ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
+
+		//ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
 			//ImGui::DragFloat3("object.translate", (float*)&object3d->GetTranslate(), 0.01f);
-			ImGui::DragFloat3("camera.rotate", (float*)&camera->GetInstance()->GetRotate(), 0.01f);
-			ImGui::DragFloat3("camera.translate", (float*)&camera->GetInstance()->GetTranslate(), 0.01f);
-			//ImGui::DragFloat4("light.color", (float*)&object3d->GetDirectionalLightData()->color, 0.01f);
+		ImGui::DragFloat3("camera.rotate", (float*)&camera->GetInstance()->GetRotate(), 0.01f);
+		ImGui::DragFloat3("camera.translate", (float*)&camera->GetInstance()->GetTranslate(), 0.01f);
+		//ImGui::DragFloat4("light.color", (float*)&object3d->GetDirectionalLightData()->color, 0.01f);
 			//ImGui::DragFloat("light.intensity", (float*)&object3d->GetDirectionalLightData()->intensity, 0.01f);
-			ImGui::DragFloat3("light.direction", (float*)&directionlLight, 0.01f,-1.0f,1.0f);
-			//object3d->GetDirectionalLightData()->direction = Normalize(directionlLight);
-		
+		ImGui::DragFloat3("light.direction", (float*)&object3d->GetDirectionalLight().direction, 0.01f, -1.0f, 1.0f);
+		//object3d->GetDirectionalLightData()->direction = Normalize(directionlLight);
 		//ImGui::DragFloat4("particles.color", (float*)&particle->GetInstancingDataPlane()->color, 0.01f);
 		//ImGui::ColorEdit4("particles.color", (float*)&particle->GetParticlesPlane()->color, 0.01f);
 		ImGui::End();
-
+#endif
 		if (winAPP->ProcessMessage())
 		{
 			ImGui::Render();

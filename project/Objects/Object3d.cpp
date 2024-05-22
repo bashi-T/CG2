@@ -19,11 +19,11 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 
 	transformationMatrixResource->Map(
 		0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
-    directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&DirectionalLightData));
+    directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
 	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
-    DirectionalLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    DirectionalLightData->direction = { 0.0f, -1.0f, 0.0f };
-    DirectionalLightData->intensity = 1.0f;
+	directionalLightData->color = directionalLight.color;
+	directionalLightData->direction = directionalLight.direction;
+	directionalLightData->intensity = directionalLight.intensity;
 }
 
 void Object3d::Update(Camera* camera)
@@ -44,6 +44,10 @@ void Object3d::Update(Camera* camera)
 		camera->GetWorldMatrix().m[3][1],
 		camera->GetWorldMatrix().m[3][2]
 	};
+	directionalLightData->color = directionalLight.color;
+	directionalLightData->direction = directionalLight.direction;
+	directionalLightData->intensity = directionalLight.intensity;
+
 	transformationMatrixData->WVP = Multiply(model_->GetModelData()->rootNode.localMatrix, worldViewProjectionMatrix);
 	transformationMatrixData->World = Multiply(model_->GetModelData()->rootNode.localMatrix, worldMatrix);
 	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(transformationMatrixData->World));
@@ -115,6 +119,7 @@ void Object3d::SkeltonUpdate(Camera* camera)
 	}
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	//transformationMatrixData->World = worldViewProjectionMatrix;
+	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(worldViewProjectionMatrix));
 }
 
 void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)

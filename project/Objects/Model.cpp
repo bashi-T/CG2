@@ -7,12 +7,13 @@ void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, s
 	modelData = LoadModelFile("Resource", objFilePath);
 	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
 	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
+	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData.indices.size());
 
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 	modelData.material.textureFilePath = TextureFilePath;
 	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
 	modelData.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
@@ -20,9 +21,10 @@ void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, s
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData[0].enableLighting = true;
 	materialData[0].uvTransform = MakeIdentity4x4();
-	materialData[0].shininess = 50.0f;
+	materialData[0].shininess = 50.0f; 
 
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
+	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
 }
 
 void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
@@ -33,11 +35,13 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	animation = LoadAnimationFile("Resource", objFilePath);
 	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
 	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
+	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData.indices.size());
 
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 
 	modelData.material.textureFilePath = TextureFilePath;
 	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
@@ -49,6 +53,7 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	materialData[0].shininess = 50.0f;
 
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
+	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
 }
 
 void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
@@ -60,11 +65,13 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 	skelton = CreateSkelton(modelData.rootNode);
 	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
 	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
+	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData.indices.size());
 
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 
 	modelData.material.textureFilePath = TextureFilePath;
 	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
@@ -76,6 +83,7 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 	materialData[0].shininess = 50.0f;
 
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
+	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
 }
 
 void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
@@ -90,13 +98,15 @@ void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
 			0, materialResource->GetGPUVirtualAddress());
-	modelCommon_->GetDx12Common()->GetCommandList().Get()->IASetVertexBuffers(
-		0, 1, &vertexBufferView);
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+		IASetVertexBuffers(0, 1, &vertexBufferView);
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+		IASetIndexBuffer(&indexBufferView);
 	srvManager_->SetGraphicsRootDescriptorTable(
 		2, modelData.material.textureIndex);
 
-	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawInstanced(
-		UINT(modelData.vertices.size()), 1, 0, 0);
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawIndexedInstanced(
+		UINT(modelData.vertices.size()), 1, 0, 0, 0);
 }
 
 void Model::Memcpy()
@@ -149,24 +159,27 @@ Model::ModelData Model::LoadModelFile(const std::string& directryPath, const std
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());
 		assert(mesh->HasTextureCoords(0));
+		modelData.vertices.resize(mesh->mNumVertices);
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex)
+		{
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+
+			modelData.vertices[vertexIndex].position = {-position.x,position.y,position.z,1.0f};
+			modelData.vertices[vertexIndex].normal = { -normal.x,normal.y,normal.z };
+			modelData.vertices[vertexIndex].texcoord = { texcoord.x,texcoord.y };
+		}
 
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 		{
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
+
 			for (uint32_t element = 0; element < face.mNumIndices; ++element)
 			{
 				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-				VertexData vertex;
-				vertex.position = { position.x,position.y,position.z,1.0f };
-				vertex.normal = { normal.x,normal.y,normal.z };
-				vertex.texcoord = { texcoord.x,texcoord.y };
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
-				modelData.vertices.push_back(vertex);
+				modelData.indices.push_back(vertexIndex);
 			}
 		}
 	}
@@ -212,6 +225,10 @@ void Model::MakeBufferView()
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size());
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
+	indexBufferView.SizeInBytes = sizeof(uint32_t) * modelData.indices.size();
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 }
 
 Model::Node Model::ReadNode(aiNode* node)
