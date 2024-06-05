@@ -84,6 +84,10 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
+
+	CreateSkinCluster(skelton, modelData, srvManager_->GetSrvDescriptorHeap(),
+		modelCommon_->GetDx12Common()->GetDevice()->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 }
 
 void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
@@ -106,7 +110,35 @@ void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
 		2, modelData.material.textureIndex);
 
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawIndexedInstanced(
-		UINT(modelData.vertices.size()), 1, 0, 0, 0);
+		UINT(modelData.indices.size()), 1, 0, 0, 0);
+}
+
+void Model::SkeltonDraw(ModelCommon* modelCommon, SRVManager* srvManager)
+{
+	this->modelCommon_ = modelCommon;
+	this->srvManager_ = srvManager;
+	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	uvTransformMatrix = Multiply(uvTransformMatrix, MakerotateZMatrix(uvTransform.rotate.z));
+	uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransform.translate));
+	materialData[0].uvTransform = uvTransformMatrix;
+
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootConstantBufferView(
+			0, materialResource->GetGPUVirtualAddress());
+	D3D12_VERTEX_BUFFER_VIEW vbvs[2]
+	{
+		vertexBufferView,
+		skinCluster.influenceBufferView
+	};
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+		IASetVertexBuffers(0, 2, vbvs);
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->
+		IASetIndexBuffer(&indexBufferView);
+	srvManager_->SetGraphicsRootDescriptorTable(
+		2, modelData.material.textureIndex);
+
+	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawIndexedInstanced(
+		UINT(modelData.indices.size()), 1, 0, 0, 0);
 }
 
 void Model::Memcpy()
@@ -182,6 +214,29 @@ Model::ModelData Model::LoadModelFile(const std::string& directryPath, const std
 				modelData.indices.push_back(vertexIndex);
 			}
 		}
+		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+		{
+			aiBone* bone = mesh->mBones[boneIndex];
+			std::string jointName = bone->mName.C_Str();
+			JointWeightData& jointWeightData = modelData.skinClusterData[jointName];
+
+			aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();
+			aiVector3D scale, translate;
+			aiQuaternion rotate;
+			bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
+			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(
+				{ scale.x,scale.y,scale.z },
+				{ rotate.x,-rotate.y,-rotate.z,rotate.w },
+				{ -translate.x,translate.y,translate.z });
+			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
+
+			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
+			{
+				jointWeightData.vertexWeights.push_back(
+					{ bone->mWeights[weightIndex].mWeight,bone->mWeights[weightIndex].mVertexId });
+			}
+		}
+
 	}
 
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
@@ -194,6 +249,7 @@ Model::ModelData Model::LoadModelFile(const std::string& directryPath, const std
 			modelData.material.textureFilePath = directryPath + "/" + textureFilePath.C_Str();
 		}
 	}
+
 	modelData.rootNode = ReadNode(scene->mRootNode);
 	return modelData;
 }
@@ -324,4 +380,72 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>parent,
 		 joints[joint.index].children.push_back(childIndex);
 	 }
 	 return joint.index;
+}
+
+Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelData& modelData, const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize)
+{
+	WellForGPU* mappedParette = nullptr;
+	//parette用resource作成
+	skinCluster.paletteResource = CreateBufferResource(modelCommon_, sizeof(WellForGPU) * skelton.joints.size());
+	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedParette));
+	skinCluster.mappedPalette = { mappedParette,skelton.joints.size() };
+	skinCluster.paletteSrvHandle.first = modelCommon_->GetDx12Common()->GetCPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
+	skinCluster.paletteSrvHandle.second = modelCommon_->GetDx12Common()->GetGPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
+
+	//parette用srv作成　structuredBufferでアクセスできるように
+	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
+	paletteSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	paletteSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	paletteSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	paletteSrvDesc.Buffer.FirstElement = 0;
+	paletteSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	paletteSrvDesc.Buffer.NumElements = UINT(skelton.joints.size());
+	paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
+
+	modelCommon_->GetDx12Common()->GetDevice().Get()->CreateShaderResourceView(
+		skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
+
+	VertexInfluence* mappedInfluence = nullptr;
+	skinCluster.influenceResource = CreateBufferResource(modelCommon_, sizeof(VertexInfluence) * modelData.vertices.size());
+	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
+	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelData.vertices.size());
+	skinCluster.mappedInfluence = { mappedInfluence,modelData.vertices.size() };
+
+	skinCluster.influenceBufferView.BufferLocation = skinCluster.influenceResource->GetGPUVirtualAddress();
+	skinCluster.influenceBufferView.SizeInBytes = UINT(sizeof(VertexInfluence) * modelData.vertices.size());
+	skinCluster.influenceBufferView.StrideInBytes = sizeof(VertexInfluence);
+
+	skinCluster.inverseBindPoseMatrices.resize(skelton.joints.size());
+	//std::generate(skinCluster.inverseBindPoseMatrices.begin(),
+	//	skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4());
+	for (Matrix4x4 inverseBindPoseMatrix : skinCluster.inverseBindPoseMatrices)
+	{
+		inverseBindPoseMatrix = MakeIdentity4x4();
+		skinCluster.inverseBindPoseMatrices.push_back(inverseBindPoseMatrix);
+	}
+
+	for (const auto& jointWeight : modelData.skinClusterData)
+	{
+		auto it = skelton.jointMap.find(jointWeight.first);
+		if (it == skelton.jointMap.end())
+		{
+			continue;
+		}
+		skinCluster.inverseBindPoseMatrices[(*it).second] = jointWeight.second.inverseBindPoseMatrix;
+		for (const auto& vertexWeight : jointWeight.second.vertexWeights)
+		{
+			auto& currentInfluence = skinCluster.mappedInfluence[vertexWeight.vertexIndex];
+			for (uint32_t index = 0; index < kNumMaxInfluence; ++index)
+			{
+				if (currentInfluence.weights[index] == 0.0f)
+				{
+					currentInfluence.weights[index] = vertexWeight.weight;
+					currentInfluence.jointIndices[index] = (*it).second;
+					break;
+				}
+			}
+		}
+	}
+
+	return skinCluster;
 }

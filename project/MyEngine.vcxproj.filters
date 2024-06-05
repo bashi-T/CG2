@@ -203,6 +203,7 @@
     <FxCompile Include="HLSL\Object3d.PS.hlsl" />
     <FxCompile Include="HLSL\Particle.PS.hlsl" />
     <FxCompile Include="HLSL\Particle.VS.hlsl" />
+    <FxCompile Include="HLSL\SkinningObject3d.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

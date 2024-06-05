@@ -120,6 +120,17 @@ void Object3d::SkeltonUpdate(Camera* camera)
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	//transformationMatrixData->World = worldViewProjectionMatrix;
 	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(worldViewProjectionMatrix));
+
+	for (size_t jointIndex = 0; jointIndex < model_->GetSkelton().joints.size(); jointIndex++)
+	{
+		assert(jointIndex < model_->GetSkinCluster().inverseBindPoseMatrices.size());
+
+		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix = Multiply(
+			model_->GetSkinCluster().inverseBindPoseMatrices[jointIndex], model_->GetSkelton().joints[jointIndex].skeltonSpaceMatrix);
+		
+		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceInverseTransposeMatrix = Transpose(
+			Inverse(model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix));
+	}
 }
 
 void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
@@ -158,6 +169,45 @@ void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
 	if (model_)
 	{
 		model_->Draw(modelCommon_,srvManager);
+	}
+}
+
+void Object3d::SkeltonDraw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
+{
+	this->object3dCommon_ = object3dCommon;
+	this->modelCommon_ = modelCommon;
+
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		SetPipelineState(object3dCommon_->GetGraphicsPipelineState().Get());
+
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootSignature(object3dCommon_->GetRootSignature().Get());
+
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv = object3dCommon_->GetDx12Common()->GetRtvHandles(
+		srvManager->GetBackBufferIndex());
+
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = object3dCommon_->GetDx12Common()->GetDsvHandle();
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		OMSetRenderTargets(1, &rtv, false, &dsv);
+
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootConstantBufferView(
+			1, transformationMatrixResource->GetGPUVirtualAddress());
+
+	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+		SetGraphicsRootConstantBufferView(
+			3, directionalLightResource->GetGPUVirtualAddress());
+
+	object3dCommon_->GetDx12Common()->GetCommandList()->
+		SetGraphicsRootConstantBufferView(
+			4, cameraResource->GetGPUVirtualAddress());
+
+	if (model_)
+	{
+		model_->SkeltonDraw(modelCommon_, srvManager);
 	}
 }
 

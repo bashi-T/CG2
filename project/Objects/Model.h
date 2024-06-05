@@ -2,6 +2,7 @@
 #include"Commons/ModelCommon.h"
 #include"Managers/SRVManager.h"
 #include<map>
+#include<span>
 
 #include<assimp/Importer.hpp>
 #include<assimp/scene.h>
@@ -36,8 +37,19 @@ public:
 		std::vector<Node> children;
 		QuaternionTransform qTransform;
 	};
+	struct VertexWeightData
+	{
+		float weight;
+		uint32_t vertexIndex;
+	};
+	struct JointWeightData
+	{
+		Matrix4x4 inverseBindPoseMatrix;
+		std::vector<VertexWeightData>vertexWeights;
+	};
 	struct ModelData
 	{
+		std::map<std::string, JointWeightData>skinClusterData;
 		std::vector<VertexData> vertices;
 		std::vector<uint32_t> indices;
 		MaterialData material;
@@ -89,13 +101,37 @@ public:
 	{
 		float duration;//アニメーション全体の尺
 		std::map<std::string, NodeAnimation>nodeAnimations;
+	};
+	const uint32_t kNumMaxInfluence = 4;
+	struct VertexInfluence
+	{
+		std::array<float, 4>weights;
+		std::array<int32_t, 4>jointIndices;
 
+	};
+	struct WellForGPU
+	{
+		Matrix4x4 skeltonSpaceMatrix;//位置
+		Matrix4x4 skeltonSpaceInverseTransposeMatrix;//法線
+	};
+	struct SkinCluster
+	{
+		std::vector<Matrix4x4>inverseBindPoseMatrices;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource>influenceResource;
+		D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+		std::span<VertexInfluence>mappedInfluence;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource>paletteResource;
+		std::span<WellForGPU>mappedPalette;
+		std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE>paletteSrvHandle;
 	};
 
 	void ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void AnimationInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void Draw(ModelCommon* modelCommon, SRVManager* srvManager);
+	void SkeltonDraw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void Memcpy();
 	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
 	ModelData LoadModelFile(const std::string& directryPath, const std::string& filename);
@@ -104,13 +140,20 @@ public:
 	Node ReadNode(aiNode* node);
 	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
 	Skelton CreateSkelton(const Node& rootNode);
-	int32_t CreateJoint(const Node& node,
+	int32_t CreateJoint(
+		const Node& node,
 		const std::optional<int32_t>parent,
 		std::vector<Joint>&joints);
+	SkinCluster CreateSkinCluster(
+		const Skelton& skelton,
+		const ModelData& modelData,
+		const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>descriptorHeap,
+		uint32_t descriptorSize);
 
 	ModelData* GetModelData() { return &modelData; }
 	Animation* GetAnimation() { return &animation; }
 	Skelton GetSkelton() { return skelton; }
+	SkinCluster GetSkinCluster() { return skinCluster; }
 private:
 	ModelData modelData;
 	ModelCommon* modelCommon_;
@@ -132,6 +175,8 @@ private:
 
 	Skelton skelton;
 
+	SkinCluster skinCluster;
+	
 	EulerTransform uvTransform
 	{
 			{1.0f,1.0f,1.0f},

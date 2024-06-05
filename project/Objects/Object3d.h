@@ -22,6 +22,7 @@ public:
 	void SkeltonUpdate(Camera* camera);
 	void AnimationUpdate(Camera* camera);
 	void Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon);
+	void SkeltonDraw(Object3dCommon* object3dCommon, ModelCommon* modelCommon);
 
 	ComPtr<ID3D12Resource> CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes);
 	Vector3 CalculatevalueV(const std::vector<Model::KeyFrameVector3>& keyframes, float time);

@@ -24,8 +24,8 @@ void TitleScene::Init()
 	std::string objFilePath[100] =
 	{
 		"AnimatedCube/AnimatedCube.gltf",
-		"human/sneakWalk.gltf",
 		"human/Walk.gltf",
+		"simpleSkin/simpleSkin.gltf",
 		"plane/plane.gltf",
 	};
 	for (uint32_t i = 0; i < 4; i++)
@@ -97,12 +97,12 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	for (Object3d* object3d : objects3d)
-	{
-		object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	}
-	//objects3d[1]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	//objects3d[3]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//for (Object3d* object3d : objects3d)
+	//{
+	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	//}
+	objects3d[1]->SkeltonDraw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	objects3d[3]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
 	//for (Particle* particle : particles)
 	//{
 	//	particle->Draw();
