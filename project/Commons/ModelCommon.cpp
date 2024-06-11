@@ -5,7 +5,7 @@ void ModelCommon::Initialize(DX12Common* dxCommon)
 	this->dxCommon_ = dxCommon;
 	ResetDXC();
 
-	MakePSO(dxCommon_);
+	//MakePSO(dxCommon_);
 	MakeSkeltonPSO(dxCommon_);
 }
 
@@ -228,9 +228,17 @@ void ModelCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[4].Descriptor.ShaderRegister = 2;
 
-	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
+	descriptorRangeForInstancing[0].BaseShaderRegister = 0;	//0から始まる
+	descriptorRangeForInstancing[0].NumDescriptors = 1;
+	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	rootParameters[5].Descriptor.ShaderRegister = 3;
+	rootParameters[5].Descriptor.ShaderRegister = 0;
+	rootParameters[5].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
+	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
 
 	descriptionRootSignature_.pParameters = rootParameters;
 	descriptionRootSignature_.NumParameters = _countof(rootParameters);

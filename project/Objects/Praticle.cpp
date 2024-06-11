@@ -3,9 +3,8 @@
 Particle::~Particle() {
 }
 
-void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvManager, Object3dCommon* object3dCommon, DX12Common* dxCommon)
+void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvManager, Object3dCommon* object3dCommon)
 {
-	this->dxCommon = dxCommon;
 	this->object3dCommon_ = object3dCommon;
 	this->srvManager = srvManager;
 	this->camera_ = object3dCommon_->GetDefaultCamera();
@@ -186,7 +185,7 @@ void Particle::MakePSO()
 		assert(false);
 	}
 
-	hr = dxCommon->GetDevice().Get()->CreateRootSignature(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
@@ -259,7 +258,7 @@ void Particle::MakePSO()
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(
+	hr = DX12Common::GetInstance()->GetDevice()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 }
@@ -272,31 +271,31 @@ void Particle::Update()
 
 void Particle::Draw()
 {
-	dxCommon->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
-	dxCommon->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
-	dxCommon->GetCommandList().Get()->IASetPrimitiveTopology(
+	DX12Common::GetInstance()->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
+	DX12Common::GetInstance()->GetCommandList().Get()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	dxCommon->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
-	dxCommon->GetCommandList().Get()->
+	DX12Common::GetInstance()->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DX12Common::GetInstance()->GetCommandList().Get()->
 		IASetIndexBuffer(&indexBufferView);
 
-	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		0, colorResource->GetGPUVirtualAddress());
-	dxCommon->GetCommandList().Get()->
+	DX12Common::GetInstance()->GetCommandList().Get()->
 		SetGraphicsRootDescriptorTable(
 			1, instancingSrvHandleGPU);
 	srvManager->SetGraphicsRootDescriptorTable(
 		2, materialData.textureIndex);
-	dxCommon->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		3, cameraResource->GetGPUVirtualAddress());
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-		dxCommon->GetRtvHandles(srvManager->GetBackBufferIndex());
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = dxCommon->GetDsvHandle();
-	dxCommon->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
+		DX12Common::GetInstance()->GetRtvHandles(srvManager->GetBackBufferIndex());
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
+	DX12Common::GetInstance()->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
 
-	dxCommon->GetCommandList().Get()->DrawIndexedInstanced(6, kNumInstance, 0, 0, 0);
+	DX12Common::GetInstance()->GetCommandList().Get()->DrawIndexedInstanced(6, kNumInstance, 0, 0, 0);
 }
 
 ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)
@@ -319,7 +318,7 @@ ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)
 
 	ComPtr<ID3D12Resource> Resource = nullptr;
 
-	hr = dxCommon->GetDevice().Get()->CreateCommittedResource(
+	hr = DX12Common::GetInstance()->GetDevice().Get()->CreateCommittedResource(
 		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &ResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&Resource));
 	assert(SUCCEEDED(hr));

@@ -26,7 +26,7 @@ class Particle
 public:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	~Particle();
-	void Initialize(const std::string& filename, SRVManager* srvManager, Object3dCommon* object3dCommon, DX12Common* dxCommon);
+	void Initialize(const std::string& filename, SRVManager* srvManager, Object3dCommon* object3dCommon);
 	void Update();
 	ComPtr<IDxcBlob> CompileShader(
 	    const std::wstring& filePath,

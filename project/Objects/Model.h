@@ -129,7 +129,7 @@ public:
 
 	void ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
 	void AnimationInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
-	void SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath);
+	void SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath, SRVManager* srvManager);
 	void Draw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void SkeltonDraw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void Memcpy();

@@ -1,6 +1,7 @@
 #include "Object3d.hlsli"
 
-struct TransformationMatrix{
+struct TransformationMatrix
+{
     float32_t4x4 WVP;
     float32_t4x4 World;
     float32_t4x4 WorldInverseTranspose;
@@ -13,7 +14,7 @@ struct Well
   float32_t4x4 skeltonSpaceInverseTransposeMatrix;
 };
 
-structuredBuffer<Well> gMatrixPalette : register(to);
+StructuredBuffer<Well> gMatrixPalette : register(t0);
 
 struct VertexShaderInput
 {
@@ -51,9 +52,9 @@ VertexShaderOutput  main(VertexShaderInput input)
 {
   VertexShaderOutput output;
   Skinned skinned = Skinning(input);
-  output.position = mul(input.position, gTransformationMatrix.WVP);
-  output.worldPosition = mul(input.position, gTransformationMatrix.World).xyz;
+  output.position = mul(skinned.position, gTransformationMatrix.WVP);
+  output.worldPosition = mul(skinned.position, gTransformationMatrix.World).xyz;
   output.texcoord = input.texcoord;
-  output.normal = normalize(mul(input.normal,(float32_t3x3)gTransformationMatrix.WorldInverseTranspose));
+  output.normal = normalize(mul(skinned.normal,(float32_t3x3)gTransformationMatrix.WorldInverseTranspose));
   return output;
 }

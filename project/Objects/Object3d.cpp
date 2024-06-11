@@ -125,17 +125,17 @@ void Object3d::SkeltonUpdate(Camera* camera)
 	{
 		assert(jointIndex < model_->GetSkinCluster().inverseBindPoseMatrices.size());
 
-		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix = Multiply(
-			model_->GetSkinCluster().inverseBindPoseMatrices[jointIndex], model_->GetSkelton().joints[jointIndex].skeltonSpaceMatrix);
+		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix = 
+			Multiply(model_->GetSkinCluster().inverseBindPoseMatrices[jointIndex],
+				model_->GetSkelton().joints[jointIndex].skeltonSpaceMatrix);
 		
-		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceInverseTransposeMatrix = Transpose(
-			Inverse(model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix));
+		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceInverseTransposeMatrix =
+			Transpose(Inverse(model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix));
 	}
 }
 
-void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
+void Object3d::Draw(ModelCommon* modelCommon)
 {
-	this->object3dCommon_ = object3dCommon;
 	this->modelCommon_ = modelCommon;
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
@@ -172,9 +172,8 @@ void Object3d::Draw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
 	}
 }
 
-void Object3d::SkeltonDraw(Object3dCommon* object3dCommon, ModelCommon* modelCommon)
+void Object3d::SkeltonDraw(ModelCommon* modelCommon)
 {
-	this->object3dCommon_ = object3dCommon;
 	this->modelCommon_ = modelCommon;
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->

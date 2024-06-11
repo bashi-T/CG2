@@ -41,7 +41,7 @@ void TitleScene::Init()
 		else if (i == 1||i==2)
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i + 1]);
+			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i + 1], SRVManager::GetInstance());
 			object3d->SetModel(objFilePath[i]);
 		}else
 		{
@@ -60,7 +60,7 @@ void TitleScene::Init()
 		model->Memcpy();
 		object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 1.0f });
 		objects3d.push_back(object3d);
-		particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance(), DX12Common::GetInstance());
+		particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
 		particles.push_back(particle);
 	};
 	//objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
@@ -101,8 +101,9 @@ void TitleScene::Draw()
 	//{
 	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
 	//}
-	objects3d[1]->SkeltonDraw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
-	objects3d[3]->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
+	objects3d[1]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+	objects3d[2]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+	objects3d[3]->Draw(ModelManager::GetInstance()->GetModelCommon());
 	//for (Particle* particle : particles)
 	//{
 	//	particle->Draw();

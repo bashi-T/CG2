@@ -56,9 +56,10 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
 }
 
-void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
+void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath, SRVManager* srvManager)
 {
 	this->modelCommon_ = modelCommon;
+	this->srvManager_ = srvManager;
 
 	modelData = LoadModelFile("Resource", objFilePath);
 	animation = LoadAnimationFile("Resource", objFilePath);
@@ -216,21 +217,21 @@ Model::ModelData Model::LoadModelFile(const std::string& directryPath, const std
 		}
 		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 		{
-			aiBone* bone = mesh->mBones[boneIndex];
+			aiBone* bone = mesh->mBones[boneIndex];//meshに関連したjointから情報を得る
 			std::string jointName = bone->mName.C_Str();
 			JointWeightData& jointWeightData = modelData.skinClusterData[jointName];
 
-			aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();
+			aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();//BindPoseMatrixにもどす
 			aiVector3D scale, translate;
 			aiQuaternion rotate;
-			bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
-			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(
+			bindPoseMatrixAssimp.Decompose(scale, rotate, translate);//成分抽出
+			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(//左手系BindPoseMatrix
 				{ scale.x,scale.y,scale.z },
 				{ rotate.x,-rotate.y,-rotate.z,rotate.w },
 				{ -translate.x,translate.y,translate.z });
-			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
+			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);//InverseBindPoseMatrix
 
-			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
+			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)//jointに関連した頂点のweightとindexを抽出・格納
 			{
 				jointWeightData.vertexWeights.push_back(
 					{ bone->mWeights[weightIndex].mWeight,bone->mWeights[weightIndex].mVertexId });
@@ -382,7 +383,8 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>parent,
 	 return joint.index;
 }
 
-Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelData& modelData, const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize)
+Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelData& modelData,
+	const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize)
 {
 	WellForGPU* mappedParette = nullptr;
 	//parette用resource作成

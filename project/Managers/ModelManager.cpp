@@ -47,7 +47,7 @@ void ModelManager::LoadAnimationModel(const std::string& filePath, const std::st
 	models.insert(std::make_pair(filePath, std::move(model)));
 }
 
-void ModelManager::LoadSkeltonAnimation(const std::string& filePath, const std::string& TextureFilePath)
+void ModelManager::LoadSkeltonAnimation(const std::string& filePath, const std::string& TextureFilePath, SRVManager* srvManager)
 {
 	if (models.contains(filePath))
 	{
@@ -55,7 +55,7 @@ void ModelManager::LoadSkeltonAnimation(const std::string& filePath, const std::
 	}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->SkeltonInitialize(modelCommon_, filePath, TextureFilePath);
+	model->SkeltonInitialize(modelCommon_, filePath, TextureFilePath,srvManager);
 	models.insert(std::make_pair(filePath, std::move(model)));
 }
 

@@ -311,17 +311,6 @@ D3D12_GPU_DESCRIPTOR_HANDLE DX12Common::GetGPUDescriptorHandle(
 	return handleGPU;
 }
 
-//D3D12_CPU_DESCRIPTOR_HANDLE DX12Common::GetSRVCPUDescriptorHandle(uint32_t index)
-//{
-//	//return GetCPUDescriptorHandle(srvDescriptorHeap,descriptorSizeSRV,index);
-//	return D3D12_CPU_DESCRIPTOR_HANDLE();
-//}
-//
-//D3D12_GPU_DESCRIPTOR_HANDLE DX12Common::GetSRVGPUDescriptorHandle(uint32_t index)
-//{
-//	return D3D12_GPU_DESCRIPTOR_HANDLE();
-//}
-
 void DX12Common::DebugLayer()
 {
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))

@@ -22,6 +22,7 @@ public:
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
 	void MakePSO(DX12Common* dxcommon);
+	void MakeSkeltonPSO(DX12Common* dxcommon);
 	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
 	static Object3dCommon* GetInstance();
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
