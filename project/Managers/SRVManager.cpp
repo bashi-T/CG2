@@ -105,18 +105,18 @@ void SRVManager::PreDraw()
 	backBufferIndex = dxCommon_->GetSwapChain()->GetCurrentBackBufferIndex();
 
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 	barrier.Transition.pResource = dxCommon_->GetSwapChainResources()[backBufferIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
 	
-	//dxCommon_->GetCommandList()->OMSetRenderTargets(1,
-	//	&dxCommon_->GetRtvHandles(backBufferIndex), false, nullptr);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles = dxCommon_->GetRtvHandles(backBufferIndex);
+	dxCommon_->GetCommandList()->OMSetRenderTargets(1,
+		&rtvHandles, false, nullptr);
 
 	dxCommon_->GetCommandList()->ClearRenderTargetView(
-		dxCommon_->GetRtvHandles(backBufferIndex),
-		clearColor, 0, nullptr);
+		rtvHandles, clearColor, 0, nullptr);
 
 	dxCommon_->GetCommandList()->ClearDepthStencilView(
 		dxCommon_->GetDsvHandle(),

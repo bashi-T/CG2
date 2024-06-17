@@ -132,11 +132,14 @@ void Model::SkeltonDraw(ModelCommon* modelCommon, SRVManager* srvManager)
 		skinCluster.influenceBufferView
 	};
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->
-		IASetVertexBuffers(0, 2, vbvs);
+		IASetVertexBuffers(0, 2, vbvs);//開始スロット番号、使用スロット数、vbv配列へのポインタ
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetIndexBuffer(&indexBufferView);
+	DX12Common::GetInstance()->GetCommandList().Get()->
+		SetGraphicsRootDescriptorTable(
+			5, skinCluster.paletteSrvHandle.second);
 	srvManager_->SetGraphicsRootDescriptorTable(
-		2, modelData.material.textureIndex);
+		2, modelData.material.textureIndex); 
 
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawIndexedInstanced(
 		UINT(modelData.indices.size()), 1, 0, 0, 0);
@@ -378,7 +381,6 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>parent,
 	 for (const Node& child : node.children)
 	 {
 		 int32_t childIndex = CreateJoint(child, joint.index, joints);
-		 joints[joint.index].children.push_back(childIndex);
 	 }
 	 return joint.index;
 }
@@ -391,8 +393,12 @@ Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelD
 	skinCluster.paletteResource = CreateBufferResource(modelCommon_, sizeof(WellForGPU) * skelton.joints.size());
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedParette));
 	skinCluster.mappedPalette = { mappedParette,skelton.joints.size() };
-	skinCluster.paletteSrvHandle.first = modelCommon_->GetDx12Common()->GetCPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
-	skinCluster.paletteSrvHandle.second = modelCommon_->GetDx12Common()->GetGPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
+	uint32_t index = srvManager_->Allocate();
+
+	//skinCluster.paletteSrvHandle.first = modelCommon_->GetDx12Common()->GetCPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
+	//skinCluster.paletteSrvHandle.second = modelCommon_->GetDx12Common()->GetGPUDescriptorHandle(descriptorHeap.Get(), descriptorSize, 0);
+	skinCluster.paletteSrvHandle.first = srvManager_->GetCPUDescriptorHandle(index);
+	skinCluster.paletteSrvHandle.second = srvManager_->GetGPUDescriptorHandle(index);
 
 	//parette用srv作成　structuredBufferでアクセスできるように
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
@@ -418,12 +424,9 @@ Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelD
 	skinCluster.influenceBufferView.StrideInBytes = sizeof(VertexInfluence);
 
 	skinCluster.inverseBindPoseMatrices.resize(skelton.joints.size());
-	//std::generate(skinCluster.inverseBindPoseMatrices.begin(),
-	//	skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4());
-	for (Matrix4x4 inverseBindPoseMatrix : skinCluster.inverseBindPoseMatrices)
+	for (Matrix4x4& inverseBindPoseMatrix : skinCluster.inverseBindPoseMatrices)
 	{
 		inverseBindPoseMatrix = MakeIdentity4x4();
-		skinCluster.inverseBindPoseMatrices.push_back(inverseBindPoseMatrix);
 	}
 
 	for (const auto& jointWeight : modelData.skinClusterData)

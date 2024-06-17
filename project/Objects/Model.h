@@ -152,8 +152,8 @@ public:
 
 	ModelData* GetModelData() { return &modelData; }
 	Animation* GetAnimation() { return &animation; }
-	Skelton GetSkelton() { return skelton; }
-	SkinCluster GetSkinCluster() { return skinCluster; }
+	Skelton& GetSkelton() { return skelton; }
+	const SkinCluster& GetSkinCluster() { return skinCluster; }
 private:
 	ModelData modelData;
 	ModelCommon* modelCommon_;

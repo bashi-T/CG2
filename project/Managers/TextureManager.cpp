@@ -72,6 +72,55 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureDatas[filePath] = textureData;
 }
 
+void TextureManager::LoadTextureforSRV(const std::string& filePath)
+{
+	if (textureDatas.contains(filePath))
+	{
+		return;
+	}
+
+	assert(srvManager->CheckNumTexture(textureDatas.size()));
+
+	DirectX::ScratchImage image{};//テクスチャファイルをプログラムで扱えるように
+	std::wstring filePathW = debug_->ConvertString(filePath);
+	HRESULT hr = DirectX::LoadFromWICFile(
+		filePathW.c_str(),
+		DirectX::WIC_FLAGS_FORCE_SRGB,
+		nullptr,
+		image);
+	assert(SUCCEEDED(hr));
+
+	DirectX::ScratchImage mipImages{};//MipMapの作成
+	hr = DirectX::GenerateMipMaps(
+		image.GetImages(),
+		image.GetImageCount(),
+		image.GetMetadata(),
+		DirectX::TEX_FILTER_SRGB,
+		0,
+		mipImages);
+	assert(SUCCEEDED(hr));
+
+	TextureData& textureData = textureDatas[filePath];
+	textureData.metadata = mipImages.GetMetadata();
+	textureData.resource = CreateTextureResource(textureData.metadata);
+	UploadTextureData(textureData.resource.Get(), mipImages, textureData.metadata);
+
+	textureData.srvIndex = srvManager->Allocate();
+	textureData.srvHandleCPU = srvManager->
+		GetCPUDescriptorHandle(textureData.srvIndex);
+
+	textureData.srvHandleGPU = srvManager->
+		GetGPUDescriptorHandle(textureData.srvIndex);
+
+	srvManager->CreateSRVforStructuredBuffer(
+		textureData.srvIndex,
+		textureData.resource.Get(),
+		textureData.metadata.format,
+		textureData.metadata.mipLevels);
+
+	textureDatas[filePath] = textureData;
+}
+
 ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(const DirectX::TexMetadata& metadata)
 {
 	D3D12_RESOURCE_DESC resourceDesc{};
