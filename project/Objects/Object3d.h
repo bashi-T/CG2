@@ -27,7 +27,7 @@ public:
 	ComPtr<ID3D12Resource> CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes);
 	Vector3 CalculatevalueV(const std::vector<Model::KeyFrameVector3>& keyframes, float time);
 	Quaternion CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion>& keyframes, float time);
-	void ApplyAnimation(Model::Skelton skelton, const Model::Animation& animation, float animationTime);
+	void ApplyAnimation(Model::Skelton& skelton, const Model::Animation& animation, float animationTime);
 
 	void SetModel(const std::string& filePath);
 	void SetModel(Model* model) { this->model_ = model; }
@@ -56,7 +56,7 @@ private:
 	SRVManager* srvManager = nullptr;
 	Camera* camera = nullptr;
 	
-	Model::Animation animation;
+	//Model::Animation& animation;
 	float animationTime = 0.0f;
 	float skeltonAnimationTime = 0.0f;
 

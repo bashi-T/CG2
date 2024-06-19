@@ -151,7 +151,7 @@ public:
 		uint32_t descriptorSize);
 
 	ModelData* GetModelData() { return &modelData; }
-	Animation* GetAnimation() { return &animation; }
+	Animation& GetAnimation() { return animation; }
 	Skelton& GetSkelton() { return skelton; }
 	const SkinCluster& GetSkinCluster() { return skinCluster; }
 private:

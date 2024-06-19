@@ -24,14 +24,14 @@ void TitleScene::Init()
 	std::string objFilePath[100] =
 	{
 		"AnimatedCube/AnimatedCube.gltf",
-		"human/Walk.gltf",
+		"human/sneakWalk.gltf",
 		"simpleSkin/simpleSkin.gltf",
 		"plane/plane.gltf",
 	};
-	//for (uint32_t i = 0; i < 4; i++)
-	//{
+	for (uint32_t i = 0; i < 1; i++)
+	{
 		Object3d* object3d = new Object3d;
-		//Particle* particle = new Particle;
+		Particle* particle = new Particle;
 		//if(i==0)
 		//{
 		//	object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
@@ -50,7 +50,7 @@ void TitleScene::Init()
 		//	object3d->SetModel(objFilePath[i]);
 		//}
 	object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-	ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[1], textureFilePath[2 + 1], SRVManager::GetInstance());
+	ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[1], textureFilePath[/*2 + */1], SRVManager::GetInstance());
 	object3d->SetModel(objFilePath[1]);
 	Model* model = ModelManager::GetInstance()->FindModel(objFilePath[1]);
 	Model::ModelData* modelData = model->GetModelData();
@@ -65,7 +65,7 @@ void TitleScene::Init()
 	objects3d.push_back(object3d);
 	//particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
 	//particles.push_back(particle);
-//};
+};
 //objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());

@@ -72,8 +72,8 @@ void Object3d::AnimationUpdate(Camera* camera)
 	};
 
 	animationTime += 1.0f / 60.0f;
-	animationTime = std::fmod(animationTime, model_->GetAnimation()->duration);
-	Model::NodeAnimation& rootNodeAnimation = model_->GetAnimation()->nodeAnimations[model_->GetModelData()->rootNode.name];
+	animationTime = std::fmod(animationTime, model_->GetAnimation().duration);
+	Model::NodeAnimation& rootNodeAnimation = model_->GetAnimation().nodeAnimations[model_->GetModelData()->rootNode.name];
 	Vector3 translate = CalculatevalueV(rootNodeAnimation.translate.keyframes, animationTime);
 	Quaternion rotate = CalculatevalueQ(rootNodeAnimation.rotate.keyframes, animationTime);
 	Vector3 scale = CalculatevalueV(rootNodeAnimation.scale.keyframes, animationTime);
@@ -101,8 +101,8 @@ void Object3d::SkeltonUpdate(Camera* camera)
 		camera->GetWorldMatrix().m[3][2]
 	};
 	skeltonAnimationTime += 1.0f / 60.0f;
-	skeltonAnimationTime = std::fmod(skeltonAnimationTime, model_->GetAnimation()->duration);
-	ApplyAnimation(model_->GetSkelton(), *model_->GetAnimation(), skeltonAnimationTime);
+	skeltonAnimationTime = std::fmod(skeltonAnimationTime, model_->GetAnimation().duration);
+	ApplyAnimation(model_->GetSkelton(), model_->GetAnimation(), skeltonAnimationTime);
 
 	for (Model::Joint& joint : model_->GetSkelton().joints)
 	{
@@ -281,9 +281,9 @@ Quaternion Object3d::CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion
 
 }
 
-void Object3d::ApplyAnimation(Model::Skelton skelton, const Model::Animation& animation, float animationTime)
+void Object3d::ApplyAnimation(Model::Skelton& skelton, const Model::Animation& animation, float animationTime)
 {
-	for (Model::Joint joint : skelton.joints)
+	for (Model::Joint& joint : skelton.joints)
 	{
 		if (auto it = animation.nodeAnimations.find(joint.name); it != animation.nodeAnimations.end())
 		{
