@@ -101,12 +101,16 @@ void Object3d::SkeltonUpdate(Camera* camera)
 		camera->GetWorldMatrix().m[3][2]
 	};
 	skeltonAnimationTime += 1.0f / 60.0f;
+	//skeltonAnimationTime = 0.5f;
 	skeltonAnimationTime = std::fmod(skeltonAnimationTime, model_->GetAnimation().duration);
 	ApplyAnimation(model_->GetSkelton(), model_->GetAnimation(), skeltonAnimationTime);
 
+	int i = 0;
 	for (Model::Joint& joint : model_->GetSkelton().joints)
 	{
 		joint.localMatrix = MakeAffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+
+		i++;
 		if (joint.parent)
 		{
 			joint.skeltonSpaceMatrix = Multiply(joint.localMatrix, model_->GetSkelton().joints[*joint.parent].skeltonSpaceMatrix);
@@ -132,6 +136,9 @@ void Object3d::SkeltonUpdate(Camera* camera)
 		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceInverseTransposeMatrix =
 			Transpose(Inverse(model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix));
 	}
+
+	auto&& test = model_->GetSkinCluster();
+	(void)test;
 }
 
 void Object3d::Draw(ModelCommon* modelCommon)
@@ -276,8 +283,8 @@ Quaternion Object3d::CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion
 			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
 			return Slerp(keyframes[index].value, keyframes[nextIndex].value, t);
 		}
-		return (*keyframes.rbegin()).value;
 	}
+	return (*keyframes.rbegin()).value;
 
 }
 

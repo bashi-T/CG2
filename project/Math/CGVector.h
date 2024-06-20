@@ -2,6 +2,7 @@
 #include <assert.h>
 #include<cmath>
 #include<stdio.h>
+#include<limits>
 
 
 typedef struct Matrix4x4 {
@@ -101,6 +102,7 @@ struct QuaternionTransform
 	Quaternion rotate;
 	Vector3 translate;
 };
+constexpr double epsilon = std::numeric_limits<double>::epsilon();
 
 //Matrix2x2 Add(Matrix2x2 a, Matrix2x2 b) {
 //	Matrix2x2 add;

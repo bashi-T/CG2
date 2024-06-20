@@ -3,8 +3,8 @@
 Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
 {
 	Vector2 f;
-	f.x = t * a.x + (1.0f - t) * b.x;
-	f.y = t * a.y + (1.0f - t) * b.y;
+	f.x = t * b.x + (1.0f - t) * a.x;
+	f.y = t * b.y + (1.0f - t) * a.y;
 	return f;
 }
 
@@ -19,9 +19,9 @@ Vector2 Bezier(const Vector2& p0, const Vector2& p1, const Vector2& p2, float t)
 Vector3 Lerp(const Vector3& a, const Vector3& b, float t)
 {
 	Vector3 f;
-	f.x = t * a.x + (1.0f - t) * b.x;
-	f.y = t * a.y + (1.0f - t) * b.y;
-	f.z = t * a.z + (1.0f - t) * b.z;
+	f.x = t * b.x + (1.0f - t) * a.x;
+	f.y = t * b.y + (1.0f - t) * a.y;
+	f.z = t * b.z + (1.0f - t) * a.z;
 	return f;
 }
 
@@ -765,29 +765,50 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 		const Quaternion& q2 = { -q0.x,-q0.y,-q0.z,-q0.w };
 		dot = -dot;
 
-		float theta = std::acos(dot);
+		if (dot >= 1.0f - epsilon|| dot <= 1.0f + epsilon)
+		{
+			result.x = t * q1.x + (1.0f - t) * q2.x;
+			result.y = t * q1.y + (1.0f - t) * q2.y;
+			result.z = t * q1.z + (1.0f - t) * q2.z;
+			result.w = t * q1.w + (1.0f - t) * q2.w;
+			return result;
+		}
+		else
+		{
+			float theta = std::acos(dot);
 
-		float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
-		float scale1 = std::sin(t * theta) / std::sin(theta);
+			float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
+			float scale1 = std::sin(t * theta) / std::sin(theta);
 
-		result.x = scale0 * q2.x + scale1 * q1.x;
-		result.y = scale0 * q2.y + scale1 * q1.y;
-		result.z = scale0 * q2.z + scale1 * q1.z;
-		result.w = scale0 * q2.w + scale1 * q1.w;
-		return result;
+			result.x = scale0 * q2.x + scale1 * q1.x;
+			result.y = scale0 * q2.y + scale1 * q1.y;
+			result.z = scale0 * q2.z + scale1 * q1.z;
+			result.w = scale0 * q2.w + scale1 * q1.w;
+			return result;
+		}
 	}
 	else
 	{
-		float theta = std::acos(dot);
+		if (dot >= 1.0f - epsilon || dot <= 1.0f + epsilon)
+		{
+			result.x = t * q1.x + (1.0f - t) * q0.x;
+			result.y = t * q1.y + (1.0f - t) * q0.y;
+			result.z = t * q1.z + (1.0f - t) * q0.z;
+			result.w = t * q1.w + (1.0f - t) * q0.w;
+			return result;
+		}else
+		{
+			float theta = std::acos(dot);
 
-		float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
-		float scale1 = std::sin(t * theta) / std::sin(theta);
+			float scale0 = std::sin((1 - t) * theta) / std::sin(theta);
+			float scale1 = std::sin(t * theta) / std::sin(theta);
 
-		result.x = scale0 * q0.x + scale1 * q1.x;
-		result.y = scale0 * q0.y + scale1 * q1.y;
-		result.z = scale0 * q0.z + scale1 * q1.z;
-		result.w = scale0 * q0.w + scale1 * q1.w;
-		return result;
+			result.x = scale0 * q0.x + scale1 * q1.x;
+			result.y = scale0 * q0.y + scale1 * q1.y;
+			result.z = scale0 * q0.z + scale1 * q1.z;
+			result.w = scale0 * q0.w + scale1 * q1.w;
+			return result;
+		}
 	}
 }
 

@@ -9,9 +9,9 @@ void TitleScene::Init()
 	std::string textureFilePath[100] =//textureの左右が反転してる
 	{
 		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
+		"Resource/worldMap.png",
 		"Resource/monsterBall.png",
 		"Resource/white.png",
-		"Resource/worldMap.png",
 		"Resource/AnimatedCube/AnimatedCube_BaseColor.png",
 		"Resource/world.png",
 		"Resource/uvChecker.png",
@@ -24,7 +24,7 @@ void TitleScene::Init()
 	std::string objFilePath[100] =
 	{
 		"AnimatedCube/AnimatedCube.gltf",
-		"human/sneakWalk.gltf",
+		"human/walk.gltf",
 		"simpleSkin/simpleSkin.gltf",
 		"plane/plane.gltf",
 	};
@@ -62,6 +62,7 @@ void TitleScene::Init()
 	}
 	model->Memcpy();
 	//object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 1.0f });
+	object3d->SetRotate({ 0.0f, 3.3f, 0.0f });
 	objects3d.push_back(object3d);
 	//particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
 	//particles.push_back(particle);

@@ -350,7 +350,7 @@ Model::Animation Model::LoadAnimationFile(const std::string& directoryPath, cons
 			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
 			KeyFrameVector3 keyframe;
 			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
-			keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
+			keyframe.value = { keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z };
 			nodeAnimation.scale.keyframes.push_back(keyframe);
 		}
 	}
