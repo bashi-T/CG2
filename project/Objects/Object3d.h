@@ -35,6 +35,7 @@ public:
 	void SetRotate(const Vector3& rotate) { transformMatrix.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transformMatrix.translate = translate; }
 	void SetCamera(Camera* camera) { this->camera = camera; }
+	bool SetIsAnimation(bool isAnimation) { return this->isAnimation = isAnimation; }
 	const Vector3& GetScale()const { return transformMatrix.scale; }
 	const Vector3& GetRotate()const { return transformMatrix.rotate; }
 	const Vector3& GetTranslate()const { return transformMatrix.translate; }
@@ -91,5 +92,7 @@ private:
 	Matrix4x4 skeltonSpaceMatrix;
 
 	ComPtr<ID3D12Resource> directionalLightResource;
+
+	bool isAnimation = false;
 };
 

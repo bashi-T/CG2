@@ -100,7 +100,10 @@ void Object3d::SkeltonUpdate(Camera* camera)
 		camera->GetWorldMatrix().m[3][1],
 		camera->GetWorldMatrix().m[3][2]
 	};
-	skeltonAnimationTime += 1.0f / 60.0f;
+	if(isAnimation==true)
+	{
+		skeltonAnimationTime += 1.0f / 60.0f;
+	}
 	//skeltonAnimationTime = 0.5f;
 	skeltonAnimationTime = std::fmod(skeltonAnimationTime, model_->GetAnimation().duration);
 	ApplyAnimation(model_->GetSkelton(), model_->GetAnimation(), skeltonAnimationTime);

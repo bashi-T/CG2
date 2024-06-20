@@ -9,13 +9,13 @@ void TitleScene::Init()
 	std::string textureFilePath[100] =//textureの左右が反転してる
 	{
 		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
+		"Resource/ganban.png",
+		"Resource/white.png",
 		"Resource/worldMap.png",
 		"Resource/monsterBall.png",
-		"Resource/white.png",
 		"Resource/AnimatedCube/AnimatedCube_BaseColor.png",
 		"Resource/world.png",
 		"Resource/uvChecker.png",
-		"Resource/ganban.png",
 		"Resource/cursor.png",
 		"Resource/circle.png",
 		"Resource/particle.png",
@@ -24,7 +24,7 @@ void TitleScene::Init()
 	std::string objFilePath[100] =
 	{
 		"AnimatedCube/AnimatedCube.gltf",
-		"human/walk.gltf",
+		"human/sneakWalk.gltf",
 		"simpleSkin/simpleSkin.gltf",
 		"plane/plane.gltf",
 	};
@@ -74,15 +74,46 @@ void TitleScene::Init()
 
 void TitleScene::Update()
 {
+	XINPUT_STATE joyState;
 	for (Object3d* object3d : objects3d)
 	{
-		if (Input::GetInstance()->PushKey(DIK_D))
+		//if (Input::GetInstance()->PushKey(DIK_D))
+		//{
+		//	object3d->SetTranslate({ object3d->GetTranslate().x + 0.01f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
+		//}
+		//if (Input::GetInstance()->PushKey(DIK_A))
+		//{
+		//	object3d->SetTranslate({ object3d->GetTranslate().x - 0.01f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
+		//}
+		if (Input::GetInstance()->GetJoystickState(0, joyState))
 		{
-			object3d->SetTranslate({ object3d->GetTranslate().x + 0.01f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
+			object3d->SetTranslate({ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f) ,0.0f ,object3d->GetTranslate().z + (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) });
+			
 		}
-		if (Input::GetInstance()->PushKey(DIK_A))
+		if ((float)joyState.Gamepad.sThumbLX != 0.0f || (float)joyState.Gamepad.sThumbLY != 0.0f)
 		{
-			object3d->SetTranslate({ object3d->GetTranslate().x - 0.01f ,object3d->GetTranslate().y ,object3d->GetTranslate().z });
+			object3d->SetIsAnimation(true);
+		}
+		else
+		{
+			object3d->SetIsAnimation(false);
+		}
+
+		if ((float)joyState.Gamepad.sThumbLY > 0)
+		{
+			object3d->SetRotate({ 0.0f,0.0f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLY < 0)
+		{
+			object3d->SetRotate({ 0.0f,3.0f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLX > 0)
+		{
+			object3d->SetRotate({ 0.0f,1.5f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLX < 0)
+		{
+			object3d->SetRotate({ 0.0f,4.5f,0.0f });
 		}
 	}
 	//objects3d[0]->AnimationUpdate(Camera::GetInstance());

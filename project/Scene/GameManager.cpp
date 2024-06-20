@@ -47,8 +47,8 @@ int GameManager::Run()
 
 	object3dCommon->Initialize(dx12Common);
 	ModelManager::GetInstance()->Initialize(dx12Common);
-	camera->GetInstance()->SetRotate({0.0f,0.0f,0.0f});
-	camera->GetInstance()->SetTranslate({ 0.0f,0.0f,-10.0f });
+	camera->GetInstance()->SetRotate({0.26f,0.0f,0.0f});
+	camera->GetInstance()->SetTranslate({ 0.0f,7.0f,-20.0f });
 
 	object3dCommon->SetDefaultCamera(camera->GetInstance());
 	SPCommon->Initialize(dx12Common);
@@ -75,9 +75,9 @@ int GameManager::Run()
 		//	sceneArr_[currentSceneNo_]->Init();
 		//}
 		imgui->Update();
+		sceneArr_[currentSceneNo_]->Update();
 #ifdef _DEBUG
 		ImGui::Begin("sphereEdit");
-		sceneArr_[currentSceneNo_]->Update();
 
 		//ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
 			//ImGui::DragFloat3("object.translate", (float*)&object3d->GetTranslate(), 0.01f);
