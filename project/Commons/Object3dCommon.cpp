@@ -4,9 +4,16 @@ void Object3dCommon::Initialize(DX12Common* dxcommon)
 {
 	dx12Common_ = dxcommon;
 	ResetDXC();
-
+	//MakePSO(dx12Common_);
 	MakeSkeltonPSO(dx12Common_);
 
+}
+
+void Object3dCommon::InitializeSkeleton(DX12Common* dxcommon)
+{
+	dx12Common_ = dxcommon;
+	ResetDXC();
+	MakeSkeltonPSO(dx12Common_);
 }
 
 void Object3dCommon::ResetDXC()

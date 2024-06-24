@@ -14,6 +14,7 @@ class Object3dCommon
 {
 public:
 	void Initialize(DX12Common* dxcommon);
+	void InitializeSkeleton(DX12Common* dxcommon);
 	ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,

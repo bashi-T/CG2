@@ -18,6 +18,7 @@ class Object3d
 {
 public:
 	void Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager);
+	void InitializeSkeleton(Object3dCommon* object3dCommon, SRVManager* srvManager);
 	void Update(Camera* camera);
 	void SkeltonUpdate(Camera* camera);
 	void AnimationUpdate(Camera* camera);
@@ -94,5 +95,7 @@ private:
 	ComPtr<ID3D12Resource> directionalLightResource;
 
 	bool isAnimation = false;
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv, dsv;
 };
 

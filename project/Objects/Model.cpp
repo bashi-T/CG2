@@ -3,6 +3,7 @@
 void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
 {
 	this->modelCommon_ = modelCommon;
+	//modelCommon_->MakePSO(DX12Common::GetInstance());
 
 	modelData = LoadModelFile("Resource", objFilePath);
 	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData.vertices.size());
@@ -30,6 +31,7 @@ void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, s
 void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
 {
 	this->modelCommon_ = modelCommon;
+	//modelCommon_->MakePSO(DX12Common::GetInstance());
 
 	modelData = LoadModelFile("Resource", objFilePath);
 	animation = LoadAnimationFile("Resource", objFilePath);
@@ -60,6 +62,7 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 {
 	this->modelCommon_ = modelCommon;
 	this->srvManager_ = srvManager;
+	//modelCommon_->MakeSkeltonPSO(DX12Common::GetInstance());
 
 	modelData = LoadModelFile("Resource", objFilePath);
 	animation = LoadAnimationFile("Resource", objFilePath);
