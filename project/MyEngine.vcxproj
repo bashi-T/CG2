@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="GameObject\Player.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Math\CGVector.cpp" />
@@ -41,9 +42,11 @@
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Systems\WindowApp.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="GameObject\Whale.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="GameObject\Player.h" />
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Objects\Particle.h" />
@@ -73,6 +76,7 @@
     <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="Systems\WindowApp.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="GameObject\Whale.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Object3d.VS.hlsl">

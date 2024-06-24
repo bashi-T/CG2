@@ -25,10 +25,10 @@ void ModelManager::Initialize(DX12Common* dxCommon)
 
 void ModelManager::LoadModel(const std::string& filePath, const std::string& TextureFilePath)
 {
-	if (models.contains(filePath))
-	{
-		return;
-	}
+	//if (models.contains(filePath))
+	//{
+	//	return;
+	//}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
 	model->ModelInitialize(modelCommon_, filePath, TextureFilePath);
@@ -37,10 +37,10 @@ void ModelManager::LoadModel(const std::string& filePath, const std::string& Tex
 
 void ModelManager::LoadAnimationModel(const std::string& filePath, const std::string& TextureFilePath)
 {
-	if (models.contains(filePath))
-	{
-		return;
-	}
+	//if (models.contains(filePath))
+	//{
+	//	return;
+	//}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
 	model->AnimationInitialize(modelCommon_, filePath, TextureFilePath);
@@ -49,10 +49,10 @@ void ModelManager::LoadAnimationModel(const std::string& filePath, const std::st
 
 void ModelManager::LoadSkeltonAnimation(const std::string& filePath, const std::string& TextureFilePath, SRVManager* srvManager)
 {
-	if (models.contains(filePath))
-	{
-		return;
-	}
+	//if (models.contains(filePath))
+	//{
+	//	return;
+	//}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();
 	model->SkeltonInitialize(modelCommon_, filePath, TextureFilePath,srvManager);

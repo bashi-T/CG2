@@ -71,7 +71,10 @@ void Object3d::AnimationUpdate(Camera* camera)
 		camera->GetWorldMatrix().m[3][2]
 	};
 
-	animationTime += 1.0f / 60.0f;
+	if (isAnimation == true)
+	{
+		animationTime += 1.0f / 60.0f;
+	}
 	animationTime = std::fmod(animationTime, model_->GetAnimation().duration);
 	Model::NodeAnimation& rootNodeAnimation = model_->GetAnimation().nodeAnimations[model_->GetModelData()->rootNode.name];
 	Vector3 translate = CalculatevalueV(rootNodeAnimation.translate.keyframes, animationTime);

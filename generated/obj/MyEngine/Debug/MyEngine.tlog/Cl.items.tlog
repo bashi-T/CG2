@@ -1,8 +1,5 @@
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Camera\Camera.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Camera.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\EnemyBullet.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\EnemyBullet.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\Enemy.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Enemy.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\Player.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Player.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\PlayerBullet.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\PlayerBullet.obj
+C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameObject\Player.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Player.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\GameManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\GameManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\GameScene.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\GameScene.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Math\CGVector.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\CGVector.obj
@@ -32,3 +29,4 @@ C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Commons\SpriteC
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Managers\TextureManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\TextureManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Systems\WindowApp.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\WindowApp.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\TitleScene.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\TitleScene.obj
+C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameObject\Whale.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Whale.obj

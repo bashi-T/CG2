@@ -3,6 +3,8 @@
 #include"SceneManager.h"
 #include"Sprites/Sprite.h"
 #include"Commons/SpriteCommon.h"
+#include"GameObject/Player.h"
+#include"GameObject/Whale.h"
 
 class GameScene:public SceneManager
 {
@@ -16,6 +18,7 @@ private:
 	//SpriteCommon* SPCommon;
 	//SRVManager* srvManager;
 	std::vector<Sprite*> sprites;
-
+	Player* player_;
+	Whale* whale_;
 };
 

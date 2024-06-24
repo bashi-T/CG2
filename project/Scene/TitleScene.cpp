@@ -138,8 +138,9 @@ void TitleScene::Draw()
 	//	object3d->Draw(Object3dCommon::GetInstance(), ModelManager::GetInstance()->GetModelCommon());
 	//}
 	//objects3d[1]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
-	objects3d[0]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
 	//objects3d[3]->Draw(ModelManager::GetInstance()->GetModelCommon());
+
+	//objects3d[0]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
 	//for (Particle* particle : particles)
 	//{
 	//	particle->Draw();
