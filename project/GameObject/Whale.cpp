@@ -20,7 +20,7 @@ void Whale::Initialize()
 void Whale::Update()
 {
 	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	if (Input::GetInstance()->GetJoystickState(0, joyState) && !joyState.Gamepad.bRightTrigger)
 	{
 		//whaleSpeed = { (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f) ,0.0f,(float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) };
 	}

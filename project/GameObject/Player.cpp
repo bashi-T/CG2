@@ -21,7 +21,7 @@ void Player::Initialize()
 void Player::Update()
 {
 	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState)&& !joyState.Gamepad.bLeftTrigger)
+	if (Input::GetInstance()->GetJoystickState(0, joyState) && !joyState.Gamepad.bLeftTrigger)
 	{
 		object3d->SetTranslate(
 			{ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f),
