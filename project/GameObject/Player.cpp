@@ -21,12 +21,16 @@ void Player::Initialize()
 void Player::Update()
 {
 	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState) && !joyState.Gamepad.bLeftTrigger)
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
 	{
-		object3d->SetTranslate(
-			{ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f),
-			0.0f, object3d->GetTranslate().z + (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) });
-
+		if(joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+		{
+		}else
+		{
+			object3d->SetTranslate(
+				{ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f),
+				0.0f, object3d->GetTranslate().z + (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) });
+		}
 	}
 	if ((float)joyState.Gamepad.sThumbLX != 0.0f || (float)joyState.Gamepad.sThumbLY != 0.0f)
 	{
@@ -54,13 +58,26 @@ void Player::Update()
 		object3d->SetRotate({ 0.0f,4.5f,0.0f });
 	}
 
-	if (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)
+	if (joyState.Gamepad.bRightTrigger)
 	{
 		isShot = true;
 	}
 	else
 	{
 		isShot = false;
+	}
+	if (isShot)
+	{
+		object3d->SetTranslate(
+			{ object3d->GetTranslate().x,
+			1.0f, object3d->GetTranslate().z});
+	}
+	else
+	{
+		object3d->SetTranslate(
+			{ object3d->GetTranslate().x,
+			0.0f, object3d->GetTranslate().z });
+
 	}
 
 	object3d->SkeltonUpdate(Camera::GetInstance());

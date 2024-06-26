@@ -22,45 +22,71 @@ void Whale::Update()
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState))
 	{
-		//whaleSpeed = { (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f) ,0.0f,(float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) };
-	}
-	if ((float)joyState.Gamepad.sThumbLX != 0.0f && !joyState.Gamepad.bRightTrigger)
-	{
-		whaleSpeed.x = (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f);
-		accSpeed.x += 0.01f;
-		if (accSpeed.x >= 1.0f)
-		{
-			accSpeed.x = 1.0f;
-		}
-	}
-	else
-	{
-		accSpeed.x -= 0.01f;
-		if (accSpeed.x <= 0.0f)
-		{
-			accSpeed.x = 0.0f;
-		}
-	}
 
-	if ((float)joyState.Gamepad.sThumbLY != 0.0f && !joyState.Gamepad.bRightTrigger)
-	{
-		whaleSpeed.z = (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f);
-		accSpeed.z += 0.01f;
-		if (accSpeed.z >= 1.0f)
+		if ((float)joyState.Gamepad.sThumbLX != 0.0f)
 		{
-			accSpeed.z = 1.0f;
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			{
+				accSpeed.x -= 0.01f;
+				if (accSpeed.x <= 0.0f)
+				{
+					accSpeed.x = 0.0f;
+				}
+			}
+			else
+			{
+				whaleSpeed.x = (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f);
+				accSpeed.x += 0.01f;
+				if (accSpeed.x >= 1.0f)
+				{
+					accSpeed.x = 1.0f;
+				}
+			}
+		}
+		else
+		{
+			accSpeed.x -= 0.01f;
+			if (accSpeed.x <= 0.0f)
+			{
+				accSpeed.x = 0.0f;
+			}
+		}
+
+		if ((float)joyState.Gamepad.sThumbLY != 0.0f)
+		{
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			{
+				accSpeed.z -= 0.01f;
+				if (accSpeed.z <= 0.0f)
+				{
+					accSpeed.z = 0.0f;
+				}
+			}
+			else
+			{
+				whaleSpeed.z = (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f);
+				accSpeed.z += 0.01f;
+				if (accSpeed.z >= 1.0f)
+				{
+					accSpeed.z = 1.0f;
+				}
+			}
+		}
+		else
+		{
+			accSpeed.z -= 0.01f;
+			if (accSpeed.z <= 0.0f)
+			{
+				accSpeed.z = 0.0f;
+			}
 		}
 	}
-	else
-	{
-		accSpeed.z -= 0.01f;
-		if (accSpeed.z <= 0.0f)
-		{
-			accSpeed.z = 0.0f;
-		}
-	}
-	object3d->SetTranslate({object3d->GetTranslate().x + (whaleSpeed.x * accSpeed.x),
-	0.0f, object3d->GetTranslate().z + (whaleSpeed.z * accSpeed.z)});
+	nowWhaleSpeed = { (nowWhaleSpeed.x + whaleSpeed.x) * accSpeed.x,0.0f, (nowWhaleSpeed.z + whaleSpeed.z) * accSpeed.z };
+	nowWhaleSpeed.x = max(nowWhaleSpeed.x, -0.1f);
+	nowWhaleSpeed.x = min(nowWhaleSpeed.x, 0.1f);
+	nowWhaleSpeed.z = max(nowWhaleSpeed.z, -0.1f);
+	nowWhaleSpeed.z = min(nowWhaleSpeed.z, 0.1f);
+	object3d->SetTranslate(Add(object3d->GetTranslate(), nowWhaleSpeed));
 	object3d->SetIsAnimation(false);
 	object3d->AnimationUpdate(Camera::GetInstance());
 	ImGui::Begin("whale");

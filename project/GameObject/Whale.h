@@ -16,6 +16,7 @@ private:
 	const std::string whaleModel = "AnimatedCube/AnimatedCube.gltf";
 	const std::string whaleSkin = "Resource/AnimatedCube/AnimatedCube_BaseColor.png";
 	Vector3 whaleSpeed = { 0.0f,0.0f,0.0f };
+	Vector3 nowWhaleSpeed = { 0.0f,0.0f,0.0f };
 	Vector3 accSpeed = { 0.0f,0.0f,0.0f };
 };
 
