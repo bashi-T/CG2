@@ -13,7 +13,10 @@ public:
 
 private:
 	Object3d* object3d;
+	std::vector<Object3d*> bullets;
 	const std::string playerModel = "human/walk.gltf";
 	const std::string playerSkin = "Resource/ganban.png";
+
+	bool isShot = false;
 };
 

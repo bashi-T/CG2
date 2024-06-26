@@ -53,6 +53,16 @@ void Player::Update()
 	{
 		object3d->SetRotate({ 0.0f,4.5f,0.0f });
 	}
+
+	if (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)
+	{
+		isShot = true;
+	}
+	else
+	{
+		isShot = false;
+	}
+
 	object3d->SkeltonUpdate(Camera::GetInstance());
 }
 
