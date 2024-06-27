@@ -32,19 +32,19 @@ void TitleScene::Init()
 		if (i == 0)
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[i]);
+			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[j]);
 			object3d->SetModel(objFilePath[i]);
 		}
 		else if (i == 1 || i == 2)
 		{
 			object3d->InitializeSkeleton(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i], SRVManager::GetInstance());
+			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[j], SRVManager::GetInstance());
 			object3d->SetModel(objFilePath[i]);
 		}
 		else
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i]);
+			ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[j]);
 			object3d->SetModel(objFilePath[i]);
 		}
 		//object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
@@ -72,7 +72,7 @@ void TitleScene::Init()
 
 void TitleScene::Update()
 {
-	XINPUT_STATE joyState;
+	//XINPUT_STATE joyState;
 	for (Object3d* object3d : objects3d)
 	{
 		object3d->SetIsAnimation(true);
