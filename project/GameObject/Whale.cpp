@@ -81,11 +81,7 @@ void Whale::Update()
 			}
 		}
 	}
-	nowWhaleSpeed = { (nowWhaleSpeed.x + whaleSpeed.x) * accSpeed.x,0.0f, (nowWhaleSpeed.z + whaleSpeed.z) * accSpeed.z };
-	nowWhaleSpeed.x = max(nowWhaleSpeed.x, -0.1f);
-	nowWhaleSpeed.x = min(nowWhaleSpeed.x, 0.1f);
-	nowWhaleSpeed.z = max(nowWhaleSpeed.z, -0.1f);
-	nowWhaleSpeed.z = min(nowWhaleSpeed.z, 0.1f);
+	nowWhaleSpeed = { (whaleSpeed.x * accSpeed.x) ,0.0f,(whaleSpeed.z * accSpeed.z) };
 	object3d->SetTranslate(Add(object3d->GetTranslate(), nowWhaleSpeed));
 	object3d->SetIsAnimation(false);
 	object3d->AnimationUpdate(Camera::GetInstance());
