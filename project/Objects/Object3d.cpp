@@ -38,8 +38,8 @@ void Object3d::InitializeSkeleton(Object3dCommon* object3dCommon, SRVManager* sr
 	this->object3dCommon_ = object3dCommon;
 	this->srvManager = srvManager;
 
-	object3dCommon_->InitializeSkeleton(DX12Common::GetInstance());
-	object3dCommon_->SetDefaultCamera(camera->GetInstance());
+	//object3dCommon_->InitializeSkeleton(DX12Common::GetInstance());
+	//object3dCommon_->SetDefaultCamera(camera->GetInstance());
 	transformationMatrixResource = CreateBufferResource(object3dCommon_, sizeof(TransformationMatrix));
 	directionalLightResource = CreateBufferResource(object3dCommon_, sizeof(DirectionalLight));
 	this->camera = object3dCommon_->GetDefaultCamera();
