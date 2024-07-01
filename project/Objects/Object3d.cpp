@@ -199,10 +199,10 @@ void Object3d::Draw(ModelCommon* modelCommon)
 	this->modelCommon_ = modelCommon;
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetPipelineState(object3dCommon_->GetGraphicsPipelineState().Get());
+		SetPipelineState(object3dCommon_->GetGraphicsPipelineStates(0).Get());
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootSignature(object3dCommon_->GetRootSignature().Get());
+		SetGraphicsRootSignature(object3dCommon_->GetRootSignatures(0).Get());
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -233,10 +233,10 @@ void Object3d::SkeltonDraw(ModelCommon* modelCommon)
 	this->modelCommon_ = modelCommon;
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetPipelineState(object3dCommon_->GetGraphicsPipelineState().Get());
+		SetPipelineState(object3dCommon_->GetGraphicsPipelineStates(1).Get());
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootSignature(object3dCommon_->GetRootSignature().Get());
+		SetGraphicsRootSignature(object3dCommon_->GetRootSignatures(1).Get());
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

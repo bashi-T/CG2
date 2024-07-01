@@ -261,28 +261,6 @@ Model::ModelData Model::LoadModelFile(const std::string& directryPath, const std
 	return modelData;
 }
 
-//Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
-//{
-//	MaterialData materialData;
-//	std::string line;
-//
-//	std::ifstream file(directoryPath + "/" + filename);
-//	assert(file.is_open());
-//
-//	while (std::getline(file, line)) {
-//		std::string identifier;
-//		std::stringstream s(line);
-//		s >> identifier;
-//
-//		if (identifier == "map_Kd") {
-//			std::string textureFilename;
-//			s >> textureFilename;
-//			materialData.textureFilePath = directoryPath + "/" + textureFilename;
-//		}
-//	}
-//	return materialData;
-//}
-
 void Model::MakeBufferView()
 {
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
