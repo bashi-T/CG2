@@ -19,7 +19,6 @@ void GameScene::Init()
 	//	"Resource/uvChecker.png",
 	//	"Resource/cursor.png"
 	//};
-
 	//for (uint32_t i = 0; i < 9; i++)
 	//{
 	//	Sprite* sprite = new Sprite();
@@ -31,8 +30,10 @@ void GameScene::Init()
 	//}
 	player_ = new Player;
 	whale_ = new Whale;
+	enemy_ = new Enemy;
 	player_->Initialize();
 	whale_->Initialize();
+	enemy_->Initialize();
 }
 
 void GameScene::Update()
@@ -47,6 +48,7 @@ void GameScene::Update()
 	}
 	player_->Update();
 	whale_->Update();
+	enemy_->Update();
 }
 
 void GameScene::Draw()
@@ -57,6 +59,7 @@ void GameScene::Draw()
 	//}
 	player_->Draw();
 	whale_->Draw();
+	enemy_->Draw();
 }
 
 void GameScene::Finalize()
@@ -67,4 +70,5 @@ void GameScene::Finalize()
 	}
 	delete player_;
 	delete whale_;
+	delete enemy_;
 }

@@ -5,6 +5,7 @@
 #include"Commons/SpriteCommon.h"
 #include"GameObject/Player.h"
 #include"GameObject/Whale.h"
+#include"GameObject/Enemy.h"
 
 class GameScene:public SceneManager
 {
@@ -20,5 +21,7 @@ private:
 	std::vector<Sprite*> sprites;
 	Player* player_;
 	Whale* whale_;
+	Enemy* enemy_;
+	Object3d* object3d;
 };
 

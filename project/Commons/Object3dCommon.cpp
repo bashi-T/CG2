@@ -5,8 +5,8 @@ void Object3dCommon::Initialize(DX12Common* dxcommon)
 	dx12Common_ = dxcommon;
 	ResetDXC();
 
+	MakePSO(dx12Common_);
 	MakeSkeltonPSO(dx12Common_);
-
 }
 
 void Object3dCommon::ResetDXC()
@@ -121,7 +121,7 @@ void Object3dCommon::MakePSO(DX12Common* dxcommon)
 
 	hr = dxcommon->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
+		IID_PPV_ARGS(&rootSignatures[0]));
 
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -172,7 +172,7 @@ void Object3dCommon::MakePSO(DX12Common* dxcommon)
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature.Get();
+	graphicsPipelineStateDesc.pRootSignature = rootSignatures[0].Get();
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
 	graphicsPipelineStateDesc.VS = {
 		vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
@@ -192,7 +192,7 @@ void Object3dCommon::MakePSO(DX12Common* dxcommon)
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	hr = dxcommon->GetDevice().Get()->CreateGraphicsPipelineState(
-		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStates[0]));
 	assert(SUCCEEDED(hr));
 }
 
@@ -267,7 +267,7 @@ void Object3dCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 
 	hr = dxcommon->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
+		IID_PPV_ARGS(&rootSignatures[1]));
 
 	std::array<D3D12_INPUT_ELEMENT_DESC, 5> inputElementDescs{};
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -327,7 +327,7 @@ void Object3dCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-	graphicsPipelineStateDesc.pRootSignature = rootSignature.Get();
+	graphicsPipelineStateDesc.pRootSignature = rootSignatures[1].Get();
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
 	graphicsPipelineStateDesc.VS = {
 		vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
@@ -347,7 +347,7 @@ void Object3dCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	hr = dxcommon->GetDevice().Get()->CreateGraphicsPipelineState(
-		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStates[1]));
 	assert(SUCCEEDED(hr));
 }
 

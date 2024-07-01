@@ -26,8 +26,8 @@ public:
 	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
 	static Object3dCommon* GetInstance();
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
-	ComPtr<ID3D12PipelineState> GetGraphicsPipelineState() { return graphicsPipelineState; }
-	ComPtr<ID3D12RootSignature> GetRootSignature() { return rootSignature; }
+	ComPtr<ID3D12PipelineState> GetGraphicsPipelineStates(int t) { return graphicsPipelineStates[t]; }
+	ComPtr<ID3D12RootSignature> GetRootSignatures(int t) { return rootSignatures[t]; }
 	DX12Common* GetDx12Common() { return DX12Common::GetInstance(); }
 	Camera* GetDefaultCamera()const { return defaultCamera; }
 
@@ -45,8 +45,8 @@ private:
 	ComPtr<IDxcUtils> dxcUtils = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
 	ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
-	ComPtr<ID3D12RootSignature> rootSignature = nullptr;
-	ComPtr<ID3D12PipelineState> graphicsPipelineState = NULL;
+	std::array<ComPtr<ID3D12RootSignature>, 2> rootSignatures;
+	std::array < ComPtr<ID3D12PipelineState>, 2>  graphicsPipelineStates;
 	ComPtr<ID3DBlob> signatureBlob = nullptr;
 	ComPtr<ID3DBlob> errorBlob = nullptr;
 

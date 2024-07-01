@@ -77,7 +77,6 @@ void Player::Update()
 		object3d->SetTranslate(
 			{ object3d->GetTranslate().x,
 			0.0f, object3d->GetTranslate().z });
-
 	}
 
 	object3d->SkeltonUpdate(Camera::GetInstance());
