@@ -58,7 +58,16 @@ void Player::Update()
 		object3d->SetRotate({ 0.0f,4.5f,0.0f });
 	}
 
-	if (joyState.Gamepad.bRightTrigger)
+	if (Input::GetInstance()->PushKey(DIK_D))
+	{
+		object3d->SetTranslate({ object3d->GetTranslate().x + 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
+	}
+	if (Input::GetInstance()->PushKey(DIK_A))
+	{
+		object3d->SetTranslate({ object3d->GetTranslate().x - 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
+	}
+
+	if (/*joyState.Gamepad.bRightTrigger|| */Input::GetInstance()->PushKey(DIK_C))
 	{
 		isShot = true;
 	}
@@ -66,23 +75,44 @@ void Player::Update()
 	{
 		isShot = false;
 	}
-	if (isShot)
-	{
-		object3d->SetTranslate(
-			{ object3d->GetTranslate().x,
-			1.0f, object3d->GetTranslate().z});
-	}
-	else
-	{
-		object3d->SetTranslate(
-			{ object3d->GetTranslate().x,
-			0.0f, object3d->GetTranslate().z });
-	}
+	Shot();
 
 	object3d->SkeltonUpdate(Camera::GetInstance());
+	for (PlayerBullet* bullet : pBullets)
+	{
+			bullet->Update();
+
+	}
 }
 
 void Player::Draw()
 {
 	object3d->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+	for (PlayerBullet* bullet : pBullets)
+	{
+		bullet->Draw();
+	}
+}
+
+void Player::Shot()
+{
+	if (isShot == true)
+	{
+		shotInterval++;
+		if (shotInterval == 1)
+		{
+			PlayerBullet* newBullet = new PlayerBullet;
+			newBullet->Initialize(object3d->GetTranslate());
+			pBullets.push_back(newBullet);
+		}
+		if (shotInterval == 30)
+		{
+			shotInterval = 0;
+
+		}
+	}
+	else
+	{
+		shotInterval = 0;
+	}
 }

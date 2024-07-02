@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObject\EnemyBullet.cpp" />
+    <ClCompile Include="GameObject\PlayerBullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
@@ -46,6 +48,8 @@
     <ClCompile Include="GameObject\Whale.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameObject\EnemyBullet.h" />
+    <ClInclude Include="GameObject\PlayerBullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />

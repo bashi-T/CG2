@@ -20,11 +20,46 @@ void Enemy::Initialize()
 
 void Enemy::Update()
 {
-	object3d->SetIsAnimation(false);
+	eBullets.remove_if([](EnemyBullet* bullet)
+		{
+			if (bullet->IsDead())
+			{
+				delete bullet;
+				return true;
+			}
+			return false;
+		});
+
+	Shot();
 	object3d->Update(Camera::GetInstance());
+	for (EnemyBullet* bullet : eBullets)
+	{
+		bullet->Update();
+
+	}
 }
 
 void Enemy::Draw()
 {
 	object3d->Draw(ModelManager::GetInstance()->GetModelCommon());
+	for (EnemyBullet* bullet : eBullets)
+	{
+		bullet->Draw();
+	}
+}
+
+void Enemy::Shot()
+{
+	shotInterval++;
+	if (shotInterval == 1)
+	{
+		EnemyBullet* newBullet = new EnemyBullet;
+		newBullet->Initialize(object3d->GetTranslate());
+		eBullets.push_back(newBullet);
+	}
+	if (shotInterval == 60)
+	{
+		shotInterval = 0;
+
+	}
 }
