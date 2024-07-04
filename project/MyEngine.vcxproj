@@ -18,6 +18,7 @@
     <ClCompile Include="Objects\Praticle.cpp" />
     <ClCompile Include="Managers\SRVManager.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Objects\SkyBox.cpp" />
     <ClCompile Include="Systems\Debug.cpp" />
     <ClCompile Include="Commons\DX12Common.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Objects\Particle.h" />
     <ClInclude Include="Managers\SRVManager.h" />
     <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Objects\SkyBox.h" />
     <ClInclude Include="Systems\Debug.h" />
     <ClInclude Include="Commons\DX12Common.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />

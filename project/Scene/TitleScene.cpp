@@ -15,6 +15,7 @@ void TitleScene::Init()
 		"Resource/cursor.png",
 		"Resource/circle.png",
 		"Resource/particle.png",
+		"Resource/rostock_laage_airport_4k.dds",
 	};
 	TextureManager::GetInstance()->LoadTexture(textureFilePath[0]);
 	std::string objFilePath[100] =

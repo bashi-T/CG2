@@ -1,5 +1,6 @@
 #pragma once
 #include"DX12Common.h"
+#include "externals/DirectXTex/DirectXTex.h"
 
 class SRVManager
 {
@@ -28,7 +29,7 @@ public:
 	void CreateSRVforTexture2D(
 		uint32_t srvIndex,
 		ID3D12Resource* pResource,
-		DXGI_FORMAT Format,
+		const DirectX::TexMetadata& metadata,
 		UINT MipLevels);
 	void CreateSRVforStructuredBuffer(
 		uint32_t srvIndex,
