@@ -67,7 +67,7 @@ void Player::Update()
 		object3d->SetTranslate({ object3d->GetTranslate().x - 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
 	}
 
-	if (/*joyState.Gamepad.bRightTrigger|| */Input::GetInstance()->PushKey(DIK_C))
+	if (joyState.Gamepad.bRightTrigger || Input::GetInstance()->PushKey(DIK_C))
 	{
 		isShot = true;
 	}
@@ -81,7 +81,6 @@ void Player::Update()
 	for (PlayerBullet* bullet : pBullets)
 	{
 			bullet->Update();
-
 	}
 }
 
