@@ -15,7 +15,11 @@ void Player::Initialize()
 		vertex.normal.z = vertex.position.z;
 	}
 	model->Memcpy();
-
+	pCollision.center = object3d->GetTranslate();
+	pCollision.orientations[0] = { 1.0f,0.0f,0.0f };
+	pCollision.orientations[1] = { 0.0f,1.0f,0.0f };
+	pCollision.orientations[2] = { 0.0f,0.0f,1.0f };
+	pCollision.size = { 0.5f,1.0f,0.5f };
 }
 
 void Player::Update()
@@ -78,6 +82,7 @@ void Player::Update()
 	Shot();
 
 	object3d->SkeltonUpdate(Camera::GetInstance());
+	pCollision.center = object3d->GetTranslate();
 	for (PlayerBullet* bullet : pBullets)
 	{
 			bullet->Update();
@@ -114,4 +119,8 @@ void Player::Shot()
 	{
 		shotInterval = 0;
 	}
+}
+
+void Player::OnCollision()
+{
 }

@@ -12,14 +12,22 @@ public:
 	void Update();
 	void Draw();
 	void Shot();
+	void OnCollision();
+
+	const std::list<PlayerBullet*>& GetBullets()const { return pBullets; }
+	Vector3 GetTranslate() { return object3d->GetTranslate(); }
+	OBB GetCollision() { return pCollision; }
 
 private:
 	Object3d* object3d;
 	std::list<PlayerBullet*> pBullets;
 	const std::string playerModel = "human/walk.gltf";
 	const std::string playerSkin = "Resource/ganban.png";
+	OBB pCollision;
 
 	uint32_t shotInterval = 0;
 	bool isShot = false;
+	bool isDead = false;
+
 };
 

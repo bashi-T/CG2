@@ -63,3 +63,7 @@ void Enemy::Shot()
 
 	}
 }
+
+void Enemy::OnCollision()
+{
+}

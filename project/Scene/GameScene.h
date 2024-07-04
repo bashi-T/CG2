@@ -14,10 +14,9 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Finalize() override;
+
+	void CheckAllCollisions();
 private:
-	//Input* input;
-	//SpriteCommon* SPCommon;
-	//SRVManager* srvManager;
 	std::vector<Sprite*> sprites;
 	Player* player_;
 	Whale* whale_;

@@ -35,6 +35,11 @@ void PlayerBullet::Draw()
 	object3d->Draw(ModelManager::GetInstance()->GetModelCommon());
 }
 
+void PlayerBullet::OnCollision()
+{
+	isDead = true;
+}
+
 void PlayerBullet::SetTranslate(Vector3 translate)
 {
 	object3d->SetTranslate(translate);

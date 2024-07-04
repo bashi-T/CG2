@@ -22,8 +22,7 @@ void Whale::Update()
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState))
 	{
-
-		if ((float)joyState.Gamepad.sThumbLX != 0.0f)
+		if ((float)joyState.Gamepad.sThumbLX > 0.0f)
 		{
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
@@ -35,7 +34,6 @@ void Whale::Update()
 			}
 			else
 			{
-				whaleSpeed.x = (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f);
 				accSpeed.x += 0.01f;
 				if (accSpeed.x >= 1.0f)
 				{
@@ -43,16 +41,42 @@ void Whale::Update()
 				}
 			}
 		}
+		else if((float)joyState.Gamepad.sThumbLX < 0.0f)
+		{
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			{
+				accSpeed.x += 0.01f;
+				if (accSpeed.x >= 0.0f)
+				{
+					accSpeed.x = 0.0f;
+				}
+			}
+			else
+			{
+				accSpeed.x -= 0.01f;
+				if (accSpeed.x <= -1.0f)
+				{
+					accSpeed.x = -1.0f;
+				}
+			}
+		}
 		else
 		{
-			accSpeed.x -= 0.01f;
-			if (accSpeed.x <= 0.0f)
+			if (accSpeed.x > 0.0f)
+			{
+				accSpeed.x -= 0.01f;
+			}
+			else if (accSpeed.x < 0.0f)
+			{
+				accSpeed.x += 0.01f;
+			}
+			else if (accSpeed.x == 0.0f)
 			{
 				accSpeed.x = 0.0f;
 			}
 		}
 
-		if ((float)joyState.Gamepad.sThumbLY != 0.0f)
+		if ((float)joyState.Gamepad.sThumbLY > 0.0f)
 		{
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
@@ -64,22 +88,48 @@ void Whale::Update()
 			}
 			else
 			{
-				whaleSpeed.z = (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f);
-				accSpeed.z += 0.01f;
-				if (accSpeed.z >= 1.0f)
+				accSpeed.x += 0.01f;
+				if (accSpeed.x >= 1.0f)
 				{
-					accSpeed.z = 1.0f;
+					accSpeed.x = 1.0f;
+				}
+			}
+		}
+		else if ((float)joyState.Gamepad.sThumbLY < 0.0f)
+		{
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			{
+				accSpeed.z += 0.01f;
+				if (accSpeed.z >= 0.0f)
+				{
+					accSpeed.z = 0.0f;
+				}
+			}
+			else
+			{
+				accSpeed.z -= 0.01f;
+				if (accSpeed.z <= -1.0f)
+				{
+					accSpeed.z = -1.0f;
 				}
 			}
 		}
 		else
 		{
-			accSpeed.z -= 0.01f;
-			if (accSpeed.z <= 0.0f)
+			if (accSpeed.z > 0.0f)
+			{
+				accSpeed.z -= 0.01f;
+			}
+			else if (accSpeed.z < 0.0f)
+			{
+				accSpeed.z += 0.01f;
+			}
+			else if (accSpeed.z == 0.0f)
 			{
 				accSpeed.z = 0.0f;
 			}
 		}
+		
 	}
 	nowWhaleSpeed = { (whaleSpeed.x * accSpeed.x) ,0.0f,(whaleSpeed.z * accSpeed.z) };
 	object3d->SetTranslate(Add(object3d->GetTranslate(), nowWhaleSpeed));
@@ -93,4 +143,8 @@ void Whale::Update()
 void Whale::Draw()
 {
 	object3d->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+}
+
+void Whale::Oncollision()
+{
 }

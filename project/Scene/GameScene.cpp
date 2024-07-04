@@ -72,3 +72,34 @@ void GameScene::Finalize()
 	delete whale_;
 	delete enemy_;
 }
+
+void GameScene::CheckAllCollisions()
+{
+	Vector3 posA, posB;
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+#pragma region 自機と敵弾の当たり判定
+	posA = player_->GetTranslate();
+	for (EnemyBullet* bullet : enemyBullets)
+	{
+		posB = bullet->GetTranslate();
+
+		if()
+	}
+#pragma endregion
+#pragma region 自機と敵の当たり判定
+
+#pragma endregion
+#pragma region 敵と自弾の当たり判定
+
+#pragma endregion
+#pragma region 自弾と敵弾の当たり判定
+
+#pragma endregion
+#pragma region 敵とクジラの当たり判定
+
+#pragma endregion
+#pragma region 敵弾とクジラの当たり判定
+
+#pragma endregion
+}

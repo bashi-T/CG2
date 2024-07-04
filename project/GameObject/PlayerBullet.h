@@ -10,11 +10,13 @@ public:
 	void Initialize(Vector3 firstPos);
 	void Update();
 	void Draw();
+	void OnCollision();
 	bool IsDead()const { return isDead; }
 
 	void SetTranslate(Vector3 translate);
 
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
+	OBB GetCollision() { return pbCollision; }
 
 private:
 	Object3d* object3d;
@@ -25,5 +27,7 @@ private:
 	static const int32_t kLifeTime = 60 * 2;
 	int32_t deathTimer = kLifeTime;
 	bool isDead = false;
+	OBB pbCollision;
+
 };
 

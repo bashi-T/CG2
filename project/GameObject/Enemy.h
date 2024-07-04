@@ -12,6 +12,11 @@ public:
 	void Update();
 	void Draw();
 	void Shot();
+	void OnCollision();
+
+	const std::list<EnemyBullet*>& GetBullets()const { return eBullets; }
+	Vector3 GetTranslate() { return object3d->GetTranslate(); }
+	OBB GetCollision() { return eCollision; }
 
 private:
 	Object3d* object3d;
@@ -21,5 +26,8 @@ private:
 
 	uint32_t shotInterval = 0;
 	bool isShot = false;
+	bool isDead = false;
+	OBB eCollision;
+
 };
 

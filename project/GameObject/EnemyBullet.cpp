@@ -35,6 +35,10 @@ void EnemyBullet::Draw()
 	object3d->Draw(ModelManager::GetInstance()->GetModelCommon());
 }
 
+void EnemyBullet::OnCollision()
+{
+}
+
 void EnemyBullet::SetTranslate(Vector3 translate)
 {
 }
