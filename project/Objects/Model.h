@@ -135,7 +135,6 @@ public:
 	void Memcpy();
 	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
 	ModelData LoadModelFile(const std::string& directryPath, const std::string& filename);
-	//MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	void MakeBufferView();
 	Node ReadNode(aiNode* node);
 	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);

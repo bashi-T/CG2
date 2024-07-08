@@ -1,14 +1,11 @@
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Camera\Camera.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Camera.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\EnemyBullet.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\EnemyBullet.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\Enemy.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Enemy.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\Player.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Player.obj
-C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\GameEntity\PlayerBullet.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\PlayerBullet.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\GameManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\GameManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\GameScene.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\GameScene.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Math\CGVector.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\CGVector.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Objects\Praticle.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Praticle.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Managers\SRVManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SRVManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\SceneManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SceneManager.obj
+C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Objects\SkyBox.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SkyBox.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Systems\Debug.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Debug.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Commons\DX12Common.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\DX12Common.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\externals\imgui\imgui.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\imgui.obj

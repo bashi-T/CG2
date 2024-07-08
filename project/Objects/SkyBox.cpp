@@ -1,19 +1,29 @@
 #include "SkyBox.h"
 
-void SkyBox::Initialize(const std::string& filename)
+void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 {
+	this->skyBoxCommon = skyBoxCommon;
 	projectionMatrix = MakePerspectiveFovMatrix(0.65f, float(WinAPP::clientWidth_) / float(WinAPP::clientHeight_), 0.1f, 100.0f);
 	vertexResource = CreateBufferResource(sizeof(VertexData) * 6);
 	colorResource = CreateBufferResource(sizeof(Material));
 	indexResource = CreateBufferResource(sizeof(uint32_t) * 6);
 	cameraResource = CreateBufferResource(sizeof(CameraTransform));
 
+	vertexResource = CreateBufferResource(sizeof(VertexData) * 6);
+	indexResource = CreateBufferResource(sizeof(uint32_t) * 6);
+	materialResource = CreateBufferResource(sizeof(Material));
+	transformationMatrixResource = CreateBufferResource(sizeof(TransformationMatrix));
+
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-	colorResource->Map(0, nullptr, reinterpret_cast<void**>(&colorData));
+	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
 	InputData();
+	materialData->material.textureFilePath = textureFilePath;
+	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
+
 }
 
 void SkyBox::Update()
@@ -26,7 +36,33 @@ void SkyBox::Draw()
 
 ComPtr<ID3D12Resource> SkyBox::CreateBufferResource(size_t sizeInBytes)
 {
-	return ComPtr<ID3D12Resource>();
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	D3D12_RESOURCE_DESC ResourceDesc{};
+
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+
+	ResourceDesc.Width = sizeInBytes * 3;
+
+	ResourceDesc.Height = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	ComPtr<ID3D12Resource> Resource = nullptr;
+
+	hr = skyBoxCommon->GetDx12Common()->GetDevice().Get()->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&ResourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&Resource));
+	assert(SUCCEEDED(hr));
+	return Resource;
 }
 
 void SkyBox::MakeBufferView()
@@ -36,35 +72,35 @@ void SkyBox::MakeBufferView()
 void SkyBox::InputData()
 {
 	//右面 [0,1,2][2,1,3]
-	vertexData[0].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertexData[1].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertexData[2].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertexData[3].position = { 1.0f,-1.0f,-1.0f,1.0f };
+	vertexData[0].position = { +1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[1].position = { +1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[2].position = { +1.0f,-1.0f,+1.0f,+1.0f };
+	vertexData[3].position = { +1.0f,-1.0f,-1.0f,+1.0f };
 	//左面　[4,5,6][6,5,7]
-	vertexData[4].position = { -1.0f,1.0f,-1.0f,1.0f };
-	vertexData[5].position = { -1.0f,1.0f,1.0f,1.0f };
-	vertexData[6].position = { -1.0f,-1.0f,-1.0f,1.0f };
-	vertexData[7].position = { -1.0f,-1.0f,1.0f,1.0f };
+	vertexData[4].position = { -1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[5].position = { -1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[6].position = { -1.0f,-1.0f,-1.0f,+1.0f };
+	vertexData[7].position = { -1.0f,-1.0f,+1.0f,+1.0f };
 	//前面 [8,9,10][10,9,11]
-	vertexData[8].position = { -1.0f,1.0f,1.0f,1.0f };
-	vertexData[9].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertexData[10].position = { -1.0f,-1.0f,1.0f,1.0f };
-	vertexData[11].position = { 1.0f,-1.0f,1.0f,1.0f };
+	vertexData[ 8].position = { -1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[ 9].position = { +1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[10].position = { -1.0f,-1.0f,+1.0f,+1.0f };
+	vertexData[11].position = { +1.0f,-1.0f,+1.0f,+1.0f };
 	//後面 [12,13,14][14,13,15]
-	vertexData[12].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertexData[13].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertexData[14].position = { 1.0f,1.0f,-1.0f,1.0f };
-	vertexData[15].position = { 1.0f,1.0f,-1.0f,1.0f };
+	vertexData[12].position = { +1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[13].position = { -1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[14].position = { +1.0f,-1.0f,-1.0f,+1.0f };
+	vertexData[15].position = { -1.0f,-1.0f,-1.0f,+1.0f };
 	//上面 [16,17,18][18,17,19]
-	vertexData[16].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertexData[17].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertexData[18].position = { 1.0f,1.0f,1.0f,1.0f };
-	vertexData[19].position = { 1.0f,1.0f,1.0f,1.0f };
+	vertexData[16].position = { -1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[17].position = { +1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[18].position = { -1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[19].position = { +1.0f,+1.0f,-1.0f,+1.0f };
 	//下面 [20,21,22][22,21,23]
-	vertexData[20].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertexData[21].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertexData[22].position = { 1.0f,-1.0f,1.0f,1.0f };
-	vertexData[23].position = { 1.0f,-1.0f,1.0f,1.0f };
+	vertexData[20].position = { +1.0f,-1.0f,+1.0f,+1.0f };
+	vertexData[21].position = { -1.0f,-1.0f,+1.0f,+1.0f };
+	vertexData[22].position = { +1.0f,-1.0f,-1.0f,+1.0f };
+	vertexData[23].position = { -1.0f,-1.0f,-1.0f,+1.0f };
 }
 
 void SkyBox::MakeShaderResourceViewInstance()

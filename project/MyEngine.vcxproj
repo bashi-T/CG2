@@ -19,6 +19,7 @@
     <ClCompile Include="Managers\SRVManager.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Objects\SkyBox.cpp" />
+    <ClCompile Include="Commons\SkyBoxCommon.cpp" />
     <ClCompile Include="Systems\Debug.cpp" />
     <ClCompile Include="Commons\DX12Common.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="Managers\SRVManager.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Objects\SkyBox.h" />
+    <ClInclude Include="Commons\SkyBoxCommon.h" />
     <ClInclude Include="Systems\Debug.h" />
     <ClInclude Include="Commons\DX12Common.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
@@ -103,6 +105,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="HLSL\SkyBox.VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\SkyBox.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -115,6 +125,7 @@
   <ItemGroup>
     <None Include="HLSL\Object3d.hlsli" />
     <None Include="HLSL\Particle.hlsli" />
+    <None Include="HLSL\SkyBox.hlsli" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

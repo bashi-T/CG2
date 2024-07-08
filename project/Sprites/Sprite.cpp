@@ -6,10 +6,9 @@ Sprite::~Sprite()
 {
 }
 
-void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommon,SRVManager* srvManager, std::string textureFilePath)
+void Sprite::Initialize(SpriteCommon* spriteCommon,std::string textureFilePath)
 {
 	this->spriteCommon_ = spriteCommon;
-	this->srvManager = srvManager;
 	vertexResource = CreateBufferResource(spriteCommon_, sizeof(VertexData) * 6);
 	indexResource = CreateBufferResource(spriteCommon_, sizeof(uint32_t) * 6);
 	materialResource = CreateBufferResource(spriteCommon_, sizeof(Material));
@@ -44,9 +43,9 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 
 
 	LeftTop = { 0.0f, 0.0f, 0.0f, 1.0f };
-	RightTop = { float(width) / 3, 0.0f, 0.0f, 1.0f };
-	RightBottom = { float(width) / 3, float(height) / 3, 0.0f, 1.0f };
-	LeftBottom = { 0.0f, float(height) / 3, 0.0f, 1.0f };
+	RightTop = { float(WinAPP::clientWidth_) / 3, 0.0f, 0.0f, 1.0f };
+	RightBottom = { float(WinAPP::clientWidth_) / 3, float(WinAPP::clientHeight_) / 3, 0.0f, 1.0f };
+	LeftBottom = { 0.0f, float(WinAPP::clientHeight_) / 3, 0.0f, 1.0f };
 	Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	coordLeftTop = { 0.0f, 0.0f };
 	coordRightTop = { 1.0f, 0.0f };
@@ -60,13 +59,13 @@ void Sprite::Initialize(int32_t width, int32_t height, SpriteCommon* spriteCommo
 	//AdjestTextureSize();
 }
 
-void Sprite::Update(int32_t width, int32_t height)
+void Sprite::Update()
 {
 
 	cameraMatrix =
 		MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	projectionMatrix =
-		MakeOrthographicMatrix(0.0f, 0.0f, float(width), float(height), 0.0f, 100.0f);
+		MakeOrthographicMatrix(0.0f, 0.0f, float(WinAPP::clientWidth_), float(WinAPP::clientHeight_), 0.0f, 100.0f);
 	transformMatrix.translate = { position.x,position.y,0.0f };
 	transformMatrix.rotate = { 0.0f,0.0f,rotation };
 	transformMatrix.scale = { size.x,size.y,1.0f };
@@ -185,12 +184,12 @@ void Sprite::Draw(SpriteCommon* spriteCommon)
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
 		spriteCommon_->GetDx12Common()->
-		GetRtvHandles(srvManager->GetBackBufferIndex());
+		GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = spriteCommon_->GetDx12Common()->GetDsvHandle();
 	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
 		OMSetRenderTargets(1, &rtv, false, &dsv);
 
-	srvManager->SetGraphicsRootDescriptorTable(
+	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);
 
 	spriteCommon_->GetDx12Common()->GetCommandList().Get()->

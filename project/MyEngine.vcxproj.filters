@@ -108,6 +108,9 @@
     <ClCompile Include="Objects\SkyBox.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Commons\SkyBoxCommon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Systems\WindowApp.h">
@@ -203,6 +206,9 @@
     <ClInclude Include="Objects\SkyBox.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Commons\SkyBoxCommon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Object3d.VS.hlsl" />
@@ -210,6 +216,8 @@
     <FxCompile Include="HLSL\Particle.PS.hlsl" />
     <FxCompile Include="HLSL\Particle.VS.hlsl" />
     <FxCompile Include="HLSL\SkinningObject3d.VS.hlsl" />
+    <FxCompile Include="HLSL\SkyBox.VS.hlsl" />
+    <FxCompile Include="HLSL\SkyBox.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -217,5 +225,6 @@
   <ItemGroup>
     <None Include="HLSL\Object3d.hlsli" />
     <None Include="HLSL\Particle.hlsli" />
+    <None Include="HLSL\SkyBox.hlsli" />
   </ItemGroup>
 </Project>

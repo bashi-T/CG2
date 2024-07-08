@@ -11,7 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include"Sprites/Sprite.h"
-#include"Commons/SpriteCommon.h"
+#include"Commons/SkyBoxCommon.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -20,7 +20,7 @@
 class SkyBox
 {
 public:
-	void Initialize(const std::string& filename);
+	void Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath);
 	void Update();
 	void Draw();
 
@@ -46,9 +46,14 @@ public:
 		MaterialData material;
 	};
 	ModelData modelData;
+
 	struct Material
 	{
 		Vector4 color;
+		int32_t enableLighting;
+		float padding[3];
+		Matrix4x4 uvTransform;
+		MaterialData material;
 	};
 	struct TransformationMatrix
 	{
@@ -70,12 +75,17 @@ public:
 	CameraTransform* cameraData = nullptr;
 
 private:
+	SkyBoxCommon* skyBoxCommon;
+	HRESULT hr = NULL;
+
 	VertexData* vertexData = nullptr;
-	MaterialData materialData;
-	Material* colorData = nullptr;
+	Material* materialData = nullptr;
+	ComPtr<ID3D12Resource> materialResource = nullptr;
+
 	TransformationMatrix* transformationMatrixData = nullptr;
 	ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+
 	ComPtr<ID3D12Resource> indexResource = nullptr;
 	ComPtr<ID3D12Resource> colorResource;
 	ComPtr<ID3D12Resource> cameraResource;
