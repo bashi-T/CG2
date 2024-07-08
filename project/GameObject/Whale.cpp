@@ -88,10 +88,10 @@ void Whale::Update()
 			}
 			else
 			{
-				accSpeed.x += 0.01f;
-				if (accSpeed.x >= 1.0f)
+				accSpeed.z += 0.01f;
+				if (accSpeed.z >= 1.0f)
 				{
-					accSpeed.x = 1.0f;
+					accSpeed.z = 1.0f;
 				}
 			}
 		}

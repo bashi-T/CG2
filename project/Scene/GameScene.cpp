@@ -30,10 +30,15 @@ void GameScene::Init()
 	//}
 	player_ = new Player;
 	whale_ = new Whale;
-	enemy_ = new Enemy;
 	player_->Initialize();
 	whale_->Initialize();
-	enemy_->Initialize();
+	for (uint32_t i = 0; i < 9; i++)
+	{
+		Enemy* enemy_ = new Enemy;
+		enemy_ = new Enemy;
+		enemy_->Initialize();
+		enemys_.push_back(enemy_);
+	};
 }
 
 void GameScene::Update()
@@ -48,7 +53,10 @@ void GameScene::Update()
 	}
 	player_->Update();
 	whale_->Update();
-	enemy_->Update();
+	for(Enemy*enemy_:enemys_)
+	{
+		enemy_->Update();
+	}
 }
 
 void GameScene::Draw()
@@ -59,7 +67,10 @@ void GameScene::Draw()
 	//}
 	player_->Draw();
 	whale_->Draw();
-	enemy_->Draw();
+	for (Enemy* enemy_ : enemys_)
+	{
+		enemy_->Draw();
+	}
 }
 
 void GameScene::Finalize()
@@ -70,22 +81,27 @@ void GameScene::Finalize()
 	}
 	delete player_;
 	delete whale_;
-	delete enemy_;
+	for (Enemy* enemy_ : enemys_)
+	{
+		delete enemy_;
+	}
 }
 
 void GameScene::CheckAllCollisions()
 {
 	Vector3 posA, posB;
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-#pragma region 自機と敵弾の当たり判定
-	posA = player_->GetTranslate();
-	for (EnemyBullet* bullet : enemyBullets)
+	for (Enemy* enemy_ : enemys_)
 	{
-		posB = bullet->GetTranslate();
+		const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+#pragma region 自機と敵弾の当たり判定
+		posA = player_->GetTranslate();
+		for (EnemyBullet* bullet : enemyBullets)
+		{
+			posB = bullet->GetTranslate();
 
-		if()
-	}
+			//if()
+		}
 #pragma endregion
 #pragma region 自機と敵の当たり判定
 
@@ -102,4 +118,6 @@ void GameScene::CheckAllCollisions()
 #pragma region 敵弾とクジラの当たり判定
 
 #pragma endregion
+	}
 }
+
