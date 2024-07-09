@@ -20,7 +20,7 @@ private:
 	std::vector<Sprite*> sprites;
 	Player* player_;
 	Whale* whale_;
-	std::vector<Enemy*> enemys_;
+	std::list<Enemy*> enemys_;
 	Object3d* object3d;
 };
 

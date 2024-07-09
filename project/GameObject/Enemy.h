@@ -13,6 +13,8 @@ public:
 	void Draw();
 	void Shot();
 	void OnCollision();
+	void SetTranslate(Vector3 translate);
+	bool IsDead()const { return isDead; }
 
 	const std::list<EnemyBullet*>& GetBullets()const { return eBullets; }
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }

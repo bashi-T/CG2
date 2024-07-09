@@ -27,7 +27,7 @@ private:
 
 	uint32_t shotInterval = 0;
 	bool isShot = false;
-	bool isDead = false;
+	bool isHit = false;
 
 };
 

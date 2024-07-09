@@ -35,7 +35,6 @@ void Enemy::Update()
 	for (EnemyBullet* bullet : eBullets)
 	{
 		bullet->Update();
-
 	}
 }
 
@@ -60,10 +59,15 @@ void Enemy::Shot()
 	if (shotInterval == 60)
 	{
 		shotInterval = 0;
-
 	}
 }
 
 void Enemy::OnCollision()
 {
+	isDead = true;
+}
+
+void Enemy::SetTranslate(Vector3 translate)
+{
+	object3d->SetTranslate(translate);
 }

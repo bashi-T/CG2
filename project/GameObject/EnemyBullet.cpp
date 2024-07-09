@@ -37,6 +37,7 @@ void EnemyBullet::Draw()
 
 void EnemyBullet::OnCollision()
 {
+	isDead = true;
 }
 
 void EnemyBullet::SetTranslate(Vector3 translate)

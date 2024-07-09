@@ -24,6 +24,15 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	pBullets.remove_if([](PlayerBullet* bullet)
+		{
+			if (bullet->IsDead())
+			{
+				delete bullet;
+				return true;
+			}
+			return false;
+		});
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState))
 	{
@@ -123,4 +132,5 @@ void Player::Shot()
 
 void Player::OnCollision()
 {
+	isHit = true;
 }

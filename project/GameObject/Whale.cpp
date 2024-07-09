@@ -145,6 +145,7 @@ void Whale::Draw()
 	object3d->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
 }
 
-void Whale::Oncollision()
+void Whale::OnCollision()
 {
+	life--;
 }

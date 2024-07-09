@@ -11,7 +11,7 @@ public:
 	void Update();
 	void Draw();
 
-	void Oncollision();
+	void OnCollision();
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return wCollision; }
 
@@ -25,6 +25,6 @@ private:
 
 	bool isDead = false;
 	OBB wCollision;
-
+	uint32_t life = 4;
 };
 
