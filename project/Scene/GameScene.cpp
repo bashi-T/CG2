@@ -23,7 +23,7 @@ void GameScene::Init()
 	for (uint32_t i = 0; i < 9; i++)
 	{
 		Sprite* sprite = new Sprite();
-		sprite->Initialize(WinAPP::clientWidth_, WinAPP::clientHeight_, SpriteCommon::GetInstance(), SRVManager::GetInstance(), textureFilePath[i+1]);
+		sprite->Initialize( SpriteCommon::GetInstance(), textureFilePath[i+1]);
 		posSprite.x = 100.0f * i;
 		posSprite.y = 50.0f * i;
 		sprite->SetPositoin(posSprite);
@@ -36,7 +36,7 @@ void GameScene::Update()
 {
 	for (Sprite* sprite : sprites)
 	{
-		sprite->Update(WinAPP::clientWidth_, WinAPP::clientHeight_);
+		sprite->Update();
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{

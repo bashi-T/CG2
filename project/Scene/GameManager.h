@@ -10,10 +10,12 @@
 #include"Input/Input.h"
 #include"Commons/SpriteCommon.h"
 #include"Commons/Object3dCommon.h"
+#include"Commons/SkyBoxCommon.h"
 #include"Managers/ModelManager.h"
 #include"Objects/model.h"
 #include"Managers/TextureManager.h"
 #include"Managers/SRVManager.h"
+#include"Objects/SkyBox.h"
 
 class GameManager
 {
@@ -32,6 +34,8 @@ private:
 	ModelCommon* modelCommon;
 	Camera* camera;
 	Particle* particle;
+	SkyBoxCommon* skyboxCommon;
+	SkyBox* skybox;
 
 public: 
 	GameManager();

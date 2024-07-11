@@ -13,7 +13,7 @@ class SkyBoxCommon
 {
 public:
 	~SkyBoxCommon();
-	void Initialize(DX12Common* dxcommon);
+	void Initialize();
 	//void Update();
 	//void Draw(int32_t width, int32_t height);
 	ComPtr<IDxcBlob> CompileShader(

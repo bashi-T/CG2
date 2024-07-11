@@ -22,7 +22,7 @@ class SkyBox
 public:
 	void Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath);
 	void Update();
-	void Draw();
+	void Draw(SkyBoxCommon*skyboxCommon);
 
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	void MakeBufferView();
@@ -75,7 +75,7 @@ public:
 	CameraTransform* cameraData = nullptr;
 
 private:
-	SkyBoxCommon* skyBoxCommon;
+	SkyBoxCommon* skyBoxCommon_;
 	HRESULT hr = NULL;
 
 	VertexData* vertexData = nullptr;
@@ -86,10 +86,15 @@ private:
 	ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
+	uint32_t* indexData = nullptr;
 	ComPtr<ID3D12Resource> indexResource = nullptr;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
+
 	ComPtr<ID3D12Resource> colorResource;
 	ComPtr<ID3D12Resource> cameraResource;
+	ComPtr<ID3D12Resource> transformationMatrixResource;
 	Matrix4x4 projectionMatrix;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv, dsv;
 
 };
 

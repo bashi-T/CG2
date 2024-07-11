@@ -9,7 +9,6 @@ void SpriteCommon::Initialize(DX12Common* dxCommon)
 	ResetDXC();
 
 	MakePSO(dx12Common_);
-
 }
 
 void SpriteCommon::ResetDXC()

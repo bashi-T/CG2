@@ -53,6 +53,8 @@ int GameManager::Run()
 	object3dCommon->SetDefaultCamera(camera->GetInstance());
 	SPCommon->Initialize(dx12Common);
 
+	skyboxCommon->Initialize();
+	skybox->Initialize(skyboxCommon, "rostock_laage_airport_4k.dds");
 	sceneArr_[TITLE]->Init();
 	sceneArr_[INGAME]->Init();
 
@@ -75,6 +77,7 @@ int GameManager::Run()
 		//	sceneArr_[currentSceneNo_]->Init();
 		//}
 		imgui->Update();
+		skybox->Update();
 		sceneArr_[currentSceneNo_]->Update();
 #ifdef _DEBUG
 		ImGui::Begin("camera");
@@ -97,6 +100,7 @@ int GameManager::Run()
 			break;
 		}
 		srvManager->PreDraw();
+		skybox->Draw(skyboxCommon);
 		sceneArr_[currentSceneNo_]->Draw();
 
 		imgui->Endframe(dx12Common->GetCommandList().Get());

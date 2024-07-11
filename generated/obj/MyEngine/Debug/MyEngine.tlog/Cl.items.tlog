@@ -6,6 +6,7 @@ C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Objects\Praticl
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Managers\SRVManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SRVManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Scene\SceneManager.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SceneManager.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Objects\SkyBox.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SkyBox.obj
+C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Commons\SkyBoxCommon.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\SkyBoxCommon.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Systems\Debug.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\Debug.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\Commons\DX12Common.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\DX12Common.obj
 C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\project\externals\imgui\imgui.cpp;C:\Users\k022g\Lessons\2023A\CG2\MyEngine0628\newProject\generated\obj\MyEngine\Debug\imgui.obj

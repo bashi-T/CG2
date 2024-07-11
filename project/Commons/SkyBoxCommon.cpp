@@ -4,9 +4,8 @@ SkyBoxCommon::~SkyBoxCommon()
 {
 }
 
-void SkyBoxCommon::Initialize(DX12Common* dxcommon)
+void SkyBoxCommon::Initialize()
 {
-	dx12Common_ = dxcommon;
 	ResetDXC();
 
 	MakePSO();
