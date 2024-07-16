@@ -16,11 +16,9 @@ void TextureManager::Finalize()
 	instance = nullptr;
 }
 
-void TextureManager::Initialize(DX12Common* dxcommon, SRVManager* srvManager_)
+void TextureManager::Initialize()
 {
 	textureDatas.reserve(SRVManager::kMaxSRVCount);
-	this->dx12Common_ = dxcommon;
-	this->srvManager = srvManager_;
 }
 
 void TextureManager::LoadTexture(const std::string& filePath)
@@ -30,7 +28,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		return;
 	}
 
-	assert(srvManager->CheckNumTexture(textureDatas.size()));
+	assert(SRVManager::GetInstance()->CheckNumTexture(textureDatas.size()));
 	DirectX::ScratchImage image{};//テクスチャファイルをプログラムで扱えるように
 	std::wstring filePathW = debug_->ConvertString(filePath);
 	HRESULT hr;
@@ -72,14 +70,14 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.resource = CreateTextureResource(textureData.metadata);
 	UploadTextureData(textureData.resource.Get(), mipImages, textureData.metadata);
 
-	textureData.srvIndex = srvManager->Allocate();
-	textureData.srvHandleCPU = srvManager->
+	textureData.srvIndex = SRVManager::GetInstance()->Allocate();
+	textureData.srvHandleCPU = SRVManager::GetInstance()->
 		GetCPUDescriptorHandle(textureData.srvIndex);
 
-	textureData.srvHandleGPU = srvManager->
+	textureData.srvHandleGPU = SRVManager::GetInstance()->
 		GetGPUDescriptorHandle(textureData.srvIndex);
 
-	srvManager->CreateSRVforTexture2D(
+	SRVManager::GetInstance()->CreateSRVforTexture2D(
 		textureData.srvIndex,
 		textureData.resource.Get(),
 		textureData.metadata,
@@ -95,7 +93,7 @@ void TextureManager::LoadTextureforSRV(const std::string& filePath)
 		return;
 	}
 
-	assert(srvManager->CheckNumTexture(textureDatas.size()));
+	assert(SRVManager::GetInstance()->CheckNumTexture(textureDatas.size()));
 
 	DirectX::ScratchImage image{};//テクスチャファイルをプログラムで扱えるように
 	std::wstring filePathW = debug_->ConvertString(filePath);
@@ -121,14 +119,14 @@ void TextureManager::LoadTextureforSRV(const std::string& filePath)
 	textureData.resource = CreateTextureResource(textureData.metadata);
 	UploadTextureData(textureData.resource.Get(), mipImages, textureData.metadata);
 
-	textureData.srvIndex = srvManager->Allocate();
-	textureData.srvHandleCPU = srvManager->
+	textureData.srvIndex = SRVManager::GetInstance()->Allocate();
+	textureData.srvHandleCPU = SRVManager::GetInstance()->
 		GetCPUDescriptorHandle(textureData.srvIndex);
 
-	textureData.srvHandleGPU = srvManager->
+	textureData.srvHandleGPU = SRVManager::GetInstance()->
 		GetGPUDescriptorHandle(textureData.srvIndex);
 
-	srvManager->CreateSRVforStructuredBuffer(
+	SRVManager::GetInstance()->CreateSRVforStructuredBuffer(
 		textureData.srvIndex,
 		textureData.resource.Get(),
 		textureData.metadata.format,
@@ -154,7 +152,7 @@ ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(const DirectX::TexM
 	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
 	ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = dx12Common_->GetDevice()->CreateCommittedResource(
+	HRESULT hr = DX12Common::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
@@ -170,14 +168,14 @@ ComPtr<ID3D12Resource> TextureManager::CreateTextureResource(const DirectX::TexM
 uint32_t TextureManager::GetSrvIndex(const std::string& filePath)
 {
 	TextureData& textureData = textureDatas[filePath];
-	assert(srvManager->CheckNumTexture(textureData.srvIndex));
+	assert(SRVManager::GetInstance()->CheckNumTexture(textureData.srvIndex));
 	return textureData.srvIndex;
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSRVHandleGPU(const std::string& filePath)
 {
 	TextureData& textureData = textureDatas[filePath];
-	assert(srvManager->CheckNumTexture(textureData.srvIndex));
+	assert(SRVManager::GetInstance()->CheckNumTexture(textureData.srvIndex));
 	return textureData.srvHandleGPU;
 }
 
@@ -203,6 +201,6 @@ void TextureManager::UploadTextureData(
 const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filePath)
 {
 	TextureData& textureData = textureDatas[filePath];
-	assert(srvManager->CheckNumTexture(textureData.srvIndex));
+	assert(SRVManager::GetInstance()->CheckNumTexture(textureData.srvIndex));
 	return textureData.metadata;
 }

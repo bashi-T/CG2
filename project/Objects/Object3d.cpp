@@ -189,9 +189,6 @@ void Object3d::SkeltonUpdate(Camera* camera)
 		model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceInverseTransposeMatrix =
 			Transpose(Inverse(model_->GetSkinCluster().mappedPalette[jointIndex].skeltonSpaceMatrix));
 	}
-
-	//auto&& test = model_->GetSkinCluster();
-	//(void)test;
 }
 
 void Object3d::Draw(ModelCommon* modelCommon)

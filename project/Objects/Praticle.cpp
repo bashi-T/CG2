@@ -3,10 +3,9 @@
 Particle::~Particle() {
 }
 
-void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvManager, Object3dCommon* object3dCommon)
+void Particle::Initialize(const std::string& textureFilePath, Object3dCommon* object3dCommon)
 {
 	this->object3dCommon_ = object3dCommon;
-	this->srvManager = srvManager;
 	this->camera_ = object3dCommon_->GetDefaultCamera();
 	kNumMaxInstance = 10;
 	kSubdivision = 16;
@@ -285,13 +284,13 @@ void Particle::Draw()
 	DX12Common::GetInstance()->GetCommandList().Get()->
 		SetGraphicsRootDescriptorTable(
 			1, instancingSrvHandleGPU);
-	srvManager->SetGraphicsRootDescriptorTable(
+	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData.textureIndex);
 	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		3, cameraResource->GetGPUVirtualAddress());
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-		DX12Common::GetInstance()->GetRtvHandles(srvManager->GetBackBufferIndex());
+		DX12Common::GetInstance()->GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
 	DX12Common::GetInstance()->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
 
@@ -419,10 +418,10 @@ void Particle::InputData(
 
 void Particle::MakeShaderResourceViewInstance()
 {
-	uint32_t index = srvManager->Allocate();
-	instancingSrvHandleCPU = srvManager->GetCPUDescriptorHandle(index);
-	instancingSrvHandleGPU = srvManager->GetGPUDescriptorHandle(index);
-	srvManager->CreateSRVforStructuredBuffer(index, instancingResource.Get(), kNumInstance, sizeof(ParticleForGPU));
+	uint32_t index = SRVManager::GetInstance()->Allocate();
+	instancingSrvHandleCPU = SRVManager::GetInstance()->GetCPUDescriptorHandle(index);
+	instancingSrvHandleGPU = SRVManager::GetInstance()->GetGPUDescriptorHandle(index);
+	SRVManager::GetInstance()->CreateSRVforStructuredBuffer(index, instancingResource.Get(), kNumInstance, sizeof(ParticleForGPU));
 }
 
 Particle::Particles Particle::MakeNewParticle(std::mt19937& randomEngine)

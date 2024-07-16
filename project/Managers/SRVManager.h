@@ -5,7 +5,6 @@
 class SRVManager
 {
 private:
-	DX12Common* dxCommon_ = nullptr;
 	uint32_t descriptorSize;
 	ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	uint32_t useIndex = 0;
@@ -22,7 +21,7 @@ private:
 public:
 	static const uint32_t kMaxSRVCount;
 	static const uint32_t kSRVIndexTop;
-	void Initialize(DX12Common* dxCommon);
+	void Initialize();
 	uint32_t Allocate();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(uint32_t index);
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);

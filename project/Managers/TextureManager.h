@@ -20,7 +20,7 @@ public:
 
 	static TextureManager* GetInstance();
 	void Finalize();
-	void Initialize(DX12Common* dxcommon, SRVManager* srvManager_);
+	void Initialize();
 	void LoadTexture(const std::string& filePath);
 	void LoadTextureforSRV(const std::string& filePath);
 	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
@@ -41,9 +41,7 @@ private:
 	~TextureManager() = default;
 	TextureManager(TextureManager&) = delete;
 	TextureManager& operator=(TextureManager&) = delete;
-	DX12Common* dx12Common_;
 	Debug* debug_;
-	SRVManager* srvManager = nullptr;
 	std::unordered_map<std::string, TextureData>textureDatas;
 
 };

@@ -1,4 +1,5 @@
 #include "SkyBox.h"
+#include "Commons/SkyBoxCommon.h"
 
 void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 {
@@ -8,17 +9,19 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 	colorResource = CreateBufferResource(sizeof(Material));
 	indexResource = CreateBufferResource(sizeof(uint32_t) * 6);
 	cameraResource = CreateBufferResource(sizeof(CameraTransform));
-
-	vertexResource = CreateBufferResource(sizeof(VertexData) * 6);
-	indexResource = CreateBufferResource(sizeof(uint32_t) * 6);
 	materialResource = CreateBufferResource(sizeof(Material));
 	transformationMatrixResource = CreateBufferResource(sizeof(TransformationMatrix));
 
 	MakeBufferView();
 
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+	transformationMatrixResource->Map(
+		0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
+	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+
 	InputData();
 	materialData->material.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
@@ -27,7 +30,7 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 		SRVManager::GetInstance()->GetBackBufferIndex());
 
 	dsv = skyBoxCommon_->GetDx12Common()->GetDsvHandle();
-
+	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 }
 
 void SkyBox::Update()
@@ -38,23 +41,21 @@ void SkyBox::Draw(SkyBoxCommon* skyboxCommon)
 {
 	this->skyBoxCommon_ = skyboxCommon;
 
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetPipelineState(skyBoxCommon_->GetGraphicsPipelineState().Get());
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootSignature(skyBoxCommon_->GetRootSignature().Get());
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetPipelineState(skyBoxCommon_->GetGraphicsPipelineState().Get());
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetGraphicsRootSignature(skyBoxCommon_->GetRootSignature().Get());
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->IASetPrimitiveTopology(
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		IASetVertexBuffers(0, 1, &vertexBufferView);
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetIndexBuffer(&indexBufferView);
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootConstantBufferView(
-			0, materialResource->GetGPUVirtualAddress());
-	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-		SetGraphicsRootConstantBufferView(
-			1, transformationMatrixResource->GetGPUVirtualAddress());
+
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+		0, materialResource->GetGPUVirtualAddress());
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+		1, transformationMatrixResource->GetGPUVirtualAddress());
+	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+		4, cameraResource->GetGPUVirtualAddress());
 
 	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
 		OMSetRenderTargets(1, &rtv, false, &dsv);

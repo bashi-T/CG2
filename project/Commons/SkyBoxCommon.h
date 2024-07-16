@@ -2,6 +2,7 @@
 #include "Math/CGVector.h"
 #include "DX12Common.h"
 #include "Systems/MyImGui.h"
+#include"Camera/Camera.h"
 #include <cassert>
 #include <dxcapi.h>
 #include <fstream>

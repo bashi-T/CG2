@@ -28,6 +28,8 @@ int GameManager::Run()
 	modelCommon = new ModelCommon;
 	camera = new Camera();
 	particle = new Particle;
+	skyboxCommon = new SkyBoxCommon;
+	skybox = new SkyBox;
 	std::vector<Model*> models;
 	//bool useWorldMap = true;
 
@@ -35,7 +37,7 @@ int GameManager::Run()
 
 	winAPP->Initialize(WinAPP::clientWidth_, WinAPP::clientHeight_, L"GE3");
 	dx12Common->Initialize(WinAPP::clientWidth_, WinAPP::clientHeight_, winAPP);
-	srvManager->Initialize(dx12Common);
+	srvManager->Initialize();
 	input->Initialize(winAPP);
 	imgui->Initialize(
 		winAPP->GetHWND(),
@@ -43,18 +45,18 @@ int GameManager::Run()
 		dx12Common->GetSwapChainDesc(),
 		dx12Common->GetRtvDesc(),
 		srvManager->GetSrvDescriptorHeap().Get());
-	TextureManager::GetInstance()->Initialize(dx12Common, srvManager);
+	TextureManager::GetInstance()->Initialize();
 
-	object3dCommon->Initialize(dx12Common);
+	object3dCommon->Initialize();
 	ModelManager::GetInstance()->Initialize(dx12Common);
 	camera->GetInstance()->SetRotate({ 0.26f,0.0f,0.0f });
 	camera->GetInstance()->SetTranslate({ 0.0f,7.0f,-20.0f });
 
 	object3dCommon->SetDefaultCamera(camera->GetInstance());
-	SPCommon->Initialize(dx12Common);
+	SPCommon->Initialize();
 
 	skyboxCommon->Initialize();
-	skybox->Initialize(skyboxCommon, "rostock_laage_airport_4k.dds");
+	skybox->Initialize(skyboxCommon, "Resource/rostock_laage_airport_4k.dds");
 	sceneArr_[TITLE]->Init();
 	sceneArr_[INGAME]->Init();
 

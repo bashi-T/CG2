@@ -13,7 +13,7 @@
 class Object3dCommon
 {
 public:
-	void Initialize(DX12Common* dxcommon);
+	void Initialize();
 	ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,
@@ -21,8 +21,8 @@ public:
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
-	void MakePSO(DX12Common* dxcommon);
-	void MakeSkeltonPSO(DX12Common* dxcommon);
+	void MakePSO();
+	void MakeSkeltonPSO();
 	void SetDefaultCamera(Camera* camera) { this->defaultCamera = camera; }
 	static Object3dCommon* GetInstance();
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
@@ -33,10 +33,8 @@ public:
 
 private:
 	Debug* debug_;
-	WinAPP* sWinApp;
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
-	DX12Common* dx12Common_;
 	EulerTransform transformMatrix;
 	Camera* defaultCamera = nullptr;
 	ComPtr<ID3D12Resource> transformationMatrixResource;

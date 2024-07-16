@@ -17,6 +17,7 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxcompiler.lib")
 
+class SkyBoxCommon;
 class SkyBox
 {
 public:
