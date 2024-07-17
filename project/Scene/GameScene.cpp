@@ -36,9 +36,10 @@ void GameScene::Init()
 	{
 		Enemy* enemy_ = new Enemy;
 		enemy_ = new Enemy;
-		enemy_->Initialize();
+		enemy_->Initialize(player_,whale_);
 		enemys_.push_back(enemy_);
-		enemy_->SetTranslate({10.0f - 2.0f * i,0.0f,10.0f });
+		enemy_->SetTranslate({10.0f - 2.0f * i,0.0f,30.0f });
+		enemy_->SetEnemyVector(whale_->GetTranslate());
 	};
 }
 

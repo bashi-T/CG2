@@ -1,7 +1,9 @@
 #include "Enemy.h"
 
-void Enemy::Initialize()
+void Enemy::Initialize(Player* player, Whale* whale)
 {
+	player_ = player;
+	whale_ = whale;
 	object3d = new Object3d;
 	object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
 	ModelManager::GetInstance()->LoadModel(enemyModel, enemySkin);
@@ -16,6 +18,7 @@ void Enemy::Initialize()
 	}
 	model->Memcpy();
 	object3d->SetTranslate({ 0.0f,0.0f,10.0f });
+
 }
 
 void Enemy::Update()
@@ -31,6 +34,11 @@ void Enemy::Update()
 		});
 
 	Shot();
+	if (shotInterval == 1&&object3d->GetTranslate().z<whale_->GetTranslate().z)
+	{
+		SetEnemyVector(whale_->GetTranslate());
+	}
+	object3d->SetTranslate(Add(object3d->GetTranslate(), Multiply(0.05f, enemyVector)));
 	object3d->Update(Camera::GetInstance());
 	for (EnemyBullet* bullet : eBullets)
 	{
@@ -54,6 +62,7 @@ void Enemy::Shot()
 	{
 		EnemyBullet* newBullet = new EnemyBullet;
 		newBullet->Initialize(object3d->GetTranslate());
+		newBullet->SetEnemyBulletVector(player_->GetTranslate());
 		eBullets.push_back(newBullet);
 	}
 	if (shotInterval == 60)
@@ -70,4 +79,9 @@ void Enemy::OnCollision()
 void Enemy::SetTranslate(Vector3 translate)
 {
 	object3d->SetTranslate(translate);
+}
+
+void Enemy::SetEnemyVector(Vector3 position)
+{
+	enemyVector = Normalize(Subtract(position, object3d->GetTranslate()));
 }

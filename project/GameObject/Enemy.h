@@ -4,16 +4,19 @@
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
 #include"EnemyBullet.h"
+#include"Player.h"
+#include"Whale.h"
 
 class Enemy
 {
 public:
-	void Initialize();
+	void Initialize(Player*player, Whale* whale);
 	void Update();
 	void Draw();
 	void Shot();
 	void OnCollision();
 	void SetTranslate(Vector3 translate);
+	void SetEnemyVector(Vector3 translate);
 	bool IsDead()const { return isDead; }
 
 	const std::list<EnemyBullet*>& GetBullets()const { return eBullets; }
@@ -23,6 +26,8 @@ public:
 private:
 	Object3d* object3d;
 	std::list<EnemyBullet*> eBullets;
+	Player* player_;
+	Whale* whale_;
 	const std::string enemyModel = "plane/plane.gltf";
 	const std::string enemySkin = "Resource/uvChecker.png";
 
@@ -30,6 +35,6 @@ private:
 	bool isShot = false;
 	bool isDead = false;
 	OBB eCollision;
-
+	Vector3 enemyVector;
 };
 

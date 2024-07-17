@@ -26,7 +26,7 @@ void EnemyBullet::Update()
 	{
 		isDead = true;
 	}
-	object3d->SetTranslate(Add(object3d->GetTranslate(), bulletSpeed));
+	object3d->SetTranslate(Add(object3d->GetTranslate(), Multiply(2.0f, enemyBulletVector)));
 	object3d->AnimationUpdate(Camera::GetInstance());
 }
 
@@ -42,4 +42,10 @@ void EnemyBullet::OnCollision()
 
 void EnemyBullet::SetTranslate(Vector3 translate)
 {
+	object3d->SetTranslate(translate);
+}
+
+void EnemyBullet::SetEnemyBulletVector(Vector3 positoin)
+{
+	enemyBulletVector = Normalize(Subtract(positoin, object3d->GetTranslate()));
 }

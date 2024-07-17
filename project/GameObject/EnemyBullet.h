@@ -14,7 +14,7 @@ public:
 	bool IsDead()const { return isDead; }
 
 	void SetTranslate(Vector3 translate);
-
+	void SetEnemyBulletVector(Vector3 translate);
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return ebCollision; }
 
@@ -28,6 +28,7 @@ private:
 	int32_t deathTimer = kLifeTime;
 	bool isDead = false;
 	OBB ebCollision;
+	Vector3 enemyBulletVector;
 
 };
 
