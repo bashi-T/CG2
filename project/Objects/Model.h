@@ -32,10 +32,10 @@ public:
 	};
 	struct Node
 	{
-		Matrix4x4 localMatrix;
-		std::string name;
-		std::vector<Node> children;
-		QuaternionTransform qTransform;
+		Matrix4x4 localMatrix = {};
+		std::string name = 0;
+		std::vector<Node> children = {};
+		QuaternionTransform qTransform = {};
 	};
 	struct VertexWeightData
 	{
@@ -44,8 +44,8 @@ public:
 	};
 	struct JointWeightData
 	{
-		Matrix4x4 inverseBindPoseMatrix;
-		std::vector<VertexWeightData>vertexWeights;
+		Matrix4x4 inverseBindPoseMatrix = {};
+		std::vector<VertexWeightData>vertexWeights = {};
 	};
 	struct ModelData
 	{
@@ -57,18 +57,18 @@ public:
 	};
 	struct Joint
 	{
-		QuaternionTransform transform;
-		Matrix4x4 localMatrix;
-		Matrix4x4 skeltonSpaceMatrix;
-		Matrix4x4 worldMatrix;
+		QuaternionTransform transform = {};
+		Matrix4x4 localMatrix = {};
+		Matrix4x4 skeltonSpaceMatrix = {};
+		Matrix4x4 worldMatrix = {};
 		std::string name;
 		std::vector<int32_t>children;
-		int32_t index;
+		int32_t index=0;
 		std::optional<int32_t>parent;
 	};
 	struct Skelton
 	{
-		int32_t root;
+		int32_t root = 0;
 		std::map<std::string, int32_t>jointMap;
 		std::vector<Joint>joints;
 	};
@@ -99,8 +99,8 @@ public:
 	};
 	struct Animation
 	{
-		float duration;//アニメーション全体の尺
-		std::map<std::string, NodeAnimation>nodeAnimations;
+		float duration = 0.0f;//アニメーション全体の尺
+		std::map<std::string, NodeAnimation>nodeAnimations = {};
 	};
 	const uint32_t kNumMaxInfluence = 4;
 	struct VertexInfluence
@@ -118,12 +118,12 @@ public:
 	{
 		std::vector<Matrix4x4>inverseBindPoseMatrices;
 
-		Microsoft::WRL::ComPtr<ID3D12Resource>influenceResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>influenceResource = nullptr;
 		D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
 		std::span<VertexInfluence>mappedInfluence;
 
-		Microsoft::WRL::ComPtr<ID3D12Resource>paletteResource;
-		std::span<WellForGPU>mappedPalette;
+		Microsoft::WRL::ComPtr<ID3D12Resource>paletteResource = nullptr;
+		std::span<WellForGPU>mappedPalette = {};
 		std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE>paletteSrvHandle;
 	};
 
@@ -149,13 +149,13 @@ public:
 		const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>descriptorHeap,
 		uint32_t descriptorSize);
 
-	ModelData* GetModelData() { return &modelData; }
-	Animation& GetAnimation() { return animation; }
-	Skelton& GetSkelton() { return skelton; }
+	ModelData* GetModelData() { return &modelData_; }
+	Animation& GetAnimation() { return animation_; }
+	Skelton& GetSkelton() { return skelton_; }
 	const SkinCluster& GetSkinCluster() { return skinCluster; }
 private:
-	ModelData modelData;
-	ModelCommon* modelCommon_;
+	ModelData modelData_;
+	ModelCommon* modelCommon_ = nullptr;
 	SRVManager* srvManager_ = nullptr;
 	HRESULT hr = NULL;
 
@@ -170,9 +170,9 @@ private:
 	Material* materialData = nullptr;
 	ComPtr<ID3D12Resource> materialResource = nullptr;
 
-	Animation animation;
+	Animation animation_;
 
-	Skelton skelton;
+	Skelton skelton_;
 
 	SkinCluster skinCluster;
 	

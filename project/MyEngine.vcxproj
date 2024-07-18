@@ -180,7 +180,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8</AdditionalOptions>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Commons\;$(ProjectDir)Camera\;$(ProjectDir)Math\;$(ProjectDir)Managers\;$(ProjectDir)Systems\;$(ProjectDir)Sprites\;$(ProjectDir)Objects\;$(ProjectDir)Input\;$(ProjectDir)externals\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -208,7 +208,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8</AdditionalOptions>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Commons\;$(ProjectDir)Camera\;$(ProjectDir)Math\;$(ProjectDir)Managers\;$(ProjectDir)Systems\;$(ProjectDir)Sprites\;$(ProjectDir)Objects\;$(ProjectDir)Input\;$(ProjectDir)externals\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

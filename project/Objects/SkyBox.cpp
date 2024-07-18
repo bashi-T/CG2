@@ -26,10 +26,6 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 	materialData->material.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
-	//rtv = skyBoxCommon_->GetDx12Common()->GetRtvHandles(
-	//	SRVManager::GetInstance()->GetBackBufferIndex());
-
-	//dsv = skyBoxCommon_->GetDx12Common()->GetDsvHandle();
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 }
 
@@ -56,9 +52,6 @@ void SkyBox::Draw(SkyBoxCommon* skyboxCommon)
 		1, transformationMatrixResource->GetGPUVirtualAddress());
 	skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		4, cameraResource->GetGPUVirtualAddress());
-
-	//skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
-	//	OMSetRenderTargets(1, &rtv, false, &dsv);
 
 	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);

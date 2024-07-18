@@ -27,7 +27,7 @@ void ModelManager::LoadModel(const std::string& filePath, const std::string& Tex
 {
 	if (models.contains(filePath))
 	{
-		models.at(filePath);
+		(void)models.at(filePath);
 	}
 
 	std::unique_ptr<Model> model = std::make_unique<Model>();

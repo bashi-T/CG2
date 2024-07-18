@@ -40,11 +40,10 @@ public:
 
 private:
 	Debug* debug_;
-	WinAPP* sWinApp;
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
 	DX12Common* dx12Common_;
-	EulerTransform transformMatrix;
+	EulerTransform transformMatrix = {};
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	static inline SkyBoxCommon* instance;
 

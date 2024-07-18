@@ -35,8 +35,8 @@ public:
 	void SetScale(const Vector3& scale) { transformMatrix.scale = scale; }
 	void SetRotate(const Vector3& rotate) { transformMatrix.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transformMatrix.translate = translate; }
-	void SetCamera(Camera* camera) { this->camera = camera; }
-	bool SetIsAnimation(bool isAnimation) { return this->isAnimation = isAnimation; }
+	void SetCamera(Camera* camera) { this->camera_ = camera; }
+	bool SetIsAnimation(bool isAnimation) { return this->isAnimation_ = isAnimation; }
 	const Vector3& GetScale()const { return transformMatrix.scale; }
 	const Vector3& GetRotate()const { return transformMatrix.rotate; }
 	const Vector3& GetTranslate()const { return transformMatrix.translate; }
@@ -56,10 +56,10 @@ private:
 	Model* model_ = nullptr;
 	ModelCommon* modelCommon_ = nullptr;
 	SRVManager* srvManager = nullptr;
-	Camera* camera = nullptr;
-	
+	Camera* camera_ = nullptr;
+
 	//Model::Animation& animation;
-	float animationTime = 0.0f;
+	float animationTime_ = 0.0f;
 	float skeltonAnimationTime = 0.0f;
 
 	DirectionalLight* directionalLightData = nullptr;
@@ -74,28 +74,26 @@ private:
 
 	struct TransformationMatrix
 	{
-		Matrix4x4 WVP;
-		Matrix4x4 World;
-		Matrix4x4 WorldInverseTranspose;
+		Matrix4x4 WVP = {};
+		Matrix4x4 World = {};
+		Matrix4x4 WorldInverseTranspose = {};
 	};
 
-	struct CameraTransform 
+	struct CameraTransform
 	{
-		Vector3 worldPosition;
+		Vector3 worldPosition = {};
 	};
 
 	TransformationMatrix* transformationMatrixData = nullptr;
 	CameraTransform* cameraData = nullptr;
 
-	EulerTransform transformMatrix;
-	Matrix4x4 worldViewProjectionMatrix;
+	EulerTransform transformMatrix = {};
+	Matrix4x4 worldViewProjectionMatrix = {};
 
-	Matrix4x4 skeltonSpaceMatrix;
+	Matrix4x4 skeltonSpaceMatrix = {};
 
 	ComPtr<ID3D12Resource> directionalLightResource;
 
-	bool isAnimation = false;
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv, dsv;
+	bool isAnimation_ = false;
 };
 

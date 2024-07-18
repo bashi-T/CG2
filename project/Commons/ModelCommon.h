@@ -13,9 +13,9 @@
 class ModelCommon
 {
 private:
-	DX12Common* dxCommon_;
+	DX12Common* dxCommon_ = nullptr;
 	HRESULT hr = NULL;
-	Debug* debug_;
+	Debug* debug_ = nullptr;
 
 	ComPtr<IDxcUtils> dxcUtils = nullptr;
 	ComPtr<IDxcCompiler3> dxcCompiler = nullptr;

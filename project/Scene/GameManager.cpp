@@ -12,7 +12,7 @@ GameManager::~GameManager() {}
 
 int GameManager::Run()
 {
-	CoInitializeEx(0, COINIT_MULTITHREADED);
+	(void)CoInitializeEx(0, COINIT_MULTITHREADED);
 	Debug::D3DResourceLeakChecker* leakCheck = new Debug::D3DResourceLeakChecker;
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 

@@ -311,7 +311,7 @@ void ModelCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 	inputElementDescs[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 	inputLayoutDesc.pInputElementDescs = inputElementDescs.data();
-	inputLayoutDesc.NumElements = inputElementDescs.size();
+	inputLayoutDesc.NumElements = UINT(inputElementDescs.size());
 
 	D3D12_BLEND_DESC blendDesc{};
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;

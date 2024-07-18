@@ -3,7 +3,7 @@
 Mesh::~Mesh() {
 }
 
-void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height) {
+void Mesh::Initialize() {
 	spriteCom_->Initialize();
 	kSubdivision = 16;
 	
@@ -38,7 +38,7 @@ void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f, -15.0f}
     };
-	projectionMatrix = MakePerspectiveFovMatrix(0.65f, float(width) / float(height), 0.1f, 100.0f);
+	projectionMatrix = MakePerspectiveFovMatrix(0.65f, float(WinAPP::clientWidth_) / float(WinAPP::clientHeight_), 0.1f, 100.0f);
 
 	vertexResource = CreateBufferResource(sizeof(VertexData) * 3);
 	vertexResourceSphere = CreateBufferResource(sizeof(VertexData) * 6 * kSubdivision * kSubdivision);
@@ -56,10 +56,10 @@ void Mesh::Initialize(const std::string& filename, int32_t width, int32_t height
 	DirectionalLightData->intensity = 1.0f;
 
 
-	mipImages = LoadTexture(modelData.material.textureFilePath);
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+	mipImages1 = LoadTexture(modelData.material.textureFilePath);
+	const DirectX::TexMetadata& metadata = mipImages1.GetMetadata();
 	textureResource = CreateTextureResource(DX12Common::GetInstance()->GetDevice().Get(), metadata);
-	UploadTextureData(textureResource.Get(), mipImages, metadata);
+	UploadTextureData(textureResource.Get(), mipImages1, metadata);
 	
 	mipImages2 = LoadTexture(modelData.material.textureFilePath);
 	const DirectX::TexMetadata& metadata2 = mipImages2.GetMetadata();
@@ -450,8 +450,6 @@ void Mesh::InputDataSphere(
 //	    DX12Common::GetInstance()->GetRtvHandles(DX12Common::GetInstance()->GetBackBufferIndex());
 //	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
 //
-//	DX12Common::GetInstance()->GetCommandList().Get()->OMSetRenderTargets(1, &rtv, false, &dsv);
-//
 //	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootDescriptorTable(
 //	    2, useWorldMap ? GetTextureSrvHandleGPU2()
 //	                   : GetTextureSrvHandleGPU());
@@ -527,12 +525,6 @@ void Mesh::DrawSphere(
 				IASetPrimitiveTopology(
 				D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			//D3D12_CPU_DESCRIPTOR_HANDLE rtv = DX12Common::GetInstance()->GetRtvHandles(
-			//	DX12Common::GetInstance()->GetBackBufferIndex());
-			//D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
-			//DX12Common::GetInstance()->GetCommandList().Get()->
-			//	OMSetRenderTargets(1, &rtv, false, &dsv);
-
 			DX12Common::GetInstance()->GetCommandList().Get()->
 				SetGraphicsRootDescriptorTable(
 				2, useWorldMap ? GetTextureSrvHandleGPU2()
@@ -580,9 +572,9 @@ void Mesh::MakeShaderResourceView(const DirectX::TexMetadata& metadata, const Di
 	srvDesc2.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc2.Texture2D.MipLevels = UINT(metadata2.mipLevels);
 
-	const uint32_t descriptorSizeSRV = DX12Common::GetInstance()->
-		GetDevice().Get()->GetDescriptorHandleIncrementSize(
-			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//const uint32_t descriptorSizeSRV = DX12Common::GetInstance()->
+	//	GetDevice().Get()->GetDescriptorHandleIncrementSize(
+	//		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	//textureSrvHandleCPU = DX12Common::GetInstance()->
 	//	GetCPUDescriptorHandle(DX12Common::GetInstance()->
@@ -606,7 +598,7 @@ DirectX::ScratchImage Mesh::LoadTexture(const std::string& filePath)
 {
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = debug_->ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(
+	hr = DirectX::LoadFromWICFile(
 		filePathW.c_str(),
 		DirectX::WIC_FLAGS_FORCE_SRGB,
 		nullptr,
@@ -642,7 +634,7 @@ ComPtr<ID3D12Resource> Mesh::CreateTextureResource(ID3D12Device* device, const D
 	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
 	ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device->CreateCommittedResource(
+	hr = device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
@@ -660,7 +652,7 @@ void Mesh::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImag
 	for (size_t mipLevel = 0; mipLevel < metadata.mipLevels; mipLevel++)
 	{
 		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
-		HRESULT hr = texture->WriteToSubresource(
+		hr = texture->WriteToSubresource(
 			UINT(mipLevel),
 			nullptr,
 			img->pixels,

@@ -76,7 +76,7 @@ public:
 	CameraTransform* cameraData = nullptr;
 
 private:
-	SkyBoxCommon* skyBoxCommon_;
+	SkyBoxCommon* skyBoxCommon_=nullptr;
 	HRESULT hr = NULL;
 
 	VertexData* vertexData = nullptr;
@@ -95,7 +95,6 @@ private:
 	ComPtr<ID3D12Resource> cameraResource;
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	Matrix4x4 projectionMatrix;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv, dsv;
 
 };
 

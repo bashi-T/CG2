@@ -66,9 +66,9 @@ void Sprite::Update()
 		MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	projectionMatrix =
 		MakeOrthographicMatrix(0.0f, 0.0f, float(WinAPP::clientWidth_), float(WinAPP::clientHeight_), 0.0f, 100.0f);
-	transformMatrix.translate = { position.x,position.y,0.0f };
-	transformMatrix.rotate = { 0.0f,0.0f,rotation };
-	transformMatrix.scale = { size.x,size.y,1.0f };
+	transformMatrix.translate = { position_.x,position_.y,0.0f };
+	transformMatrix.rotate = { 0.0f,0.0f,rotation_ };
+	transformMatrix.scale = { size_.x,size_.y,1.0f };
 	InputData(Color);
 
 	//ImGui::Begin("spriteEdit");
@@ -98,10 +98,10 @@ void Sprite::MakeBufferView()
 
 void Sprite::InputData(Vector4 color)
 {
-	float left = 0.0f - anchorPoint.x;
-	float right = 1.0f - anchorPoint.x;
-	float top = 0.0f - anchorPoint.y;
-	float bottom = 1.0f - anchorPoint.y;
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
 
 	if (isFlipX_)
 	{
@@ -182,13 +182,6 @@ void Sprite::Draw(SpriteCommon* spriteCommon)
 		SetGraphicsRootConstantBufferView(
 		1, transformationMatrixResource->GetGPUVirtualAddress());
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-	//	spriteCommon_->GetDx12Common()->
-	//	GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsv = spriteCommon_->GetDx12Common()->GetDsvHandle();
-	//spriteCommon_->GetDx12Common()->GetCommandList().Get()->
-	//	OMSetRenderTargets(1, &rtv, false, &dsv);
-
 	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);
 
@@ -245,7 +238,7 @@ ComPtr<ID3D12Resource> Sprite::CreateTextureResource(ID3D12Device* device, const
 	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
 	ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device->CreateCommittedResource(
+	hr = device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
@@ -264,7 +257,7 @@ void Sprite::AdjestTextureSize()
 		GetMetaData(materialData->material.textureFilePath);
 	textureSize.x = static_cast<float>(metadata.width);
 	textureSize.y = static_cast<float>(metadata.height);
-	size = textureSize;
+	size_ = textureSize;
 }
 
 

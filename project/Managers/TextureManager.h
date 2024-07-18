@@ -13,7 +13,7 @@ public:
 	{
 		DirectX::TexMetadata metadata;
 		ComPtr<ID3D12Resource> resource;
-		uint32_t srvIndex;
+		uint32_t srvIndex = 0;
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
 	};

@@ -28,7 +28,7 @@ void TitleScene::Init()
 	for (uint32_t i = 0; i < 1; i++)
 	{
 		Object3d* object3d = new Object3d;
-		Particle* particle = new Particle;
+		//Particle* particle = new Particle;
 		uint32_t j = i + 1;
 		if (i == 0)
 		{

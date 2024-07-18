@@ -22,7 +22,7 @@ class Mesh
 public:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	~Mesh();
-	void Initialize(const std::string& filename, int32_t width, int32_t height);
+	void Initialize();
 	void Update();
 	void Draw(int32_t width, int32_t height);
 	ComPtr<IDxcBlob> CompileShader(
@@ -178,7 +178,7 @@ private:
 	ComPtr<ID3D12Resource> textureResource;
 	ComPtr<ID3D12Resource> textureResource2;
 
-	DirectX::ScratchImage mipImages;
+	DirectX::ScratchImage mipImages1;
 	DirectX::ScratchImage mipImages2;
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;

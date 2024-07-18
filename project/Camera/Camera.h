@@ -10,10 +10,10 @@ private:
 	Matrix4x4 viewMatrix;
 	Matrix4x4 projectionMatrix;
 	Matrix4x4 viewProjectionMatrix;
-	float fovY;
-	float aspectRetio;
-	float nearClip;
-	float farClip;
+	float fovY_;
+	float aspectRetio_;
+	float nearClip_;
+	float farClip_;
 	static inline Camera* instance;
 
 public:
@@ -22,10 +22,10 @@ public:
 	void Update();
 	void SetRotate(const Vector3& rotate) { transformMatrix.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transformMatrix.translate = translate; }
-	void SetFovY(const float& fovY) { this->fovY = fovY; }
-	void SetAspectretio(const float& aspectRetio) { this->aspectRetio = aspectRetio; }
-	void SetNearClip(const float& nearClip) { this->nearClip = nearClip; }
-	void SetFarClip(const float& farClip) { this->farClip = farClip; }
+	void SetFovY(const float& fovY) { this->fovY_ = fovY; }
+	void SetAspectretio(const float& aspectRetio) { this->aspectRetio_ = aspectRetio; }
+	void SetNearClip(const float& nearClip) { this->nearClip_ = nearClip; }
+	void SetFarClip(const float& farClip) { this->farClip_ = farClip; }
 	const Vector3& GetRotate()const { return transformMatrix.rotate; }
 	const Vector3& GetTranslate()const { return transformMatrix.translate; }
 	const Matrix4x4& GetWorldMatrix() { return worldMatrix; }

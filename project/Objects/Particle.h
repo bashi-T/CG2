@@ -181,8 +181,6 @@ private:
 
 	Vector4 ColorSphere[1];
 
-	Sphere sphere = { { 0.0f,0.0f,0.0f },1.0f };
-
 	Vector4 LeftTop[1];
 	Vector4 RightTop[1];
 	Vector4 RightBottom[1];

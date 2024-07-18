@@ -23,19 +23,19 @@ private:
 	std::unique_ptr<SceneManager> sceneArr_[2];
 	int currentSceneNo_ = 0;
 	int prevSceneNo_ = 0;
-	WinAPP* winAPP;
-	DX12Common* dx12Common;
-	SRVManager* srvManager;
-	Input* input;
-	MyImGui* imgui;
-	SpriteCommon* SPCommon;
-	Object3dCommon* object3dCommon;
-	Object3d* object3d;
-	ModelCommon* modelCommon;
-	Camera* camera;
-	Particle* particle;
-	SkyBoxCommon* skyboxCommon;
-	SkyBox* skybox;
+	WinAPP* winAPP = nullptr;
+	DX12Common* dx12Common=nullptr;
+	SRVManager* srvManager=nullptr;
+	Input* input = nullptr;
+	MyImGui* imgui = nullptr;
+	SpriteCommon* SPCommon = nullptr;
+	Object3dCommon* object3dCommon = nullptr;
+	Object3d* object3d = nullptr;
+	ModelCommon* modelCommon = nullptr;
+	Camera* camera = nullptr;
+	Particle* particle = nullptr;
+	SkyBoxCommon* skyboxCommon = nullptr;
+	SkyBox* skybox = nullptr;
 
 public: 
 	GameManager();

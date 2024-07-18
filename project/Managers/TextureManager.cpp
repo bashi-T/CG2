@@ -28,7 +28,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		return;
 	}
 
-	assert(SRVManager::GetInstance()->CheckNumTexture(textureDatas.size()));
+	assert(SRVManager::GetInstance()->CheckNumTexture(uint32_t(textureDatas.size())));
 	DirectX::ScratchImage image{};//テクスチャファイルをプログラムで扱えるように
 	std::wstring filePathW = debug_->ConvertString(filePath);
 	HRESULT hr;
@@ -81,7 +81,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		textureData.srvIndex,
 		textureData.resource.Get(),
 		textureData.metadata,
-		textureData.metadata.mipLevels);
+		UINT(textureData.metadata.mipLevels));
 
 	textureDatas[filePath] = textureData;
 }
@@ -93,7 +93,7 @@ void TextureManager::LoadTextureforSRV(const std::string& filePath)
 		return;
 	}
 
-	assert(SRVManager::GetInstance()->CheckNumTexture(textureDatas.size()));
+	assert(SRVManager::GetInstance()->CheckNumTexture(uint32_t(textureDatas.size())));
 
 	DirectX::ScratchImage image{};//テクスチャファイルをプログラムで扱えるように
 	std::wstring filePathW = debug_->ConvertString(filePath);
@@ -130,7 +130,7 @@ void TextureManager::LoadTextureforSRV(const std::string& filePath)
 		textureData.srvIndex,
 		textureData.resource.Get(),
 		textureData.metadata.format,
-		textureData.metadata.mipLevels);
+		UINT(textureData.metadata.mipLevels));
 
 	textureDatas[filePath] = textureData;
 }

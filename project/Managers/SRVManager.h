@@ -5,10 +5,10 @@
 class SRVManager
 {
 private:
-	uint32_t descriptorSize;
+	uint32_t descriptorSize = 0;
 	ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	uint32_t useIndex = 0;
-	UINT backBufferIndex;
+	UINT backBufferIndex = 0;
 	D3D12_RESOURCE_BARRIER barrier{};
 	float clearColor[4] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	D3D12_VIEWPORT viewport{};
@@ -18,7 +18,7 @@ private:
 	static inline SRVManager* instance;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandles;
-	HRESULT hr;
+	HRESULT hr=NULL;
 
 public:
 	static const uint32_t kMaxSRVCount;
