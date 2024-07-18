@@ -23,7 +23,7 @@ private:
 
 	const std::string bulletModel = "AnimatedCube/AnimatedCube.gltf";
 	const std::string bulletSkin = "Resource/white.png";
-	Vector3 bulletSpeed = { 0.0f,0.0f,-1.0f };
+	Vector3 bulletSpeed = { 0.0f,0.0f,-0.1f };
 	static const int32_t kLifeTime = 60 * 2;
 	int32_t deathTimer = kLifeTime;
 	bool isDead = false;

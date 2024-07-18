@@ -17,6 +17,7 @@ public:
 	const std::list<PlayerBullet*>& GetBullets()const { return pBullets; }
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return pCollision; }
+	bool GetIsHit() { return isHit; }
 
 private:
 	Object3d* object3d;
@@ -28,6 +29,6 @@ private:
 	uint32_t shotInterval = 0;
 	bool isShot = false;
 	bool isHit = false;
-
+	uint32_t hitTimer = 0;
 };
 

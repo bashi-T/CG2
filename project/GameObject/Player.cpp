@@ -34,67 +34,80 @@ void Player::Update()
 			return false;
 		});
 	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	if (isHit == false)
 	{
-		if(joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+		if (Input::GetInstance()->GetJoystickState(0, joyState))
 		{
-		}else
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+			{
+			}
+			else
+			{
+				object3d->SetTranslate(
+					{ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f),
+					0.0f, object3d->GetTranslate().z + (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) });
+			}
+		}
+		if ((float)joyState.Gamepad.sThumbLX != 0.0f || (float)joyState.Gamepad.sThumbLY != 0.0f)
 		{
-			object3d->SetTranslate(
-				{ object3d->GetTranslate().x + (float)joyState.Gamepad.sThumbLX / (SHRT_MAX * 10.0f),
-				0.0f, object3d->GetTranslate().z + (float)joyState.Gamepad.sThumbLY / (SHRT_MAX * 10.0f) });
+			object3d->SetIsAnimation(true);
+		}
+		else
+		{
+			object3d->SetIsAnimation(false);
+		}
+
+		if ((float)joyState.Gamepad.sThumbLY > 0)
+		{
+			object3d->SetRotate({ 0.0f,0.0f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLY < 0)
+		{
+			object3d->SetRotate({ 0.0f,3.0f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLX > 0)
+		{
+			object3d->SetRotate({ 0.0f,1.5f,0.0f });
+		}
+		if ((float)joyState.Gamepad.sThumbLX < 0)
+		{
+			object3d->SetRotate({ 0.0f,4.5f,0.0f });
+		}
+
+		if (Input::GetInstance()->PushKey(DIK_D))
+		{
+			object3d->SetTranslate({ object3d->GetTranslate().x + 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
+		}
+		if (Input::GetInstance()->PushKey(DIK_A))
+		{
+			object3d->SetTranslate({ object3d->GetTranslate().x - 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
+		}
+
+		if (joyState.Gamepad.bRightTrigger || Input::GetInstance()->PushKey(DIK_C))
+		{
+			isShot = true;
+		}
+		else
+		{
+			isShot = false;
+		}
+		Shot();
+
+		object3d->SkeltonUpdate(Camera::GetInstance());
+		pCollision.center = object3d->GetTranslate();
+	}
+	else
+	{
+		hitTimer++;
+		if (hitTimer == 30)
+		{
+			isHit = false;
+			hitTimer = 0;
 		}
 	}
-	if ((float)joyState.Gamepad.sThumbLX != 0.0f || (float)joyState.Gamepad.sThumbLY != 0.0f)
-	{
-		object3d->SetIsAnimation(true);
-	}
-	else
-	{
-		object3d->SetIsAnimation(false);
-	}
-
-	if ((float)joyState.Gamepad.sThumbLY > 0)
-	{
-		object3d->SetRotate({ 0.0f,0.0f,0.0f });
-	}
-	if ((float)joyState.Gamepad.sThumbLY < 0)
-	{
-		object3d->SetRotate({ 0.0f,3.0f,0.0f });
-	}
-	if ((float)joyState.Gamepad.sThumbLX > 0)
-	{
-		object3d->SetRotate({ 0.0f,1.5f,0.0f });
-	}
-	if ((float)joyState.Gamepad.sThumbLX < 0)
-	{
-		object3d->SetRotate({ 0.0f,4.5f,0.0f });
-	}
-
-	if (Input::GetInstance()->PushKey(DIK_D))
-	{
-		object3d->SetTranslate({ object3d->GetTranslate().x + 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
-	}
-	if (Input::GetInstance()->PushKey(DIK_A))
-	{
-		object3d->SetTranslate({ object3d->GetTranslate().x - 0.05f, object3d->GetTranslate().y, object3d->GetTranslate().z });
-	}
-
-	if (joyState.Gamepad.bRightTrigger || Input::GetInstance()->PushKey(DIK_C))
-	{
-		isShot = true;
-	}
-	else
-	{
-		isShot = false;
-	}
-	Shot();
-
-	object3d->SkeltonUpdate(Camera::GetInstance());
-	pCollision.center = object3d->GetTranslate();
 	for (PlayerBullet* bullet : pBullets)
 	{
-			bullet->Update();
+		bullet->Update();
 	}
 }
 

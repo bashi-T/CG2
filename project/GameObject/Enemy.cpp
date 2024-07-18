@@ -33,8 +33,11 @@ void Enemy::Update()
 			return false;
 		});
 
-	Shot();
-	if (shotInterval == 1&&object3d->GetTranslate().z<whale_->GetTranslate().z)
+	if (object3d->GetTranslate().z > player_->GetTranslate().z)
+	{
+		Shot();
+	}
+	if (shotInterval == 1&&object3d->GetTranslate().z>whale_->GetTranslate().z)
 	{
 		SetEnemyVector(whale_->GetTranslate());
 	}
@@ -62,7 +65,7 @@ void Enemy::Shot()
 	{
 		EnemyBullet* newBullet = new EnemyBullet;
 		newBullet->Initialize(object3d->GetTranslate());
-		newBullet->SetEnemyBulletVector(player_->GetTranslate());
+			newBullet->SetEnemyBulletVector(player_->GetTranslate());
 		eBullets.push_back(newBullet);
 	}
 	if (shotInterval == 60)

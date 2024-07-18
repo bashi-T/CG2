@@ -20,117 +20,129 @@ void Whale::Initialize()
 void Whale::Update()
 {
 	XINPUT_STATE joyState;
-	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	if(player->GetIsHit()==false)
 	{
-		if ((float)joyState.Gamepad.sThumbLX > 0.0f)
+		if (Input::GetInstance()->GetJoystickState(0, joyState))
 		{
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			if ((float)joyState.Gamepad.sThumbLX > 0.0f)
 			{
-				accSpeed.x -= 0.01f;
-				if (accSpeed.x <= 0.0f)
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 				{
-					accSpeed.x = 0.0f;
+					accSpeed.x -= 0.01f;
+					if (accSpeed.x <= 0.0f)
+					{
+						accSpeed.x = 0.0f;
+					}
+				}
+				else
+				{
+					accSpeed.x += 0.01f;
+					if (accSpeed.x >= 1.0f)
+					{
+						accSpeed.x = 1.0f;
+					}
+				}
+			}
+			else if ((float)joyState.Gamepad.sThumbLX < 0.0f)
+			{
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+				{
+					accSpeed.x += 0.01f;
+					if (accSpeed.x >= 0.0f)
+					{
+						accSpeed.x = 0.0f;
+					}
+				}
+				else
+				{
+					accSpeed.x -= 0.01f;
+					if (accSpeed.x <= -1.0f)
+					{
+						accSpeed.x = -1.0f;
+					}
 				}
 			}
 			else
 			{
-				accSpeed.x += 0.01f;
-				if (accSpeed.x >= 1.0f)
+				if (accSpeed.x > 0.0f)
 				{
-					accSpeed.x = 1.0f;
+					accSpeed.x -= 0.01f;
 				}
-			}
-		}
-		else if((float)joyState.Gamepad.sThumbLX < 0.0f)
-		{
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
-			{
-				accSpeed.x += 0.01f;
-				if (accSpeed.x >= 0.0f)
+				else if (accSpeed.x < 0.0f)
+				{
+					accSpeed.x += 0.01f;
+				}
+				else if (accSpeed.x == 0.0f)
 				{
 					accSpeed.x = 0.0f;
 				}
 			}
-			else
-			{
-				accSpeed.x -= 0.01f;
-				if (accSpeed.x <= -1.0f)
-				{
-					accSpeed.x = -1.0f;
-				}
-			}
-		}
-		else
-		{
-			if (accSpeed.x > 0.0f)
-			{
-				accSpeed.x -= 0.01f;
-			}
-			else if (accSpeed.x < 0.0f)
-			{
-				accSpeed.x += 0.01f;
-			}
-			else if (accSpeed.x == 0.0f)
-			{
-				accSpeed.x = 0.0f;
-			}
-		}
 
-		if ((float)joyState.Gamepad.sThumbLY > 0.0f)
-		{
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+			if ((float)joyState.Gamepad.sThumbLY > 0.0f)
 			{
-				accSpeed.z -= 0.01f;
-				if (accSpeed.z <= 0.0f)
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 				{
-					accSpeed.z = 0.0f;
+					accSpeed.z -= 0.01f;
+					if (accSpeed.z <= 0.0f)
+					{
+						accSpeed.z = 0.0f;
+					}
+				}
+				else
+				{
+					accSpeed.z += 0.01f;
+					if (accSpeed.z >= 1.0f)
+					{
+						accSpeed.z = 1.0f;
+					}
+				}
+			}
+			else if ((float)joyState.Gamepad.sThumbLY < 0.0f)
+			{
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+				{
+					accSpeed.z += 0.01f;
+					if (accSpeed.z >= 0.0f)
+					{
+						accSpeed.z = 0.0f;
+					}
+				}
+				else
+				{
+					accSpeed.z -= 0.01f;
+					if (accSpeed.z <= -1.0f)
+					{
+						accSpeed.z = -1.0f;
+					}
 				}
 			}
 			else
 			{
-				accSpeed.z += 0.01f;
-				if (accSpeed.z >= 1.0f)
+				if (accSpeed.z > 0.0f)
 				{
-					accSpeed.z = 1.0f;
+					accSpeed.z -= 0.01f;
 				}
-			}
-		}
-		else if ((float)joyState.Gamepad.sThumbLY < 0.0f)
-		{
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
-			{
-				accSpeed.z += 0.01f;
-				if (accSpeed.z >= 0.0f)
+				else if (accSpeed.z < 0.0f)
+				{
+					accSpeed.z += 0.01f;
+				}
+				else if (accSpeed.z == 0.0f)
 				{
 					accSpeed.z = 0.0f;
 				}
 			}
-			else
-			{
-				accSpeed.z -= 0.01f;
-				if (accSpeed.z <= -1.0f)
-				{
-					accSpeed.z = -1.0f;
-				}
-			}
+
 		}
-		else
-		{
-			if (accSpeed.z > 0.0f)
-			{
-				accSpeed.z -= 0.01f;
-			}
-			else if (accSpeed.z < 0.0f)
-			{
-				accSpeed.z += 0.01f;
-			}
-			else if (accSpeed.z == 0.0f)
-			{
-				accSpeed.z = 0.0f;
-			}
-		}
-		
 	}
+	if (isHit == true)
+	{
+		coolTimer++;
+		if (coolTimer == 30)
+		{
+			isHit = false;
+		}
+	}
+
 	nowWhaleSpeed = { (whaleSpeed.x * accSpeed.x) ,0.0f,(whaleSpeed.z * accSpeed.z) };
 	object3d->SetTranslate(Add(object3d->GetTranslate(), nowWhaleSpeed));
 	object3d->SetIsAnimation(true);
@@ -147,5 +159,6 @@ void Whale::Draw()
 
 void Whale::OnCollision()
 {
-	life--;
+	life -= 1;
+	isHit = true;
 }

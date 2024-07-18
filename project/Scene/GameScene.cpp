@@ -58,7 +58,7 @@ void GameScene::Update()
 			}
 			return false;
 		});
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
+	if (whale_->GetLife() <0)
 	{
 		sceneNo = TITLE;
 	}
@@ -134,7 +134,7 @@ void GameScene::CheckAllCollisions()
 			(distance.z * distance.z) <= 4)
 		{
 			player_->OnCollision();
-			enemy_->OnCollision();
+			//enemy_->OnCollision();
 		}
 	}
 #pragma endregion
@@ -179,40 +179,43 @@ void GameScene::CheckAllCollisions()
 		}
 	}
 #pragma endregion
+	if (whale_->GetIsHit() == false)
+	{
 #pragma region 敵とクジラの当たり判定
-	for (Enemy* enemy_ : enemys_)
-	{
-		const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-
-		posA = whale_->GetTranslate();
-		posB = enemy_->GetTranslate();
-		Vector3 distance = Subtract(posA, posB);
-		if ((distance.x * distance.x) + (distance.y * distance.y) +
-			(distance.z * distance.z) <= 4)
+		for (Enemy* enemy_ : enemys_)
 		{
-			whale_->OnCollision();
-			enemy_->OnCollision();
-		}
-	}
-#pragma endregion
-#pragma region 敵弾とクジラの当たり判定
-	for (Enemy* enemy_ : enemys_)
-	{
-		const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+			const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 
-		posA = whale_->GetTranslate();
-		for (EnemyBullet* bullet : enemyBullets)
-		{
-			posB = bullet->GetTranslate();
+			posA = whale_->GetTranslate();
+			posB = enemy_->GetTranslate();
 			Vector3 distance = Subtract(posA, posB);
 			if ((distance.x * distance.x) + (distance.y * distance.y) +
 				(distance.z * distance.z) <= 4)
 			{
 				whale_->OnCollision();
-				bullet->OnCollision();
+				enemy_->OnCollision();
 			}
 		}
-	}
 #pragma endregion
+#pragma region 敵弾とクジラの当たり判定
+		for (Enemy* enemy_ : enemys_)
+		{
+			const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+			posA = whale_->GetTranslate();
+			for (EnemyBullet* bullet : enemyBullets)
+			{
+				posB = bullet->GetTranslate();
+				Vector3 distance = Subtract(posA, posB);
+				if ((distance.x * distance.x) + (distance.y * distance.y) +
+					(distance.z * distance.z) <= 4)
+				{
+					whale_->OnCollision();
+					bullet->OnCollision();
+				}
+			}
+		}
+#pragma endregion
+	}
 }
 

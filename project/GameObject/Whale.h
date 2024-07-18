@@ -3,6 +3,7 @@
 #include"Objects/Object3d.h"
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
+#include"Player.h"
 
 class Whale
 {
@@ -14,9 +15,12 @@ public:
 	void OnCollision();
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return wCollision; }
+	int GetLife() { return life; }
+	bool GetIsHit() { return isHit; }
 
 private:
 	Object3d* object3d = new Object3d;
+	Player* player = new Player;
 	const std::string whaleModel = "simpleSkin/simpleSkin.gltf";
 	const std::string whaleSkin = "Resource/monsterBall.png";
 	Vector3 whaleSpeed = { 0.1f,0.1f,0.1f };
@@ -24,7 +28,9 @@ private:
 	Vector3 accSpeed = { 0.0f,0.0f,0.0f };
 
 	bool isDead = false;
+	bool isHit = false;
 	OBB wCollision;
-	uint32_t life = 4;
+	int life = 4;
+	uint32_t coolTimer;
 };
 

@@ -22,11 +22,11 @@ void EnemyBullet::Initialize(Vector3 firstPos)
 
 void EnemyBullet::Update()
 {
-	if (--deathTimer <= 0)
+	if (object3d->GetTranslate().z<Camera::GetInstance()->GetTranslate().z)
 	{
 		isDead = true;
 	}
-	object3d->SetTranslate(Add(object3d->GetTranslate(), Multiply(2.0f, enemyBulletVector)));
+	object3d->SetTranslate(Add(object3d->GetTranslate(), Multiply(0.1f, enemyBulletVector)));
 	object3d->AnimationUpdate(Camera::GetInstance());
 }
 
