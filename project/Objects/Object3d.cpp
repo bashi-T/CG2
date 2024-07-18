@@ -204,8 +204,8 @@ void Object3d::Draw(ModelCommon* modelCommon)
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		OMSetRenderTargets(1, &rtv, false, &dsv);
+	//object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	//	OMSetRenderTargets(1, &rtv, false, &dsv);
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
@@ -238,8 +238,8 @@ void Object3d::SkeltonDraw(ModelCommon* modelCommon)
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
-		OMSetRenderTargets(1, &rtv, false, &dsv);
+	//object3dCommon_->GetDx12Common()->GetCommandList().Get()->
+	//	OMSetRenderTargets(1, &rtv, false, &dsv);
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(

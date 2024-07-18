@@ -182,12 +182,12 @@ void Sprite::Draw(SpriteCommon* spriteCommon)
 		SetGraphicsRootConstantBufferView(
 		1, transformationMatrixResource->GetGPUVirtualAddress());
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-		spriteCommon_->GetDx12Common()->
-		GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = spriteCommon_->GetDx12Common()->GetDsvHandle();
-	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
-		OMSetRenderTargets(1, &rtv, false, &dsv);
+	//D3D12_CPU_DESCRIPTOR_HANDLE rtv =
+	//	spriteCommon_->GetDx12Common()->
+	//	GetRtvHandles(SRVManager::GetInstance()->GetBackBufferIndex());
+	//D3D12_CPU_DESCRIPTOR_HANDLE dsv = spriteCommon_->GetDx12Common()->GetDsvHandle();
+	//spriteCommon_->GetDx12Common()->GetCommandList().Get()->
+	//	OMSetRenderTargets(1, &rtv, false, &dsv);
 
 	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);

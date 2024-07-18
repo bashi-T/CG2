@@ -137,13 +137,13 @@ void SRVManager::PreDraw()
 		0,
 		0,
 		nullptr);
-	DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(1,
-		&rtvHandles, false, nullptr);
-	//DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(0,
-	//	&rtvHandles, false, &dsvHandles);
-
 	DX12Common::GetInstance()->GetCommandList()->ClearRenderTargetView(
 		rtvHandles, clearColor, 0, nullptr);
+
+	DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(0,
+		&rtvHandles, false, &dsvHandles);
+
+	
 }
 
 void SRVManager::PostDraw()
