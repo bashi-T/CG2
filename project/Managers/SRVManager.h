@@ -16,7 +16,9 @@ private:
 	ComPtr<ID3D12Fence> fence = nullptr;
 	HANDLE fenceEvent;
 	static inline SRVManager* instance;
-
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandles;
+	HRESULT hr;
 
 public:
 	static const uint32_t kMaxSRVCount;

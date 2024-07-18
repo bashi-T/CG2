@@ -119,39 +119,42 @@ void SRVManager::PreDraw()
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 	
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles = DX12Common::GetInstance()->GetRtvHandles(backBufferIndex);
-	DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(1,
-		&rtvHandles, false, nullptr);
+	ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] =
+	{
+		descriptorHeap
+	};
+	DX12Common::GetInstance()->GetCommandList()->
+		SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
+	rtvHandles = DX12Common::GetInstance()->GetRtvHandles(backBufferIndex);
+	dsvHandles = DX12Common::GetInstance()->GetDsvHandle();
 
-	DX12Common::GetInstance()->GetCommandList()->ClearRenderTargetView(
-		rtvHandles, clearColor, 0, nullptr);
-
+	DX12Common::GetInstance()->GetCommandList()->RSSetViewports(1, &viewport);
+	DX12Common::GetInstance()->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 	DX12Common::GetInstance()->GetCommandList()->ClearDepthStencilView(
-		DX12Common::GetInstance()->GetDsvHandle(),
+		dsvHandles,
 		D3D12_CLEAR_FLAG_DEPTH,
 		1.0f,
 		0,
 		0,
 		nullptr);
+	DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(1,
+		&rtvHandles, false, nullptr);
+	//DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(0,
+	//	&rtvHandles, false, &dsvHandles);
 
-	ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] =
-	{
-		descriptorHeap.Get()
-	};
-	DX12Common::GetInstance()->GetCommandList()->
-		SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-	DX12Common::GetInstance()->GetCommandList()->RSSetViewports(1, &viewport);
-	DX12Common::GetInstance()->GetCommandList()->RSSetScissorRects(1, &scissorRect);
+	DX12Common::GetInstance()->GetCommandList()->ClearRenderTargetView(
+		rtvHandles, clearColor, 0, nullptr);
 }
 
 void SRVManager::PostDraw()
 {
 	backBufferIndex = DX12Common::GetInstance()->GetSwapChain()->GetCurrentBackBufferIndex();
+	barrier.Transition.pResource = DX12Common::GetInstance()->GetSwapChainResources()[backBufferIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 
-	HRESULT hr = DX12Common::GetInstance()->GetCommandList()->Close();
+	hr = DX12Common::GetInstance()->GetCommandList()->Close();
 	assert(SUCCEEDED(hr));
 
 	ComPtr<ID3D12CommandList> commandLists[] =
@@ -184,7 +187,7 @@ SRVManager* SRVManager::GetInstance()
 }
 void SRVManager::MakeFence()
 {
-	HRESULT hr = DX12Common::GetInstance()->GetDevice()->CreateFence(fenceValue,
+	hr = DX12Common::GetInstance()->GetDevice()->CreateFence(fenceValue,
 		D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
 	fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);

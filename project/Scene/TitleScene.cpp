@@ -25,7 +25,7 @@ void TitleScene::Init()
 		"simpleSkin/simpleSkin.gltf",
 		"plane/plane.gltf",
 	};
-	for (uint32_t i = 0; i < 4; i++)
+	for (uint32_t i = 0; i < 1; i++)
 	{
 		Object3d* object3d = new Object3d;
 		Particle* particle = new Particle;
@@ -117,9 +117,9 @@ void TitleScene::Update()
 		//}
 	}
 	objects3d[0]->AnimationUpdate(Camera::GetInstance());
-	objects3d[1]->SkeltonUpdate(Camera::GetInstance());
-	objects3d[2]->SkeltonUpdate(Camera::GetInstance());
-	objects3d[3]->Update(Camera::GetInstance());
+	//objects3d[1]->SkeltonUpdate(Camera::GetInstance());
+	//objects3d[2]->SkeltonUpdate(Camera::GetInstance());
+	//objects3d[3]->Update(Camera::GetInstance());
 
 	for (Particle* particle : particles)
 	{
@@ -134,9 +134,9 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	objects3d[0]->Draw(ModelManager::GetInstance()->GetModelCommon());
-	objects3d[1]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
-	objects3d[2]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
-	objects3d[3]->Draw(ModelManager::GetInstance()->GetModelCommon());
+	//objects3d[1]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+	//objects3d[2]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
+	//objects3d[3]->Draw(ModelManager::GetInstance()->GetModelCommon());
 
 	//for (Particle* particle : particles)
 	//{
