@@ -99,9 +99,12 @@ void Player::Update()
 	else
 	{
 		hitTimer++;
-		if (hitTimer == 30)
+		if (hitTimer == 60)
 		{
 			isHit = false;
+		}
+		if (hitTimer == 90)
+		{
 			hitTimer = 0;
 		}
 	}
@@ -131,7 +134,7 @@ void Player::Shot()
 			newBullet->Initialize(object3d->GetTranslate());
 			pBullets.push_back(newBullet);
 		}
-		if (shotInterval == 30)
+		if (shotInterval == 15)
 		{
 			shotInterval = 0;
 

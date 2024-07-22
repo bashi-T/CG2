@@ -103,41 +103,44 @@ void GameScene::CheckAllCollisions()
 {
 	Vector3 posA, posB;
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
-#pragma region 自機と敵弾の当たり判定
-	for (Enemy* enemy_ : enemys_)
+	if(player_->GetIsHit()==false&&player_->GetIsHitTimer()==0)
 	{
-		const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-
-		posA = player_->GetTranslate();
-		for (EnemyBullet* bullet : enemyBullets)
+#pragma region 自機と敵弾の当たり判定
+		for (Enemy* enemy_ : enemys_)
 		{
-			posB = bullet->GetTranslate();
+			const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+			posA = player_->GetTranslate();
+			for (EnemyBullet* bullet : enemyBullets)
+			{
+				posB = bullet->GetTranslate();
+				Vector3 distance = Subtract(posA, posB);
+				if ((distance.x * distance.x) + (distance.y * distance.y) +
+					(distance.z * distance.z) <= 4)
+				{
+					player_->OnCollision();
+					bullet->OnCollision();
+				}
+			}
+		}
+#pragma endregion
+#pragma region 自機と敵の当たり判定
+		for (Enemy* enemy_ : enemys_)
+		{
+			const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+			posA = player_->GetTranslate();
+			posB = enemy_->GetTranslate();
 			Vector3 distance = Subtract(posA, posB);
 			if ((distance.x * distance.x) + (distance.y * distance.y) +
 				(distance.z * distance.z) <= 4)
 			{
 				player_->OnCollision();
-				bullet->OnCollision();
+				//enemy_->OnCollision();
 			}
 		}
-	}
 #pragma endregion
-#pragma region 自機と敵の当たり判定
-	for (Enemy* enemy_ : enemys_)
-	{
-		const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-
-		posA = player_->GetTranslate();
-		posB = enemy_->GetTranslate();
-		Vector3 distance = Subtract(posA, posB);
-		if ((distance.x * distance.x) + (distance.y * distance.y) +
-			(distance.z * distance.z) <= 4)
-		{
-			player_->OnCollision();
-			//enemy_->OnCollision();
-		}
 	}
-#pragma endregion
 #pragma region 敵と自弾の当たり判定
 	for (Enemy* enemy_ : enemys_)
 	{
@@ -184,8 +187,6 @@ void GameScene::CheckAllCollisions()
 #pragma region 敵とクジラの当たり判定
 		for (Enemy* enemy_ : enemys_)
 		{
-			const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-
 			posA = whale_->GetTranslate();
 			posB = enemy_->GetTranslate();
 			Vector3 distance = Subtract(posA, posB);
@@ -194,6 +195,7 @@ void GameScene::CheckAllCollisions()
 			{
 				whale_->OnCollision();
 				enemy_->OnCollision();
+				break;
 			}
 		}
 #pragma endregion
@@ -212,6 +214,7 @@ void GameScene::CheckAllCollisions()
 				{
 					whale_->OnCollision();
 					bullet->OnCollision();
+					break;
 				}
 			}
 		}

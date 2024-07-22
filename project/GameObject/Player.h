@@ -18,7 +18,7 @@ public:
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return pCollision; }
 	bool GetIsHit() { return isHit; }
-
+	uint32_t GetIsHitTimer() { return hitTimer; }
 private:
 	Object3d* object3d;
 	std::list<PlayerBullet*> pBullets;

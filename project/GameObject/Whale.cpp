@@ -137,9 +137,10 @@ void Whale::Update()
 	if (isHit == true)
 	{
 		coolTimer++;
-		if (coolTimer == 30)
+		if (coolTimer == 120)
 		{
 			isHit = false;
+			coolTimer = 0;
 		}
 	}
 
