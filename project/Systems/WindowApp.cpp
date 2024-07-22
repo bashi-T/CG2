@@ -5,7 +5,7 @@ int32_t WinAPP::clientHeight_ = 720;
 
 void WinAPP::Initialize(int32_t width, int32_t height, const wchar_t* title)
 {
-	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	wc_.lpfnWndProc = WindowProc;
 	wc_.lpszClassName = L"LE2B_12_ツヅキバシ_マサミ";
 	wc_.hInstance = GetModuleHandle(nullptr);
@@ -57,14 +57,13 @@ LRESULT CALLBACK WinAPP::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 
 bool WinAPP::ProcessMessage()
 {
-	MSG msg{};
-	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	if (PeekMessage(&msg_, nullptr, 0, 0, PM_REMOVE))
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		TranslateMessage(&msg_);
+		DispatchMessage(&msg_);
 	}
 
-	if (msg.message == WM_QUIT)
+	if (msg_.message == WM_QUIT)
 	{
 		return true;
 	}

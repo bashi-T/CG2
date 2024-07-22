@@ -4,7 +4,7 @@
 void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager)
 {
 	this->object3dCommon_ = object3dCommon;
-	this->srvManager = srvManager;
+	this->srvManager_ = srvManager;
 
 	//object3dCommon_->Initialize(DX12Common::GetInstance());
 	//object3dCommon_->SetDefaultCamera(camera->GetInstance());
@@ -31,7 +31,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 void Object3d::InitializeSkeleton(Object3dCommon* object3dCommon, SRVManager* srvManager)
 {
 	this->object3dCommon_ = object3dCommon;
-	this->srvManager = srvManager;
+	this->srvManager_ = srvManager;
 
 	//object3dCommon_->InitializeSkeleton(DX12Common::GetInstance());
 	//object3dCommon_->SetDefaultCamera(camera->GetInstance());
@@ -210,7 +210,7 @@ void Object3d::Draw(ModelCommon* modelCommon)
 
 	if (model_)
 	{
-		model_->Draw(modelCommon_,srvManager);
+		model_->Draw(modelCommon_,srvManager_);
 	}
 }
 
@@ -241,7 +241,7 @@ void Object3d::SkeltonDraw(ModelCommon* modelCommon)
 
 	if (model_)
 	{
-		model_->SkeltonDraw(modelCommon_, srvManager);
+		model_->SkeltonDraw(modelCommon_, srvManager_);
 	}
 }
 
@@ -292,8 +292,8 @@ Vector3 Object3d::CalculatevalueV(const std::vector<Model::KeyFrameVector3>& key
 			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
 			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
 		}
-		return (*keyframes.rbegin()).value;
 	}
+	return (*keyframes.rbegin()).value;
 }
 
 Quaternion Object3d::CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion>& keyframes, float time)
@@ -313,7 +313,6 @@ Quaternion Object3d::CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion
 		}
 	}
 	return (*keyframes.rbegin()).value;
-
 }
 
 void Object3d::ApplyAnimation(Model::Skelton& skelton, const Model::Animation& animation, float animationTime)

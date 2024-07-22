@@ -102,7 +102,7 @@ int GameManager::Run()
 			break;
 		}
 		srvManager->PreDraw();
-		//skybox->Draw(skyboxCommon);
+		skybox->Draw(skyboxCommon);
 		sceneArr_[currentSceneNo_]->Draw();
 
 		imgui->Endframe(dx12Common->GetCommandList().Get());

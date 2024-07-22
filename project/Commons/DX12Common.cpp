@@ -55,7 +55,7 @@ void DX12Common::Initialize(int32_t width, int32_t height, WinAPP* winApp)
 		height);
 
 #ifdef _DEBUG
-	InfoQueue(device.Get());
+	InfoQueue(device_.Get());
 #endif
 	MakeScreen(winApp_);
 }
@@ -109,7 +109,7 @@ void DX12Common::MakeD3D12Device()
 	for (size_t i = 0; i < _countof(featureLevels); ++i)
 	{
 		hr = D3D12CreateDevice(useAdapter.Get(), featureLevels[i],
-			IID_PPV_ARGS(&device));
+			IID_PPV_ARGS(&device_));
 		if (SUCCEEDED(hr))
 		{
 			//debug_->Log(std::format("featureLevel {}\n",
@@ -117,24 +117,24 @@ void DX12Common::MakeD3D12Device()
 			break;
 		}
 	}
-	assert(device != nullptr);
+	assert(device_ != nullptr);
 	//debug_->Log("Complete create D3D12Device\n");
 }
 
 void DX12Common::MakeCommandQueue()
 {
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-	hr = device->CreateCommandQueue(
+	hr = device_->CreateCommandQueue(
 		&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
 	assert(SUCCEEDED(hr));
 }
 
 void DX12Common::MakeCommandList()
 {
-	hr = device->CreateCommandAllocator(
+	hr = device_->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
 	assert(SUCCEEDED(hr));
-	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+	hr = device_->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
 		commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
 	assert(SUCCEEDED(hr));
 }
@@ -165,7 +165,7 @@ void DX12Common::MakeDescriptorHeap()
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc{};
 	rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvDescriptorHeapDesc.NumDescriptors = 2;
-	hr = device->CreateDescriptorHeap(&rtvDescriptorHeapDesc,
+	hr = device_->CreateDescriptorHeap(&rtvDescriptorHeapDesc,
 		IID_PPV_ARGS(&rtvDescriptorHeap));
 	assert(SUCCEEDED(hr));
 }
@@ -182,18 +182,18 @@ void DX12Common::MakeRTV()
 {
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	const uint32_t descriptorSizeRTV = device->
+	const uint32_t descriptorSizeRTV = device_->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle =
 		GetCPUDescriptorHandle(rtvDescriptorHeap.Get(), descriptorSizeRTV, 0);
 
 	rtvHandles[0] = rtvStartHandle;
-	device->CreateRenderTargetView(
+	device_->CreateRenderTargetView(
 		swapChainResources[0].Get(), &rtvDesc, rtvHandles[0]);
 
-	rtvHandles[1].ptr = rtvHandles[0].ptr + device->
+	rtvHandles[1].ptr = rtvHandles[0].ptr + device_->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	device->CreateRenderTargetView(
+	device_->CreateRenderTargetView(
 		swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
 }
 
@@ -240,7 +240,7 @@ ComPtr<ID3D12DescriptorHeap> DX12Common::CreateDescriptorHeap(
 	DescriptorHeapDesc.NumDescriptors = numDescriptors;
 	DescriptorHeapDesc.Flags =
 	    shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	hr = device->CreateDescriptorHeap(&DescriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	hr = device_->CreateDescriptorHeap(&DescriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 	assert(SUCCEEDED(hr));
 	return descriptorHeap;
 }
@@ -250,12 +250,12 @@ void DX12Common::MakeDSV()
 {
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	device->CreateDepthStencilView(
+	device_->CreateDepthStencilView(
 		depthStencilResource.Get(),
 		&dsvDesc,
 		dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	const uint32_t descriptorSizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	const uint32_t descriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap.Get(), descriptorSizeDSV, 0);
 }
 
@@ -280,7 +280,7 @@ ComPtr<ID3D12Resource> DX12Common::CreatedepthstencilTextureResource(int32_t wid
 	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device->CreateCommittedResource(
+	hr = device_->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,

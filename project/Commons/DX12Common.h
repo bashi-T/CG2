@@ -61,7 +61,7 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRtvHandles(int32_t i) { return rtvHandles[i]; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle() { return dsvHandle; }
 	
-	ComPtr<ID3D12Device> GetDevice() { return device; }
+	ComPtr<ID3D12Device> GetDevice() { return device_; }
 	ComPtr<ID3D12GraphicsCommandList> GetCommandList() { return commandList.Get(); }
 	ComPtr<ID3D12CommandQueue> GetCommandQueue() { return commandQueue.Get(); }
 	ComPtr<ID3D12CommandAllocator> GetCommandAllocator() { return commandAllocator.Get(); }
@@ -74,7 +74,7 @@ public:
 		
 	~DX12Common() {
 		swapChain.Reset();
-		device.Reset();
+		device_.Reset();
 	}
 
 private:
@@ -87,7 +87,7 @@ private:
 	Debug* debug_ = nullptr;
 	WinAPP* winApp_ = nullptr;
 
-	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr<ID3D12Device> device_ = nullptr;
 	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 	HRESULT hr = NULL;
 	ComPtr<IDXGIAdapter4> useAdapter = nullptr;

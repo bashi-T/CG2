@@ -25,7 +25,7 @@ public:
 
 private:
 	WinAPP* winApp_ = nullptr;
-	HRESULT hr;
+	HRESULT hr = NULL;
 	ComPtr<IDirectInput8>directInput = nullptr;
 	ComPtr<IDirectInputDevice8> keyboard;
 	BYTE key[256] = {};
@@ -33,6 +33,5 @@ private:
 	static inline Input* instance;
 	// デッドゾーンの設定
 	const int DEADZONE_THRESHOLD = 8000;
-
 };
 

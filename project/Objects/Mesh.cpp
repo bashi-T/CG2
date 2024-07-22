@@ -11,7 +11,7 @@ void Mesh::Initialize() {
 
 	MakePSO();
 
-	Sphere sphere = { { 0.0f,0.0f,0.0f },1.0f };
+	sphere = { { 0.0f,0.0f,0.0f },1.0f };
 	ColorSphere[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	Top[0] = { 0.0f, 1.75f, 0.0f, 1.0f };

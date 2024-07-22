@@ -32,10 +32,10 @@ public:
 	};
 	struct Node
 	{
-		Matrix4x4 localMatrix = {};
-		std::string name = 0;
-		std::vector<Node> children = {};
-		QuaternionTransform qTransform = {};
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+		QuaternionTransform qTransform;
 	};
 	struct VertexWeightData
 	{
@@ -44,8 +44,8 @@ public:
 	};
 	struct JointWeightData
 	{
-		Matrix4x4 inverseBindPoseMatrix = {};
-		std::vector<VertexWeightData>vertexWeights = {};
+		Matrix4x4 inverseBindPoseMatrix;
+		std::vector<VertexWeightData>vertexWeights;
 	};
 	struct ModelData
 	{
@@ -57,10 +57,10 @@ public:
 	};
 	struct Joint
 	{
-		QuaternionTransform transform = {};
-		Matrix4x4 localMatrix = {};
-		Matrix4x4 skeltonSpaceMatrix = {};
-		Matrix4x4 worldMatrix = {};
+		QuaternionTransform transform;
+		Matrix4x4 localMatrix;
+		Matrix4x4 skeltonSpaceMatrix;
+		Matrix4x4 worldMatrix;
 		std::string name;
 		std::vector<int32_t>children;
 		int32_t index=0;
@@ -100,7 +100,7 @@ public:
 	struct Animation
 	{
 		float duration = 0.0f;//アニメーション全体の尺
-		std::map<std::string, NodeAnimation>nodeAnimations = {};
+		std::map<std::string, NodeAnimation>nodeAnimations;
 	};
 	const uint32_t kNumMaxInfluence = 4;
 	struct VertexInfluence
@@ -123,7 +123,7 @@ public:
 		std::span<VertexInfluence>mappedInfluence;
 
 		Microsoft::WRL::ComPtr<ID3D12Resource>paletteResource = nullptr;
-		std::span<WellForGPU>mappedPalette = {};
+		std::span<WellForGPU>mappedPalette;
 		std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE>paletteSrvHandle;
 	};
 

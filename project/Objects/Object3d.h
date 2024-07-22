@@ -55,7 +55,7 @@ private:
 	HRESULT hr = NULL;
 	Model* model_ = nullptr;
 	ModelCommon* modelCommon_ = nullptr;
-	SRVManager* srvManager = nullptr;
+	SRVManager* srvManager_ = nullptr;
 	Camera* camera_ = nullptr;
 
 	//Model::Animation& animation;
