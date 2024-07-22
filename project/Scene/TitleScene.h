@@ -5,6 +5,7 @@
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
 
+
 class TitleScene:public SceneManager
 {
 public:
@@ -19,5 +20,7 @@ private:
 	//Camera* camera;
 	std::vector<Object3d*> objects3d;
 	std::vector <Particle*> particles;
+
+	const std::string fullpath;
 };
 
