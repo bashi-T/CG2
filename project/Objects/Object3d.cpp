@@ -53,8 +53,6 @@ void Object3d::InitializeSkeleton(Object3dCommon* object3dCommon, SRVManager* sr
 	directionalLightData->color = directionalLight.color;
 	directionalLightData->direction = directionalLight.direction;
 	directionalLightData->intensity = directionalLight.intensity;
-
-
 }
 
 void Object3d::Update(Camera* camera)
@@ -82,7 +80,6 @@ void Object3d::Update(Camera* camera)
 	transformationMatrixData->WVP = Multiply(model_->GetModelData()->rootNode.localMatrix, worldViewProjectionMatrix);
 	transformationMatrixData->World = Multiply(model_->GetModelData()->rootNode.localMatrix, worldMatrix);
 	transformationMatrixData->WorldInverseTranspose = Transpose(Inverse(transformationMatrixData->World));
-
 }
 
 void Object3d::AnimationUpdate(Camera* camera)

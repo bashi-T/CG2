@@ -33,7 +33,21 @@ int GameManager::Run()
 	std::vector<Model*> models;
 	//bool useWorldMap = true;
 
-
+	std::string textureFilePath[100] =//textureの左右が反転してる
+	{
+		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
+		"Resource/ganban.png",
+		"Resource/white.png",
+		"Resource/worldMap.png",
+		"Resource/monsterBall.png",
+		"Resource/AnimatedCube/AnimatedCube_BaseColor.png",
+		"Resource/world.png",
+		"Resource/uvChecker.png",
+		"Resource/cursor.png",
+		"Resource/circle.png",
+		"Resource/particle.png",
+		"Resource/rostock_laage_airport_4k.dds",
+	};
 
 	winAPP->Initialize(WinAPP::clientWidth_, WinAPP::clientHeight_, L"GE3");
 	dx12Common->Initialize(WinAPP::clientWidth_, WinAPP::clientHeight_, winAPP);

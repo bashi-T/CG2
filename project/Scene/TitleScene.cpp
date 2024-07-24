@@ -28,7 +28,7 @@ void TitleScene::Init()
 	for (uint32_t i = 0; i < 1; i++)
 	{
 		Object3d* object3d = new Object3d;
-		//Particle* particle = new Particle;
+		Particle* particle = new Particle;
 		uint32_t j = i + 1;
 		if (i == 0)
 		{
@@ -64,8 +64,8 @@ void TitleScene::Init()
 		object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 1.0f });
 		objects3d.push_back(object3d);
 		//object3d->SetRotate({ 0.0f, 3.3f, 0.0f });
-		//particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
-		//particles.push_back(particle);
+		particle->Initialize("Resource/particle.png", Object3dCommon::GetInstance());
+		particles.push_back(particle);
 	}
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
@@ -149,5 +149,9 @@ void TitleScene::Finalize()
 	for (Object3d* object3d : objects3d)
 	{
 		delete object3d;
+	}
+	for (Particle* particle : particles)
+	{
+		delete particle;
 	}
 }

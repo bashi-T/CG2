@@ -28,7 +28,6 @@ public:
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	void MakeBufferView();
 	void InputData();
-	void MakeShaderResourceViewInstance();
 
 	struct VertexData
 	{
@@ -81,6 +80,7 @@ private:
 
 	VertexData* vertexData = nullptr;
 	Material* materialData = nullptr;
+	Material* colorData = nullptr;
 	ComPtr<ID3D12Resource> materialResource = nullptr;
 
 	TransformationMatrix* transformationMatrixData = nullptr;
@@ -95,6 +95,9 @@ private:
 	ComPtr<ID3D12Resource> cameraResource;
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	Matrix4x4 projectionMatrix;
+	EulerTransform transformMatrix = {};
+	Matrix4x4 worldViewProjectionMatrix = {};
+	Matrix4x4 viewMatrix;
 
 };
 

@@ -13,7 +13,7 @@ struct VertexShaderInput
   float32_t3 texcoord : TEXCOORD0;
 };
 
-VertexShaderOutput  main(VertexShaderInput input)
+VertexShaderOutput main(VertexShaderInput input)
 {
   VertexShaderOutput output;
   output.position = mul(input.position, gTransformationMatrix.WVP).xyww;

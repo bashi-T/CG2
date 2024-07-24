@@ -3,10 +3,10 @@
 void ModelCommon::Initialize(DX12Common* dxCommon)
 {
 	this->dxCommon_ = dxCommon;
-	ResetDXC();
+	//ResetDXC();
 
 	//MakePSO(dxCommon_);
-	MakeSkeltonPSO(dxCommon_);
+	//MakeSkeltonPSO(dxCommon_);
 }
 
 void ModelCommon::ResetDXC()
