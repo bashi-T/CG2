@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\ClearScene.cpp" />
     <ClCompile Include="GameObject\EnemyBullet.cpp" />
     <ClCompile Include="GameObject\PlayerBullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="GameObject\Enemy.cpp" />
     <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="Scene\GameOverScene.cpp" />
     <ClCompile Include="Scene\GameManager.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Math\CGVector.cpp" />
@@ -48,11 +50,13 @@
     <ClCompile Include="GameObject\Whale.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene\ClearScene.h" />
     <ClInclude Include="GameObject\EnemyBullet.h" />
     <ClInclude Include="GameObject\PlayerBullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="GameObject\Enemy.h" />
     <ClInclude Include="GameObject\Player.h" />
+    <ClInclude Include="Scene\GameOverScene.h" />
     <ClInclude Include="Scene\GameManager.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Objects\Particle.h" />

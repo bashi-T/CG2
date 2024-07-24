@@ -1,6 +1,6 @@
 #pragma once
 
-enum Scene { TITLE, INGAME };
+enum Scene { TITLE, INGAME, GAMEOVER, CLEAR };
 
 class SceneManager
 {

@@ -18,7 +18,6 @@ void Enemy::Initialize(Player* player, Whale* whale)
 	}
 	model->Memcpy();
 	object3d->SetTranslate({ 0.0f,0.0f,10.0f });
-
 }
 
 void Enemy::Update()
@@ -37,11 +36,19 @@ void Enemy::Update()
 	{
 		Shot();
 	}
-	if (shotInterval == 1&&object3d->GetTranslate().z>whale_->GetTranslate().z)
+	if (shotInterval == 1 && object3d->GetTranslate().z > whale_->GetTranslate().z)
 	{
 		SetEnemyVector(whale_->GetTranslate());
 	}
+	else if (shotInterval == 1 && enemyVector.z > 0.0f)
+	{
+		SetEnemyVector({ enemyVector.x,enemyVector.y,-1.0f });
+	}
 	object3d->SetTranslate(Add(object3d->GetTranslate(), Multiply(0.05f, enemyVector)));
+	if (object3d->GetTranslate().z < Camera::GetInstance()->GetTranslate().z)
+	{
+		isDead = true;
+	}
 	object3d->Update(Camera::GetInstance());
 	for (EnemyBullet* bullet : eBullets)
 	{

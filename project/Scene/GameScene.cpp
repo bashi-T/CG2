@@ -58,9 +58,32 @@ void GameScene::Update()
 			}
 			return false;
 		});
-	if (whale_->GetLife() <0)
+	if (whale_->GetLife() == 0)
 	{
-		sceneNo = TITLE;
+		enemys_.resize(0);
+		sceneNo = GAMEOVER;
+	}
+	else if (enemys_.size() == 0)
+	{
+		sceneNo = CLEAR;
+	}
+
+	if (whale_->GetTranslate().x > player_->GetTranslate().x + whale_->GetMaxDistance())
+	{
+		whale_->SetTranslate({ player_->GetTranslate().x + whale_->GetMaxDistance(),whale_->GetTranslate().y,whale_->GetTranslate().z });
+	}
+	if (whale_->GetTranslate().x < player_->GetTranslate().x - whale_->GetMaxDistance())
+	{
+		whale_->SetTranslate({ player_->GetTranslate().x - whale_->GetMaxDistance(),whale_->GetTranslate().y,whale_->GetTranslate().z });
+	}
+
+	if (whale_->GetTranslate().z > player_->GetTranslate().z + whale_->GetMaxDistance())
+	{
+		whale_->SetTranslate({ whale_->GetTranslate().x,whale_->GetTranslate().y,player_->GetTranslate().z + whale_->GetMaxDistance() });
+	}
+	if (whale_->GetTranslate().z < player_->GetTranslate().z - whale_->GetMaxDistance())
+	{
+		whale_->SetTranslate({ whale_->GetTranslate().x,whale_->GetTranslate().y,player_->GetTranslate().z - whale_->GetMaxDistance() });
 	}
 	player_->Update();
 	whale_->Update();
@@ -195,7 +218,7 @@ void GameScene::CheckAllCollisions()
 			{
 				whale_->OnCollision();
 				enemy_->OnCollision();
-				break;
+				return;
 			}
 		}
 #pragma endregion
@@ -214,7 +237,7 @@ void GameScene::CheckAllCollisions()
 				{
 					whale_->OnCollision();
 					bullet->OnCollision();
-					break;
+					return;
 				}
 			}
 		}

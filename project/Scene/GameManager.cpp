@@ -5,6 +5,8 @@ GameManager::GameManager()
 {
 	sceneArr_[TITLE] = std::make_unique<TitleScene>();
 	sceneArr_[INGAME] = std::make_unique<GameScene>();
+	sceneArr_[GAMEOVER] = std::make_unique<GameOverScene>();
+	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
 	currentSceneNo_ = TITLE;
 }
 
@@ -54,7 +56,7 @@ int GameManager::Run()
 	SPCommon->Initialize(dx12Common);
 
 	sceneArr_[TITLE]->Init();
-	sceneArr_[INGAME]->Init();
+	//sceneArr_[INGAME]->Init();
 
 	while (NewMSG.message != WM_QUIT)
 	{
@@ -71,14 +73,15 @@ int GameManager::Run()
 		camera->GetInstance()->Update();
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
-		//if (prevSceneNo_ != currentSceneNo_) {
-		//	sceneArr_[currentSceneNo_]->Init();
-		//}
+		if (prevSceneNo_ != currentSceneNo_)
+		{
+			sceneArr_[prevSceneNo_]->Finalize();
+			sceneArr_[currentSceneNo_]->Init();
+		}
 		imgui->Update();
 		sceneArr_[currentSceneNo_]->Update();
 #ifdef _DEBUG
 		ImGui::Begin("camera");
-
 		//ImGui::DragFloat3("object.rotate", (float*)&object3d->GetRotate(), 0.01f);
 			//ImGui::DragFloat3("object.translate", (float*)&object3d->GetTranslate(), 0.01f);
 		ImGui::DragFloat3("camera.rotate", (float*)&camera->GetInstance()->GetRotate(), 0.01f);
@@ -90,6 +93,24 @@ int GameManager::Run()
 		//ImGui::DragFloat4("particles.color", (float*)&particle->GetInstancingDataPlane()->color, 0.01f);
 		//ImGui::ColorEdit4("particles.color", (float*)&particle->GetParticlesPlane()->color, 0.01f);
 		ImGui::End();
+		ImGui::Begin("scene");
+		switch (int(sceneArr_[currentSceneNo_]->GetSceneNo()))
+		{
+		case 0:
+			ImGui::Text("TITLE");
+			break;
+		case 1:
+			ImGui::Text("GAMESCENE");
+			break;
+		case 2:
+			ImGui::Text("GAMEOVER");
+			break;
+		case 3:
+			ImGui::Text("CLEAR");
+			break;
+		}
+		ImGui::End();
+
 #endif
 		if (winAPP->ProcessMessage())
 		{
@@ -106,12 +127,12 @@ int GameManager::Run()
 
 	CloseHandle(srvManager->GetFenceEvent());
 	delete particle;
-	sceneArr_[TITLE]->Finalize();
+	sceneArr_[currentSceneNo_]->Finalize();
 	for (Model* model : models)
 	{
 		delete model;
 	}
-	sceneArr_[INGAME]->Finalize();
+	//sceneArr_[INGAME]->Finalize();
 	ModelManager::GetInstance()->Finalize();
 	delete object3dCommon;
 	TextureManager::GetInstance()->Finalize();

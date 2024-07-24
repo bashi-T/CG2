@@ -95,6 +95,14 @@ void Player::Update()
 
 		object3d->SkeltonUpdate(Camera::GetInstance());
 		pCollision.center = object3d->GetTranslate();
+		if(hitTimer>=60)
+		{
+			hitTimer++;
+			if (hitTimer == 120)
+			{
+				hitTimer = 0;
+			}
+		}
 	}
 	else
 	{
@@ -102,10 +110,6 @@ void Player::Update()
 		if (hitTimer == 60)
 		{
 			isHit = false;
-		}
-		if (hitTimer == 90)
-		{
-			hitTimer = 0;
 		}
 	}
 	for (PlayerBullet* bullet : pBullets)

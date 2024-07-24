@@ -13,14 +13,16 @@ public:
 	void Draw();
 
 	void OnCollision();
+	void SetTranslate(Vector3 translate);
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return wCollision; }
 	int GetLife() { return life; }
 	bool GetIsHit() { return isHit; }
+	float GetMaxDistance() { return maxDistance; }
 
 private:
-	Object3d* object3d = new Object3d;
-	Player* player = new Player;
+	Object3d* object3d;
+	Player* player;
 	const std::string whaleModel = "simpleSkin/simpleSkin.gltf";
 	const std::string whaleSkin = "Resource/monsterBall.png";
 	Vector3 whaleSpeed = { 0.1f,0.1f,0.1f };
@@ -32,5 +34,6 @@ private:
 	OBB wCollision;
 	int life = 4;
 	uint32_t coolTimer;
+	float maxDistance = 8.0f;
 };
 

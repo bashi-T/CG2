@@ -4,6 +4,8 @@
 #include"SceneManager.h"
 #include"TitleScene.h"
 #include"GameScene.h"
+#include"GameOverScene.h"
+#include"ClearScene.h"
 
 #include"Systems/WindowApp.h"
 #include"Systems/Debug.h"
@@ -18,7 +20,7 @@
 class GameManager
 {
 private:
-	std::unique_ptr<SceneManager> sceneArr_[2];
+	std::unique_ptr<SceneManager> sceneArr_[4];
 	int currentSceneNo_ = 0;
 	int prevSceneNo_ = 0;
 	WinAPP* winAPP;

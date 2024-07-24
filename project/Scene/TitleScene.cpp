@@ -67,7 +67,7 @@ void TitleScene::Init()
 	//particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
 	//particles.push_back(particle);
 };
-//objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
+    //objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 }

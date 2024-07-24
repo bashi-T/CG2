@@ -2,6 +2,8 @@
 
 void Whale::Initialize()
 {
+	object3d = new Object3d; 
+	player = new Player;
 	object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
 	ModelManager::GetInstance()->LoadSkeltonAnimation(whaleModel, whaleSkin, SRVManager::GetInstance());
 	object3d->SetModel(whaleModel);
@@ -131,16 +133,23 @@ void Whale::Update()
 					accSpeed.z = 0.0f;
 				}
 			}
-
 		}
 	}
+    else
+    {
+		int x = 1;
+		x++;
+	}
+
 	if (isHit == true)
 	{
+		object3d->SetRotate({ object3d->GetRotate().x,object3d->GetRotate().y + 1.0f,object3d->GetRotate().z });
 		coolTimer++;
 		if (coolTimer == 120)
 		{
 			isHit = false;
 			coolTimer = 0;
+			object3d->SetRotate({ 0.0f,0.0f,0.0f });
 		}
 	}
 
@@ -150,6 +159,7 @@ void Whale::Update()
 	object3d->SkeltonUpdate(Camera::GetInstance());
 	ImGui::Begin("whale");
 	ImGui::DragFloat3("whale.translate", (float*)&object3d->GetTranslate(), 0.01f);
+	ImGui::Text("life:%d", life);
 	ImGui::End();
 }
 
@@ -162,4 +172,9 @@ void Whale::OnCollision()
 {
 	life -= 1;
 	isHit = true;
+}
+
+void Whale::SetTranslate(Vector3 translate)
+{
+	object3d->SetTranslate(translate);
 }
