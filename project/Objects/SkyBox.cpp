@@ -32,7 +32,7 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
-	transformMatrix.scale = { 100.0f,100.0f,100.0f };
+	transformMatrix.scale = { 10.0f,10.0f,10.0f };
 	//transformMatrix.translate = { 100.0f,100.0f,100.0f };
 }
 
@@ -87,8 +87,6 @@ void SkyBox::Draw(SkyBoxCommon* skyboxCommon)
 	//skyBoxCommon_->GetDx12Common()->GetCommandList().Get()->
 	//	SetGraphicsRootConstantBufferView(
 	//		4, directionalLightResource->GetGPUVirtualAddress());
-
-
 	SRVManager::GetInstance()->SetGraphicsRootDescriptorTable(
 		2, materialData->material.textureIndex);
 
@@ -177,8 +175,8 @@ void SkyBox::InputData()
 	indexData[1] = 1;
 	indexData[2] = 2;
 
-	indexData[3] = 0;
-	indexData[4] = 2;
+	indexData[3] = 2;
+	indexData[4] = 1;
 	indexData[5] = 3;
 
 	indexData[6] = 4;
