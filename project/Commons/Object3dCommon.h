@@ -13,7 +13,7 @@
 class Object3dCommon
 {
 public:
-	void Initialize();
+	void Initialize(DX12Common* dxCommon);
 	ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,
@@ -28,10 +28,11 @@ public:
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
 	ComPtr<ID3D12PipelineState> GetGraphicsPipelineStates(int t) { return graphicsPipelineStates[t]; }
 	ComPtr<ID3D12RootSignature> GetRootSignatures(int t) { return rootSignatures[t]; }
-	DX12Common* GetDx12Common() { return DX12Common::GetInstance(); }
+	DX12Common* GetDx12Common() { return dxCommon_; }
 	Camera* GetDefaultCamera()const { return defaultCamera; }
 
 private:
+	DX12Common* dxCommon_;
 	Debug* debug_;
 	MyImGui* imgui_;
 	HRESULT hr = NULL;

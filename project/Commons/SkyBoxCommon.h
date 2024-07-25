@@ -14,7 +14,7 @@ class SkyBoxCommon
 {
 public:
 	~SkyBoxCommon();
-	void Initialize();
+	void Initialize(DX12Common*dxCommon);
 	//void Update();
 	//void Draw(int32_t width, int32_t height);
 	ComPtr<IDxcBlob> CompileShader(
@@ -30,7 +30,7 @@ public:
 	ComPtr<ID3D12Resource> GetVertexResource() { return vertexResource; }
 	ComPtr<ID3D12PipelineState> GetGraphicsPipelineState() { return graphicsPipelineState; }
 	ComPtr<ID3D12RootSignature> GetRootSignature() { return rootSignature; }
-	DX12Common* GetDx12Common() { return DX12Common::GetInstance(); }
+	DX12Common* GetDx12Common() { return dxCommon_; }
 
 	struct DirectionalLight {
 		Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -42,7 +42,7 @@ private:
 	Debug* debug_;
 	MyImGui* imgui_;
 	HRESULT hr = NULL;
-	DX12Common* dx12Common_;
+	DX12Common* dxCommon_;
 	EulerTransform transformMatrix = {};
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	static inline SkyBoxCommon* instance;

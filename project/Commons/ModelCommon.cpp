@@ -62,7 +62,7 @@ ComPtr<IDxcBlob> ModelCommon::CompileShader(
 	return shaderBlob;
 }
 
-void ModelCommon::MakePSO(DX12Common* dxcommon)
+void ModelCommon::MakePSO()
 {
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
 	descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -131,7 +131,7 @@ void ModelCommon::MakePSO(DX12Common* dxcommon)
 		assert(false);
 	}
 
-	hr = dxcommon->GetDevice().Get()->CreateRootSignature(
+	hr = dxCommon_->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
@@ -202,12 +202,12 @@ void ModelCommon::MakePSO(DX12Common* dxcommon)
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = dxcommon->GetDevice().Get()->CreateGraphicsPipelineState(
+	hr = dxCommon_->GetDevice().Get()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 }
 
-void ModelCommon::MakeSkeltonPSO(DX12Common* dxcommon)
+void ModelCommon::MakeSkeltonPSO()
 {
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature_{};
 	descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -280,7 +280,7 @@ void ModelCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 		assert(false);
 	}
 
-	hr = dxcommon->GetDevice().Get()->CreateRootSignature(
+	hr = dxCommon_->GetDevice().Get()->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 
@@ -361,7 +361,7 @@ void ModelCommon::MakeSkeltonPSO(DX12Common* dxcommon)
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = dxcommon->GetDevice().Get()->CreateGraphicsPipelineState(
+	hr = dxCommon_->GetDevice().Get()->CreateGraphicsPipelineState(
 		&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
 }

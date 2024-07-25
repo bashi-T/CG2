@@ -34,8 +34,8 @@ public:
 		IDxcCompiler3* dxcCompiler,
 		IDxcIncludeHandler* includeHandler);
 	void ResetDXC();
-	void MakePSO(DX12Common* dxcommon);
-	void MakeSkeltonPSO(DX12Common* dxcommon);
+	void MakePSO();
+	void MakeSkeltonPSO();
 
 	DX12Common* GetDx12Common()const { return dxCommon_; }
 };

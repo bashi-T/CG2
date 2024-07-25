@@ -5,25 +5,12 @@ const uint32_t SRVManager::kSRVIndexTop = 0;
 
 void SRVManager::Initialize()
 {
-	MakeFence();
 	descriptorHeap = DX12Common::GetInstance()->CreateDescriptorHeap(
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
 		kMaxSRVCount,
 		true);
 	descriptorSize = DX12Common::GetInstance()->GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
-	viewport.Width = float(WinAPP::clientWidth_);
-	viewport.Height = float(WinAPP::clientHeight_);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-
-	scissorRect.left = LONG(0.0f);
-	scissorRect.right = LONG(WinAPP::clientWidth_);
-	scissorRect.top = LONG(0.0f);
-	scissorRect.bottom = LONG(WinAPP::clientHeight_);
-
 }
 
 uint32_t SRVManager::Allocate()
@@ -108,73 +95,6 @@ bool SRVManager::CheckNumTexture(uint32_t textureIndex)
 	}
 }
 
-void SRVManager::PreDraw()
-{
-	backBufferIndex = DX12Common::GetInstance()->GetSwapChain()->GetCurrentBackBufferIndex();
-
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = DX12Common::GetInstance()->GetSwapChainResources()[backBufferIndex].Get();
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
-	
-	ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] =
-	{
-		descriptorHeap
-	};
-	DX12Common::GetInstance()->GetCommandList()->
-		SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-	rtvHandles = DX12Common::GetInstance()->GetRtvHandles(backBufferIndex);
-	dsvHandles = DX12Common::GetInstance()->GetDsvHandle();
-
-	DX12Common::GetInstance()->GetCommandList()->RSSetViewports(1, &viewport);
-	DX12Common::GetInstance()->GetCommandList()->RSSetScissorRects(1, &scissorRect);
-	DX12Common::GetInstance()->GetCommandList()->ClearDepthStencilView(
-		dsvHandles,
-		D3D12_CLEAR_FLAG_DEPTH,
-		1.0f,
-		0,
-		0,
-		nullptr);
-	DX12Common::GetInstance()->GetCommandList()->ClearRenderTargetView(
-		rtvHandles, clearColor, 0, nullptr);
-
-	DX12Common::GetInstance()->GetCommandList()->OMSetRenderTargets(1,
-		&rtvHandles, false, &dsvHandles);
-}
-
-void SRVManager::PostDraw()
-{
-	backBufferIndex = DX12Common::GetInstance()->GetSwapChain()->GetCurrentBackBufferIndex();
-	barrier.Transition.pResource = DX12Common::GetInstance()->GetSwapChainResources()[backBufferIndex].Get();
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DX12Common::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
-
-	hr = DX12Common::GetInstance()->GetCommandList()->Close();
-	assert(SUCCEEDED(hr));
-
-	ComPtr<ID3D12CommandList> commandLists[] =
-	{
-		DX12Common::GetInstance()->GetCommandList().Get()
-	};
-	DX12Common::GetInstance()->GetCommandQueue()->ExecuteCommandLists(1, commandLists->GetAddressOf());
-	DX12Common::GetInstance()->GetSwapChain()->Present(1, 0);
-	fenceValue++;
-	DX12Common::GetInstance()->GetCommandQueue()->Signal(fence.Get(), fenceValue);
-
-	if (fence->GetCompletedValue() < fenceValue)
-	{
-		fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		WaitForSingleObject(fenceEvent, INFINITE);
-	}
-
-	hr = DX12Common::GetInstance()->GetCommandAllocator()->Reset();
-	assert(SUCCEEDED(hr));
-	hr = DX12Common::GetInstance()->GetCommandList()->Reset(DX12Common::GetInstance()->GetCommandAllocator().Get(), nullptr);
-	assert(SUCCEEDED(hr));
-}
 SRVManager* SRVManager::GetInstance()
 {
 	if (instance == NULL)
@@ -182,12 +102,4 @@ SRVManager* SRVManager::GetInstance()
 		instance = new SRVManager;
 	}
 	return instance;
-}
-void SRVManager::MakeFence()
-{
-	hr = DX12Common::GetInstance()->GetDevice()->CreateFence(fenceValue,
-		D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-	assert(SUCCEEDED(hr));
-	fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	assert(fenceEvent != nullptr);
 }

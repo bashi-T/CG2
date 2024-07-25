@@ -32,8 +32,7 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
-	transformMatrix.scale = { 10.0f,10.0f,10.0f };
-	//transformMatrix.translate = { 100.0f,100.0f,100.0f };
+	transformMatrix.scale = { 100.0f,100.0f,100.0f };
 }
 
 void SkyBox::Update()
@@ -138,7 +137,7 @@ void SkyBox::MakeBufferView()
 
 void SkyBox::InputData()
 {
-	//右面 [0,1,2][2,1,3]
+	//右面 [0,1,2]→↙↑[2,1,3]↗↓←
 	vertexData[0].position = { +1.0f,+1.0f,+1.0f,+1.0f };
 	vertexData[1].position = { +1.0f,+1.0f,-1.0f,+1.0f };
 	vertexData[2].position = { +1.0f,-1.0f,+1.0f,+1.0f };
@@ -161,10 +160,10 @@ void SkyBox::InputData()
 	vertexData[15].position = { -1.0f,-1.0f,-1.0f,+1.0f };
 
 	//上面 [16,17,18][18,17,19]
-	vertexData[16].position = { +1.0f,+1.0f,+1.0f,+1.0f };
-	vertexData[17].position = { -1.0f,+1.0f,+1.0f,+1.0f };
-	vertexData[18].position = { +1.0f,+1.0f,-1.0f,+1.0f };
-	vertexData[19].position = { -1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[16].position = { -1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[17].position = { +1.0f,+1.0f,-1.0f,+1.0f };
+	vertexData[18].position = { -1.0f,+1.0f,+1.0f,+1.0f };
+	vertexData[19].position = { +1.0f,+1.0f,+1.0f,+1.0f };
 	//下面 [20,21,22][22,21,23]
 	vertexData[20].position = { -1.0f,-1.0f,+1.0f,+1.0f };
 	vertexData[21].position = { +1.0f,-1.0f,+1.0f,+1.0f };
@@ -183,7 +182,7 @@ void SkyBox::InputData()
 	indexData[7] = 5;
 	indexData[8] = 6;
 
-	indexData[9] = 6;
+	indexData[ 9] = 6;
 	indexData[10] = 5;
 	indexData[11] = 7;
 

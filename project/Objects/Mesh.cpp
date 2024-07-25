@@ -358,6 +358,37 @@ void Mesh::MakeBufferView()
 //	vertexData[2].normal.y = vertexData[2].position.y;
 //	vertexData[2].normal.z = vertexData[2].position.z;
 //}
+//
+//void Mesh::DrawTriangle(
+//    Vector4 Top, Vector4 Right, Vector4 Left, Vector4 color, Vector2 coordTop, Vector2 coordRight,
+//    Vector2 coordLeft, bool useWorldMap) {
+//	InputDataTriangle(Top, Right, Left, color, coordTop, coordRight, coordLeft);
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
+//	DX12Common::GetInstance()->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
+//	DX12Common::GetInstance()->GetCommandList().Get()->
+//		IASetIndexBuffer(&indexBufferViewSphere);
+//	DX12Common::GetInstance()->GetCommandList().Get()->IASetPrimitiveTopology(
+//	    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+//	    0, materialResource->GetGPUVirtualAddress());
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+//	    1, transformationMatrixResource->GetGPUVirtualAddress());
+//
+//	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
+//	    DX12Common::GetInstance()->GetRtvHandles(DX12Common::GetInstance()->GetBackBufferIndex());
+//	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
+//
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootDescriptorTable(
+//	    2, useWorldMap ? GetTextureSrvHandleGPU2()
+//	                   : GetTextureSrvHandleGPU());
+//
+//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
+//		3, directionalLightResource->GetGPUVirtualAddress());
+//
+//	DX12Common::GetInstance()->GetCommandList().Get()->DrawInstanced(3, 1, 0, 0);
+//}
 
 void Mesh::InputDataSphere(
     Vector4 LeftTop, Vector4 RightTop, Vector4 RightBottom, Vector4 LeftBottom, Vector4 color,
@@ -427,38 +458,6 @@ void Mesh::InputDataSphere(
 	indexDataSphere[count * 6 + 4] = count * 4 + 2;
 	indexDataSphere[count * 6 + 5] = count * 4 + 3;
 }
-
-
-//void Mesh::DrawTriangle(
-//    Vector4 Top, Vector4 Right, Vector4 Left, Vector4 color, Vector2 coordTop, Vector2 coordRight,
-//    Vector2 coordLeft, bool useWorldMap) {
-//	InputDataTriangle(Top, Right, Left, color, coordTop, coordRight, coordLeft);
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetPipelineState(graphicsPipelineState.Get());
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootSignature(rootSignature.Get());
-//	DX12Common::GetInstance()->GetCommandList().Get()->IASetVertexBuffers(0, 1, &vertexBufferView);
-//	DX12Common::GetInstance()->GetCommandList().Get()->
-//		IASetIndexBuffer(&indexBufferViewSphere);
-//	DX12Common::GetInstance()->GetCommandList().Get()->IASetPrimitiveTopology(
-//	    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-//	    0, materialResource->GetGPUVirtualAddress());
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-//	    1, transformationMatrixResource->GetGPUVirtualAddress());
-//
-//	D3D12_CPU_DESCRIPTOR_HANDLE rtv =
-//	    DX12Common::GetInstance()->GetRtvHandles(DX12Common::GetInstance()->GetBackBufferIndex());
-//	D3D12_CPU_DESCRIPTOR_HANDLE dsv = DX12Common::GetInstance()->GetDsvHandle();
-//
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootDescriptorTable(
-//	    2, useWorldMap ? GetTextureSrvHandleGPU2()
-//	                   : GetTextureSrvHandleGPU());
-//
-//	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
-//		3, directionalLightResource->GetGPUVirtualAddress());
-//
-//	DX12Common::GetInstance()->GetCommandList().Get()->DrawInstanced(3, 1, 0, 0);
-//}
 
 void Mesh::DrawSphere(
 	const Sphere& sphere_, Vector4 color, bool useWorldMap, int32_t width, int32_t height)
@@ -575,14 +574,14 @@ void Mesh::MakeShaderResourceView(const DirectX::TexMetadata& metadata, const Di
 	//const uint32_t descriptorSizeSRV = DX12Common::GetInstance()->
 	//	GetDevice().Get()->GetDescriptorHandleIncrementSize(
 	//		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
+	//
 	//textureSrvHandleCPU = DX12Common::GetInstance()->
 	//	GetCPUDescriptorHandle(DX12Common::GetInstance()->
 	//		GetSrvDescriptorHeap().Get(), descriptorSizeSRV, 1);
 	//textureSrvHandleGPU = DX12Common::GetInstance()->
 	//	GetGPUDescriptorHandle(DX12Common::GetInstance()->
 	//		GetSrvDescriptorHeap().Get(), descriptorSizeSRV, 1);
-
+	//
 	//textureSrvHandleCPU2 = DX12Common::GetInstance()->
 	//	GetCPUDescriptorHandle(DX12Common::GetInstance()->
 	//		GetSrvDescriptorHeap().Get(), descriptorSizeSRV, 2);

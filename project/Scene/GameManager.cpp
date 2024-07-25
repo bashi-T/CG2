@@ -61,7 +61,7 @@ int GameManager::Run()
 		srvManager->GetSrvDescriptorHeap().Get());
 	TextureManager::GetInstance()->Initialize();
 
-	object3dCommon->Initialize();
+	object3dCommon->Initialize(dx12Common);
 	ModelManager::GetInstance()->Initialize(dx12Common);
 	camera->GetInstance()->SetRotate({ 0.26f,0.0f,0.0f });
 	camera->GetInstance()->SetTranslate({ 0.0f,7.0f,-20.0f });
@@ -69,7 +69,7 @@ int GameManager::Run()
 	object3dCommon->SetDefaultCamera(camera->GetInstance());
 	SPCommon->Initialize();
 
-	skyboxCommon->Initialize();
+	skyboxCommon->Initialize(dx12Common);
 	skybox->Initialize(skyboxCommon, "Resource/rostock_laage_airport_4k.dds");
 	sceneArr_[TITLE]->Init();
 	sceneArr_[INGAME]->Init();
@@ -115,16 +115,16 @@ int GameManager::Run()
 			ImGui::Render();
 			break;
 		}
-		srvManager->PreDraw();
+		dx12Common->PreDraw();
 		skybox->Draw(skyboxCommon);
 		sceneArr_[currentSceneNo_]->Draw();
 
 		imgui->Endframe(dx12Common->GetCommandList().Get());
 
-		srvManager->PostDraw();
+		dx12Common->PostDraw();
 	}
 
-	CloseHandle(srvManager->GetFenceEvent());
+	CloseHandle(dx12Common->GetFenceEvent());
 	delete particle;
 	sceneArr_[TITLE]->Finalize();
 	for (Model* model : models)

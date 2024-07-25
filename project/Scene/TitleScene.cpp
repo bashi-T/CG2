@@ -4,7 +4,6 @@ void TitleScene::Init()
 {
 	std::string textureFilePath[100] =//textureの左右が反転してる
 	{
-		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
 		"Resource/ganban.png",
 		"Resource/white.png",
 		"Resource/worldMap.png",
@@ -15,7 +14,6 @@ void TitleScene::Init()
 		"Resource/cursor.png",
 		"Resource/circle.png",
 		"Resource/particle.png",
-		"Resource/rostock_laage_airport_4k.dds",
 	};
 	TextureManager::GetInstance()->LoadTexture(textureFilePath[0]);
 	std::string objFilePath[100] =
@@ -29,23 +27,23 @@ void TitleScene::Init()
 	{
 		Object3d* object3d = new Object3d;
 		Particle* particle = new Particle;
-		uint32_t j = i + 1;
+		//uint32_t j = i + 1;
 		if (i == 0)
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[j]);
+			ModelManager::GetInstance()->LoadAnimationModel(objFilePath[i], textureFilePath[i]);
 			object3d->SetModel(objFilePath[i]);
 		}
 		else if (i == 1 || i == 2)
 		{
 			object3d->InitializeSkeleton(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[j], SRVManager::GetInstance());
+			ModelManager::GetInstance()->LoadSkeltonAnimation(objFilePath[i], textureFilePath[i], SRVManager::GetInstance());
 			object3d->SetModel(objFilePath[i]);
 		}
 		else
 		{
 			object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());
-			ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[j]);
+			ModelManager::GetInstance()->LoadModel(objFilePath[i], textureFilePath[i]);
 			object3d->SetModel(objFilePath[i]);
 		}
 		//object3d->Initialize(Object3dCommon::GetInstance(), SRVManager::GetInstance());

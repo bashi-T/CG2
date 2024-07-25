@@ -50,7 +50,10 @@ public:
 
 	void DebugLayer();
 	void InfoQueue(ID3D12Device* device);
+	void MakeFence();
 
+	void PreDraw();
+	void PostDraw();
 
 	ComPtr<ID3D12Debug1> GetDebugController() { return debugController; }
 	ComPtr<ID3D12DebugDevice> GetDebugDevice() { return debugDevice; }
@@ -71,7 +74,8 @@ public:
 	D3D12_RENDER_TARGET_VIEW_DESC GetRtvDesc() { return rtvDesc; }
 	ComPtr<ID3D12DescriptorHeap> GetRtvDescriptorHeap() { return rtvDescriptorHeap; }
 	ComPtr<ID3D12DescriptorHeap> GetDsvDescriptorHeap() { return dsvDescriptorHeap; }
-		
+	HANDLE GetFenceEvent() { return fenceEvent; }
+
 	~DX12Common() {
 		swapChain.Reset();
 		device_.Reset();
@@ -83,7 +87,6 @@ private:
 	DX12Common(const DX12Common& obj) = delete;
 	DX12Common& oparator(const DX12Common&obj) = delete;
 	static inline DX12Common* instance;
-
 	Debug* debug_ = nullptr;
 	WinAPP* winApp_ = nullptr;
 
@@ -115,6 +118,14 @@ private:
 	void UpdateFixFPS();
 
 	std::chrono::steady_clock::time_point reference_;
+	D3D12_RESOURCE_BARRIER barrier{};
+	//ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
+	float clearColor[4] = { 0.1f, 0.25f, 0.5f, 1.0f };
+	D3D12_VIEWPORT viewport{};
+	D3D12_RECT scissorRect{};
+	HANDLE fenceEvent;
+	uint64_t fenceValue = 0;
+	ComPtr<ID3D12Fence> fence = nullptr;
 
 };
 

@@ -9,15 +9,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	uint32_t useIndex = 0;
 	UINT backBufferIndex = 0;
-	D3D12_RESOURCE_BARRIER barrier{};
-	float clearColor[4] = { 0.1f, 0.25f, 0.5f, 1.0f };
-	D3D12_VIEWPORT viewport{};
-	D3D12_RECT scissorRect{};
-	ComPtr<ID3D12Fence> fence = nullptr;
-	HANDLE fenceEvent;
 	static inline SRVManager* instance;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles;
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandles;
 	HRESULT hr=NULL;
 
 public:
@@ -38,15 +30,9 @@ public:
 		UINT numElements,
 		UINT structureByteStride);
 	void SetGraphicsRootDescriptorTable(UINT RootParamaterIndex, uint32_t srvIndex);
-	void MakeFence();
-	uint64_t fenceValue = 0;
 	bool CheckNumTexture(uint32_t textureIndex);
-	void PreDraw();
-	void PostDraw();
 
-	UINT GetBackBufferIndex() { return backBufferIndex; }
 	ComPtr<ID3D12DescriptorHeap> GetSrvDescriptorHeap() { return descriptorHeap; }
-	HANDLE GetFenceEvent() { return fenceEvent; }
 	static SRVManager* GetInstance();
 
 };
