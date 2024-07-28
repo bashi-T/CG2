@@ -280,7 +280,7 @@ void Particle::Draw()
 	DX12Common::GetInstance()->GetCommandList().Get()->SetGraphicsRootConstantBufferView(
 		3, cameraResource->GetGPUVirtualAddress());
 
-	DX12Common::GetInstance()->GetCommandList().Get()->DrawIndexedInstanced(6, kNumInstance, 0, 0, 0);
+	DX12Common::GetInstance()->GetCommandList().Get()->DrawIndexedInstanced(indexBufferView.SizeInBytes, kNumInstance, 0, 0, 0);
 }
 
 ComPtr<ID3D12Resource> Particle::CreateBufferResource(size_t sizeInBytes)

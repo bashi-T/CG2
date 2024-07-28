@@ -35,7 +35,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE SRVManager::GetGPUDescriptorHandle(uint32_t index)
 	return handleGPU;
 }
 
-void SRVManager::CreateSRVforTexture2D(
+void SRVManager::CreateSRV(
 	uint32_t srvIndex,
 	ID3D12Resource* pResource,
 	const DirectX::TexMetadata& metadata,

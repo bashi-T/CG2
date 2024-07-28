@@ -186,7 +186,7 @@ void Sprite::Draw(SpriteCommon* spriteCommon)
 		2, materialData->material.textureIndex);
 
 	spriteCommon_->GetDx12Common()->GetCommandList().Get()->
-		DrawIndexedInstanced(6, 1, 0, 0, 0);
+		DrawIndexedInstanced(indexBufferView.SizeInBytes, 1, 0, 0, 0);
 }
 
 ComPtr<ID3D12Resource> Sprite::CreateBufferResource(SpriteCommon* spriteCommon, size_t sizeInBytes)

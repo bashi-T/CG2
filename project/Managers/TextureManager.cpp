@@ -77,7 +77,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.srvHandleGPU = SRVManager::GetInstance()->
 		GetGPUDescriptorHandle(textureData.srvIndex);
 
-	SRVManager::GetInstance()->CreateSRVforTexture2D(
+	SRVManager::GetInstance()->CreateSRV(
 		textureData.srvIndex,
 		textureData.resource.Get(),
 		textureData.metadata,

@@ -19,7 +19,7 @@ public:
 	uint32_t Allocate();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(uint32_t index);
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);
-	void CreateSRVforTexture2D(
+	void CreateSRV(
 		uint32_t srvIndex,
 		ID3D12Resource* pResource,
 		const DirectX::TexMetadata& metadata,
