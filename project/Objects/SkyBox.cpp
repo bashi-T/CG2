@@ -35,29 +35,6 @@ void SkyBox::Initialize(SkyBoxCommon* skyBoxCommon, std::string textureFilePath)
 void SkyBox::Update()
 {
 	InputData();
-	transformationMatrixData->WVP = MakeIdentity4x4();
-	Matrix4x4 worldMatrix = MakeAffineMatrix(
-		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
-
-		const Matrix4x4& viewProjectionMatrix = Camera::GetInstance()->GetViewProjectionMatrix();
-		worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
-
-	cameraData->worldPosition =
-	{
-		Camera::GetInstance()->GetWorldMatrix().m[3][0],
-		Camera::GetInstance()->GetWorldMatrix().m[3][1],
-		Camera::GetInstance()->GetWorldMatrix().m[3][2]
-	};
-	//directionalLightData->color = directionalLight.color;
-	//directionalLightData->direction = directionalLight.direction;
-	//directionalLightData->intensity = directionalLight.intensity;
-	//Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
-	//uvTransformMatrix = Multiply(uvTransformMatrix, MakerotateZMatrix(uvTransform.rotate.z));
-	//uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransform.translate));
-	//materialData[0].uvTransform = uvTransformMatrix;
-
-	transformationMatrixData->WVP = worldViewProjectionMatrix;
-	transformationMatrixData->World = worldMatrix;
 }
 
 void SkyBox::Draw(SkyBoxCommon* skyboxCommon)
@@ -133,6 +110,29 @@ void SkyBox::MakeBufferView()
 
 void SkyBox::InputData()
 {
+	transformationMatrixData->WVP = MakeIdentity4x4();
+	Matrix4x4 worldMatrix = MakeAffineMatrix(
+		transformMatrix.scale, transformMatrix.rotate, transformMatrix.translate);
+
+	const Matrix4x4& viewProjectionMatrix = Camera::GetInstance()->GetViewProjectionMatrix();
+	worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
+
+	cameraData->worldPosition =
+	{
+		Camera::GetInstance()->GetWorldMatrix().m[3][0],
+		Camera::GetInstance()->GetWorldMatrix().m[3][1],
+		Camera::GetInstance()->GetWorldMatrix().m[3][2]
+	};
+	//directionalLightData->color = directionalLight.color;
+	//directionalLightData->direction = directionalLight.direction;
+	//directionalLightData->intensity = directionalLight.intensity;
+	//Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	//uvTransformMatrix = Multiply(uvTransformMatrix, MakerotateZMatrix(uvTransform.rotate.z));
+	//uvTransformMatrix = Multiply(uvTransformMatrix, MakeTranslateMatrix(uvTransform.translate));
+	//materialData[0].uvTransform = uvTransformMatrix;
+
+	transformationMatrixData->WVP = worldViewProjectionMatrix;
+	transformationMatrixData->World = worldMatrix;
 	//右面 [0,1,2]→↙↑[2,1,3]↗↓←
 	vertexData[0].position = { +1.0f,+1.0f,+1.0f,1.0f };
 	vertexData[1].position = { +1.0f,+1.0f,-1.0f,1.0f };
@@ -215,29 +215,28 @@ void SkyBox::InputData()
 	indexData[35] = 23;
 
 
-	vertexData[0].texcoord = { vertexData[0].position.x,vertexData[0].position.y,vertexData[0].position.z };
-	vertexData[1].texcoord = { vertexData[1].position.x,vertexData[1].position.y,vertexData[1].position.z };
-	vertexData[2].texcoord = { vertexData[2].position.x,vertexData[2].position.y,vertexData[2].position.z };
-	vertexData[3].texcoord = { vertexData[3].position.x,vertexData[3].position.y,vertexData[3].position.z };
-	vertexData[4].texcoord = { vertexData[4].position.x,vertexData[4].position.y,vertexData[4].position.z };
-	vertexData[5].texcoord = { vertexData[5].position.x,vertexData[5].position.y,vertexData[5].position.z };
-	vertexData[6].texcoord = { vertexData[6].position.x,vertexData[6].position.y,vertexData[6].position.z };
-	vertexData[7].texcoord = { vertexData[7].position.x,vertexData[7].position.y,vertexData[7].position.z };
-	vertexData[8].texcoord = { vertexData[8].position.x,vertexData[8].position.y,vertexData[8].position.z };
-	vertexData[9].texcoord = { vertexData[9].position.x,vertexData[9].position.y,vertexData[9].position.z };
-	vertexData[10].texcoord = { vertexData[10].position.x,vertexData[10].position.y,vertexData[10].position.z };
-	vertexData[11].texcoord = { vertexData[11].position.x,vertexData[11].position.y,vertexData[11].position.z };
-	vertexData[12].texcoord = { vertexData[12].position.x,vertexData[12].position.y,vertexData[12].position.z };
-	vertexData[13].texcoord = { vertexData[13].position.x,vertexData[13].position.y,vertexData[13].position.z };
-	vertexData[14].texcoord = { vertexData[14].position.x,vertexData[14].position.y,vertexData[14].position.z };
-	vertexData[15].texcoord = { vertexData[15].position.x,vertexData[15].position.y,vertexData[15].position.z };
-	vertexData[16].texcoord = { vertexData[16].position.x,vertexData[16].position.y,vertexData[16].position.z };
-	vertexData[17].texcoord = { vertexData[17].position.x,vertexData[17].position.y,vertexData[17].position.z };
-	vertexData[18].texcoord = { vertexData[18].position.x,vertexData[18].position.y,vertexData[18].position.z };
-	vertexData[19].texcoord = { vertexData[19].position.x,vertexData[19].position.y,vertexData[19].position.z };
-	vertexData[20].texcoord = { vertexData[20].position.x,vertexData[20].position.y,vertexData[20].position.z };
-	vertexData[21].texcoord = { vertexData[21].position.x,vertexData[21].position.y,vertexData[21].position.z };
-	vertexData[22].texcoord = { vertexData[22].position.x,vertexData[22].position.y,vertexData[22].position.z };
-	vertexData[23].texcoord = { vertexData[23].position.x,vertexData[23].position.y,vertexData[23].position.z };
-
+	//vertexData[0].texcoord = { vertexData[0].position.x,vertexData[0].position.y,vertexData[0].position.z };
+	//vertexData[1].texcoord = { vertexData[1].position.x,vertexData[1].position.y,vertexData[1].position.z };
+	//vertexData[2].texcoord = { vertexData[2].position.x,vertexData[2].position.y,vertexData[2].position.z };
+	//vertexData[3].texcoord = { vertexData[3].position.x,vertexData[3].position.y,vertexData[3].position.z };
+	//vertexData[4].texcoord = { vertexData[4].position.x,vertexData[4].position.y,vertexData[4].position.z };
+	//vertexData[5].texcoord = { vertexData[5].position.x,vertexData[5].position.y,vertexData[5].position.z };
+	//vertexData[6].texcoord = { vertexData[6].position.x,vertexData[6].position.y,vertexData[6].position.z };
+	//vertexData[7].texcoord = { vertexData[7].position.x,vertexData[7].position.y,vertexData[7].position.z };
+	//vertexData[8].texcoord = { vertexData[8].position.x,vertexData[8].position.y,vertexData[8].position.z };
+	//vertexData[9].texcoord = { vertexData[9].position.x,vertexData[9].position.y,vertexData[9].position.z };
+	//vertexData[10].texcoord = { vertexData[10].position.x,vertexData[10].position.y,vertexData[10].position.z };
+	//vertexData[11].texcoord = { vertexData[11].position.x,vertexData[11].position.y,vertexData[11].position.z };
+	//vertexData[12].texcoord = { vertexData[12].position.x,vertexData[12].position.y,vertexData[12].position.z };
+	//vertexData[13].texcoord = { vertexData[13].position.x,vertexData[13].position.y,vertexData[13].position.z };
+	//vertexData[14].texcoord = { vertexData[14].position.x,vertexData[14].position.y,vertexData[14].position.z };
+	//vertexData[15].texcoord = { vertexData[15].position.x,vertexData[15].position.y,vertexData[15].position.z };
+	//vertexData[16].texcoord = { vertexData[16].position.x,vertexData[16].position.y,vertexData[16].position.z };
+	//vertexData[17].texcoord = { vertexData[17].position.x,vertexData[17].position.y,vertexData[17].position.z };
+	//vertexData[18].texcoord = { vertexData[18].position.x,vertexData[18].position.y,vertexData[18].position.z };
+	//vertexData[19].texcoord = { vertexData[19].position.x,vertexData[19].position.y,vertexData[19].position.z };
+	//vertexData[20].texcoord = { vertexData[20].position.x,vertexData[20].position.y,vertexData[20].position.z };
+	//vertexData[21].texcoord = { vertexData[21].position.x,vertexData[21].position.y,vertexData[21].position.z };
+	//vertexData[22].texcoord = { vertexData[22].position.x,vertexData[22].position.y,vertexData[22].position.z };
+	//vertexData[23].texcoord = { vertexData[23].position.x,vertexData[23].position.y,vertexData[23].position.z };
 }
