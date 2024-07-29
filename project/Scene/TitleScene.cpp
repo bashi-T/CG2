@@ -69,6 +69,27 @@ void TitleScene::Init()
 	}
 
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
+
+	const std::string fullPath = std::string("Resource/levels/") + "box.json";
+	std::ifstream file;
+	file.open(fullPath);
+	if (file.fail())
+	{
+		assert(0);
+	}
+
+	//jsonから解凍したデータ
+	nlohmann::json desrialized;
+	//正しいレベルデータファイルかチェック
+	file >> desrialized;
+	assert(desrialized.is_object());
+	assert(desrialized.contains("name"));
+	assert(desrialized["name"].is_string());
+	//”name”を文字列として取得
+	std::string name = desrialized["name"].get<std::string>();
+	assert(name.compare("scene") == 0);
+
+	
 }
 
 void TitleScene::Update()
