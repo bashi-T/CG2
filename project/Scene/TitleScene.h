@@ -14,6 +14,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Finalize() override;
+	//void LoadLevelData();
 private:
 	//Input* input;
 	//Object3dCommon* object3dCommon;

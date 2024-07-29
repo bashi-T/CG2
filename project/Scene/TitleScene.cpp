@@ -89,7 +89,69 @@ void TitleScene::Init()
 	std::string name = desrialized["name"].get<std::string>();
 	assert(name.compare("scene") == 0);
 
-	
+	struct LevelData
+	{
+		struct ObjectData
+		{
+			std::string fileName;
+			Vector3 transration;
+			Vector3 rotation;
+			Vector3 scaling;
+		};
+		//オブジェクトのコンテナ
+		std::vector<ObjectData>objects;
+	};
+	LevelData* levelData = new LevelData();
+	for (nlohmann::json& object : desrialized["objects"])
+	{
+		assert(object.contains("type"));
+		std::string type = object["type"].get<std::string>();
+		if (type.compare("MESH") == 0)
+		{
+			levelData->objects.emplace_back(LevelData::ObjectData{});
+			LevelData::ObjectData& objectData = levelData->objects.back();
+			if (object.contains("file_name"))
+			{
+				objectData.fileName = object["file_name"];
+			}
+			nlohmann::json& transform = object["transform"];
+
+			objectData.transration.x = (float)transform["translation"][0];
+			objectData.transration.y = (float)transform["translation"][2];
+			objectData.transration.z = (float)transform["translation"][1];
+
+			objectData.rotation.x = -(float)transform["rotation"][0];
+			objectData.rotation.y = -(float)transform["rotation"][2];
+			objectData.rotation.z = -(float)transform["rotation"][1];
+
+			objectData.scaling.x = (float)transform["scaling"][0];
+			objectData.scaling.y = (float)transform["scaling"][2];
+			objectData.scaling.z = (float)transform["scaling"][1];
+		}
+		if (object.contains("children"))//再帰処理する
+		{
+			levelData->objects.emplace_back(LevelData::ObjectData{});
+			LevelData::ObjectData& objectData = levelData->objects.back();
+			if (object.contains("file_name"))
+			{
+				objectData.fileName = object["file_name"];
+			}
+			nlohmann::json& transform = object["transform"];
+
+			objectData.transration.x = (float)transform["translation"][0];
+			objectData.transration.y = (float)transform["translation"][2];
+			objectData.transration.z = (float)transform["translation"][1];
+
+			objectData.rotation.x = -(float)transform["rotation"][0];
+			objectData.rotation.y = -(float)transform["rotation"][2];
+			objectData.rotation.z = -(float)transform["rotation"][1];
+
+			objectData.scaling.x = (float)transform["scaling"][0];
+			objectData.scaling.y = (float)transform["scaling"][2];
+			objectData.scaling.z = (float)transform["scaling"][1];
+		}
+	}
+
 }
 
 void TitleScene::Update()
