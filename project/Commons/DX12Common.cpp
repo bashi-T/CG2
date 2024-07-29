@@ -288,6 +288,9 @@ ComPtr<ID3D12Resource> DX12Common::CreatedepthstencilTextureResource(int32_t wid
 
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	//heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM;
+	//heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	//heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 
 	D3D12_CLEAR_VALUE depthClearValue{};
 	depthClearValue.DepthStencil.Depth = 1.0f;

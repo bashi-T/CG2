@@ -25,7 +25,7 @@ public:
 	void Draw(ModelCommon* modelCommon);
 	void SkeltonDraw(ModelCommon* modelCommon);
 
-	ComPtr<ID3D12Resource> CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes);
+	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	Vector3 CalculatevalueV(const std::vector<Model::KeyFrameVector3>& keyframes, float time);
 	Quaternion CalculatevalueQ(const std::vector<Model::KeyFrameQuaternion>& keyframes, float time);
 	void ApplyAnimation(Model::Skelton& skelton, const Model::Animation& animation, float animationTime);

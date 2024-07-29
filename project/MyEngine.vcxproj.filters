@@ -226,5 +226,6 @@
     <None Include="HLSL\Object3d.hlsli" />
     <None Include="HLSL\Particle.hlsli" />
     <None Include="HLSL\SkyBox.hlsli" />
+    <None Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj.user" />
   </ItemGroup>
 </Project>

@@ -127,6 +127,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj.user" />
     <None Include="HLSL\Object3d.hlsli" />
     <None Include="HLSL\Particle.hlsli" />
     <None Include="HLSL\SkyBox.hlsli" />

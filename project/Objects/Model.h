@@ -133,7 +133,7 @@ public:
 	void Draw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void SkeltonDraw(ModelCommon* modelCommon, SRVManager* srvManager);
 	void Memcpy();
-	ComPtr<ID3D12Resource> CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes);
+	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	ModelData LoadModelFile(const std::string& directryPath, const std::string& filename);
 	void MakeBufferView();
 	Node ReadNode(aiNode* node);

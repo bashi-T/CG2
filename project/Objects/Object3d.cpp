@@ -8,10 +8,10 @@ void Object3d::Initialize(Object3dCommon* object3dCommon, SRVManager* srvManager
 
 	//object3dCommon_->Initialize(DX12Common::GetInstance());
 	//object3dCommon_->SetDefaultCamera(camera->GetInstance());
-	transformationMatrixResource = CreateBufferResource(object3dCommon_,sizeof(TransformationMatrix));
-	directionalLightResource = CreateBufferResource(object3dCommon_, sizeof(DirectionalLight));
+	transformationMatrixResource = CreateBufferResource(sizeof(TransformationMatrix));
+	directionalLightResource = CreateBufferResource( sizeof(DirectionalLight));
 	this->camera_ = object3dCommon_->GetDefaultCamera();
-	cameraResource = CreateBufferResource(object3dCommon_, sizeof(CameraTransform));
+	cameraResource = CreateBufferResource(sizeof(CameraTransform));
 	transformMatrix =
 	{
 	{1.0f, 1.0f, 1.0f},
@@ -35,10 +35,10 @@ void Object3d::InitializeSkeleton(Object3dCommon* object3dCommon, SRVManager* sr
 
 	//object3dCommon_->InitializeSkeleton(DX12Common::GetInstance());
 	//object3dCommon_->SetDefaultCamera(camera->GetInstance());
-	transformationMatrixResource = CreateBufferResource(object3dCommon_, sizeof(TransformationMatrix));
-	directionalLightResource = CreateBufferResource(object3dCommon_, sizeof(DirectionalLight));
+	transformationMatrixResource = CreateBufferResource( sizeof(TransformationMatrix));
+	directionalLightResource = CreateBufferResource(sizeof(DirectionalLight));
 	this->camera_ = object3dCommon_->GetDefaultCamera();
-	cameraResource = CreateBufferResource(object3dCommon_, sizeof(CameraTransform));
+	cameraResource = CreateBufferResource(sizeof(CameraTransform));
 	transformMatrix =
 	{
 	{1.0f, 1.0f, 1.0f},
@@ -242,9 +242,8 @@ void Object3d::SkeltonDraw(ModelCommon* modelCommon)
 	}
 }
 
-ComPtr<ID3D12Resource> Object3d::CreateBufferResource(Object3dCommon* object3dCommon, size_t sizeInBytes)
+ComPtr<ID3D12Resource> Object3d::CreateBufferResource(size_t sizeInBytes)
 {
-	this->object3dCommon_ = object3dCommon;
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;

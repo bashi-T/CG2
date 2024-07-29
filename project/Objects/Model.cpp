@@ -6,9 +6,9 @@ void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, s
 	//modelCommon_->MakePSO(DX12Common::GetInstance());
 
 	modelData_ = LoadModelFile("Resource", objFilePath);
-	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData_.vertices.size());
-	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
-	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData_.indices.size());
+	vertexResource = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+	materialResource = CreateBufferResource(sizeof(Material));
+	indexResource = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
 
 	MakeBufferView();
 
@@ -35,9 +35,9 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 
 	modelData_ = LoadModelFile("Resource", objFilePath);
 	animation_ = LoadAnimationFile("Resource", objFilePath);
-	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData_.vertices.size());
-	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
-	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData_.indices.size());
+	vertexResource = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+	materialResource = CreateBufferResource(sizeof(Material));
+	indexResource = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
 
 	MakeBufferView();
 
@@ -67,9 +67,9 @@ void Model::SkeltonInitialize(ModelCommon* modelCommon, std::string objFilePath,
 	modelData_ = LoadModelFile("Resource", objFilePath);
 	animation_ = LoadAnimationFile("Resource", objFilePath);
 	skelton_ = CreateSkelton(modelData_.rootNode);
-	vertexResource = CreateBufferResource(modelCommon_, sizeof(VertexData) * modelData_.vertices.size());
-	materialResource = CreateBufferResource(modelCommon_, sizeof(Material));
-	indexResource = CreateBufferResource(modelCommon_, sizeof(uint32_t) * modelData_.indices.size());
+	vertexResource = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+	materialResource = CreateBufferResource(sizeof(Material));
+	indexResource = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
 
 	MakeBufferView();
 
@@ -153,9 +153,8 @@ void Model::Memcpy()
 	std::memcpy(vertexData, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
 }
 
-ComPtr<ID3D12Resource> Model::CreateBufferResource(ModelCommon* modelCommon, size_t sizeInBytes)
+ComPtr<ID3D12Resource> Model::CreateBufferResource(size_t sizeInBytes)
 {
-	this->modelCommon_ = modelCommon;
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -372,7 +371,7 @@ Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelD
 {
 	WellForGPU* mappedParette = nullptr;
 	//parette用resource作成
-	skinCluster.paletteResource = CreateBufferResource(modelCommon_, sizeof(WellForGPU) * skelton.joints.size());
+	skinCluster.paletteResource = CreateBufferResource(sizeof(WellForGPU) * skelton.joints.size());
 	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedParette));
 	skinCluster.mappedPalette = { mappedParette,skelton.joints.size() };
 	uint32_t index = srvManager_->Allocate();
@@ -396,7 +395,7 @@ Model::SkinCluster Model::CreateSkinCluster(const Skelton& skelton, const ModelD
 		skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
 
 	VertexInfluence* mappedInfluence = nullptr;
-	skinCluster.influenceResource = CreateBufferResource(modelCommon_, sizeof(VertexInfluence) * modelData.vertices.size());
+	skinCluster.influenceResource = CreateBufferResource(sizeof(VertexInfluence) * modelData.vertices.size());
 	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
 	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelData.vertices.size());
 	skinCluster.mappedInfluence = { mappedInfluence,modelData.vertices.size() };
