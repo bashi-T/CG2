@@ -15,6 +15,10 @@ public:
 	void Draw() override;
 	void Finalize() override;
 
+	void LoadEnemyPopData(std::string filePath, int fileNum);
+	void UpdateEnemyPopCommands(int fileNum);
+
+
 	void CheckAllCollisions();
 private:
 	std::vector<Sprite*> sprites;
@@ -22,5 +26,13 @@ private:
 	Whale* whale_;
 	std::list<Enemy*> enemys_;
 	Object3d* object3d;
+	std::stringstream enemyPopCommands[10];
+	std::string enemyPopFile[10] =
+	{
+		"Resource/CSV/practiceFile.csv",
+	};
+	bool isWait = false;
+	int32_t WaitTimer = 1;
+	bool gameEnd = false;
 };
 

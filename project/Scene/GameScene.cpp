@@ -32,15 +32,19 @@ void GameScene::Init()
 	whale_ = new Whale;
 	player_->Initialize();
 	whale_->Initialize();
-	for (uint32_t i = 0; i < 9; i++)
+	//for (uint32_t i = 0; i < 9; i++)
+	//{
+	//	Enemy* enemy_ = new Enemy;
+	//	enemy_ = new Enemy;
+	//	enemy_->Initialize(player_,whale_);
+	//	enemys_.push_back(enemy_);
+	//	enemy_->SetTranslate({10.0f - 2.0f * i,0.0f,30.0f });
+	//	enemy_->SetEnemyVector(whale_->GetTranslate());
+	//};
+	for (uint32_t i = 0; i < 1; i++)
 	{
-		Enemy* enemy_ = new Enemy;
-		enemy_ = new Enemy;
-		enemy_->Initialize(player_,whale_);
-		enemys_.push_back(enemy_);
-		enemy_->SetTranslate({10.0f - 2.0f * i,0.0f,30.0f });
-		enemy_->SetEnemyVector(whale_->GetTranslate());
-	};
+		LoadEnemyPopData(enemyPopFile[i], i);
+	}
 }
 
 void GameScene::Update()
@@ -63,7 +67,7 @@ void GameScene::Update()
 		enemys_.resize(0);
 		sceneNo = GAMEOVER;
 	}
-	else if (enemys_.size() == 0)
+	else if (enemys_.size() == 0 && gameEnd)
 	{
 		sceneNo = CLEAR;
 	}
@@ -87,6 +91,7 @@ void GameScene::Update()
 	}
 	player_->Update();
 	whale_->Update();
+	UpdateEnemyPopCommands(0);
 	for(Enemy*enemy_:enemys_)
 	{
 		enemy_->Update();
@@ -245,3 +250,71 @@ void GameScene::CheckAllCollisions()
 	}
 }
 
+void GameScene::LoadEnemyPopData(std::string filePath,int fileNum)
+{
+	std::ifstream file;
+	file.open(filePath);
+	assert(file.is_open());
+
+	enemyPopCommands[fileNum] << file.rdbuf();
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands(int fileNum)
+{
+	if (isWait)
+	{
+		WaitTimer--;
+		if (WaitTimer <= 0)
+		{
+			isWait = false;
+		}
+		return;
+	}
+	std::string line;
+	while (getline(enemyPopCommands[fileNum], line))
+	{
+		std::istringstream line_stream(line);
+		std::string word;
+		getline(line_stream, word, ',');
+
+		if (word.find("//") == 0)
+		{
+			continue;
+		}
+
+		if (word.find("POP") == 0)
+		{
+			//x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			Enemy* enemy_ = new Enemy;
+			enemy_ = new Enemy;
+			enemy_->Initialize(player_, whale_);
+			enemys_.push_back(enemy_);
+			enemy_->SetTranslate({ x,y,z });
+			enemy_->SetEnemyVector(whale_->GetTranslate());
+		}
+		else if (word.find("WAIT") == 0)
+		{
+			getline(line_stream, word, ',');
+			int32_t waitTime = atoi(word.c_str());
+			isWait = true;
+			WaitTimer = waitTime;
+			break;
+		}
+		else if (word.find("END") == 0)
+		{
+			gameEnd = true;
+		}
+	}
+}

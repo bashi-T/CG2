@@ -19,6 +19,8 @@ void TitleScene::Init()
 		"Resource/cursor.png",
 		"Resource/circle.png",
 		"Resource/particle.png",
+		"Resource/colorbabble.png",
+		
 	};
 	TextureManager::GetInstance()->LoadTexture(textureFilePath[0]);
 	std::string objFilePath[100] =
@@ -64,8 +66,8 @@ void TitleScene::Init()
 	//object3d->SetTranslate({ 3.0f - (2.0f * i), float(pow(-1.0,i)), 1.0f });
 	object3d->SetRotate({ 0.0f, 3.3f, 0.0f });
 	objects3d.push_back(object3d);
-	//particle->Initialize(textureFilePath[9-i], SRVManager::GetInstance(), Object3dCommon::GetInstance());
-	//particles.push_back(particle);
+	particle->Initialize(textureFilePath[11], SRVManager::GetInstance(), Object3dCommon::GetInstance());
+	particles.push_back(particle);
 };
     //objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
 
@@ -141,10 +143,10 @@ void TitleScene::Draw()
 	//objects3d[3]->Draw(ModelManager::GetInstance()->GetModelCommon());
 
 	//objects3d[0]->SkeltonDraw(ModelManager::GetInstance()->GetModelCommon());
-	//for (Particle* particle : particles)
-	//{
-	//	particle->Draw();
-	//}
+	for (Particle* particle : particles)
+	{
+		particle->Draw();
+	}
 }
 
 void TitleScene::Finalize()

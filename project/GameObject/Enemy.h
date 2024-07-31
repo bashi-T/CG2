@@ -17,8 +17,8 @@ public:
 	void OnCollision();
 	void SetTranslate(Vector3 translate);
 	void SetEnemyVector(Vector3 translate);
-	bool IsDead()const { return isDead; }
 
+	bool IsDead()const { return isDead; }
 	const std::list<EnemyBullet*>& GetBullets()const { return eBullets; }
 	Vector3 GetTranslate() { return object3d->GetTranslate(); }
 	OBB GetCollision() { return eCollision; }
