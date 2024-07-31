@@ -45,6 +45,7 @@ void GameScene::Init()
 	{
 		LoadEnemyPopData(enemyPopFile[i], i);
 	}
+	gameEnd = false;
 }
 
 void GameScene::Update()

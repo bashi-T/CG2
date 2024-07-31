@@ -16,7 +16,7 @@ void Whale::Initialize()
 		vertex.normal.z = vertex.position.z;
 	}
 	model->Memcpy();
-
+	life = 4;
 }
 
 void Whale::Update()
