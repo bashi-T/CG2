@@ -2,6 +2,7 @@
 #include"Input/Input.h"
 #include"SceneManager.h"
 #include"Objects/Object3d.h"
+#include"Sprites/Sprite.h"
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
 
@@ -19,5 +20,6 @@ private:
 	//Camera* camera;
 	std::vector<Object3d*> objects3d;
 	std::vector <Particle*> particles;
+	Sprite* sprite;
 };
 

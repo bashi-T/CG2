@@ -157,10 +157,13 @@ void Whale::Update()
 	object3d->SetTranslate(Add(object3d->GetTranslate(), nowWhaleSpeed));
 	object3d->SetIsAnimation(true);
 	object3d->SkeltonUpdate(Camera::GetInstance());
+#ifdef _DEBUG
+
 	ImGui::Begin("whale");
 	ImGui::DragFloat3("whale.translate", (float*)&object3d->GetTranslate(), 0.01f);
 	ImGui::Text("life:%d", life);
 	ImGui::End();
+#endif
 }
 
 void Whale::Draw()

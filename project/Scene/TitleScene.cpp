@@ -70,7 +70,9 @@ void TitleScene::Init()
 	particles.push_back(particle);
 };
     //objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
-
+	sprite = new Sprite;
+	sprite->Initialize(SpriteCommon::GetInstance(), SRVManager::GetInstance(), "Resource/Titleexample.png");
+	sprite->SetPositoin({ 0.0f,0.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 }
 
@@ -127,6 +129,7 @@ void TitleScene::Update()
 	{
 		particle->Update();
 	}
+	sprite->Update();
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		sceneNo = INGAME;
@@ -147,6 +150,7 @@ void TitleScene::Draw()
 	{
 		particle->Draw();
 	}
+	sprite->Draw();
 }
 
 void TitleScene::Finalize()
@@ -155,4 +159,5 @@ void TitleScene::Finalize()
 	{
 		delete object3d;
 	}
+	delete sprite;
 }

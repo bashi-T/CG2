@@ -17,13 +17,11 @@ public:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	~Sprite();
 	void Initialize(
-		int32_t width,
-		int32_t height,
 		SpriteCommon* spriteCommon,
 		SRVManager* srvManager,
 		std::string texturefilePath);
-	void Update(int32_t width, int32_t height);
-	void Draw(SpriteCommon* spriteCommon);
+	void Update();
+	void Draw();
 
 	ComPtr<ID3D12Resource> CreateBufferResource(SpriteCommon* spriteCommon, size_t sizeInBytes);
 	void MakeBufferView();

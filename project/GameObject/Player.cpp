@@ -112,6 +112,7 @@ void Player::Update()
 			isHit = false;
 		}
 	}
+	Camera::GetInstance()->SetTranslate({ object3d->GetTranslate().x,object3d->GetTranslate().y + 7.0f,object3d->GetTranslate().z - 20.0f });
 	for (PlayerBullet* bullet : pBullets)
 	{
 		bullet->Update();
