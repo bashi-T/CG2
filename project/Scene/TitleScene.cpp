@@ -130,10 +130,18 @@ void TitleScene::Update()
 		particle->Update();
 	}
 	sprite->Update();
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+		{
+			sceneNo = INGAME;
+		}
+	}else 
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
 	{
 		sceneNo = INGAME;
 	}
+
 }
 
 void TitleScene::Draw()

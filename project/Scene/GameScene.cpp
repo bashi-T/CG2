@@ -71,6 +71,10 @@ void GameScene::Update()
 	else if (enemys_.size() == 0 && gameEnd)
 	{
 		sceneNo = CLEAR;
+	}else
+	if (Input::GetInstance()->TriggerKey(DIK_S))
+	{
+		sceneNo = TITLE;
 	}
 
 	if (whale_->GetTranslate().x > player_->GetTranslate().x + whale_->GetMaxDistance())
@@ -126,6 +130,10 @@ void GameScene::Finalize()
 	{
 		delete enemy_;
 	}
+	//for (int i = 0; i < 10; i++)
+	//{
+
+	//}
 }
 
 void GameScene::CheckAllCollisions()
