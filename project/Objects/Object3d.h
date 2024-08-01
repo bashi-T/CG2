@@ -47,6 +47,12 @@ public:
 		Vector3 direction;
 		float intensity;
 	};
+	struct PointLight
+	{
+		Vector4 color;
+		Vector3 position;
+		float intensity;
+	};
 	DirectionalLight* GetDirectionalLightData() { return directionalLightData; }
 	DirectionalLight& GetDirectionalLight() { return directionalLight; }
 
@@ -69,6 +75,17 @@ private:
 		{0.0f,-1.0f,0.0f},
 		1.0f
 	};
+	ComPtr<ID3D12Resource> directionalLightResource;
+
+	PointLight* pointLightData = nullptr;
+	PointLight pointLight =
+	{
+		{1.0f,1.0f,1.0f,1.0f},
+		{0.0f,-1.0f,0.0f},
+		1.0f
+	};
+	ComPtr<ID3D12Resource> pointLightResource;
+
 	ComPtr<ID3D12Resource> transformationMatrixResource;
 	ComPtr<ID3D12Resource> cameraResource;
 
@@ -91,8 +108,6 @@ private:
 	Matrix4x4 worldViewProjectionMatrix = {};
 
 	Matrix4x4 skeltonSpaceMatrix = {};
-
-	ComPtr<ID3D12Resource> directionalLightResource;
 
 	bool isAnimation_ = false;
 };

@@ -218,6 +218,8 @@
     <FxCompile Include="HLSL\SkinningObject3d.VS.hlsl" />
     <FxCompile Include="HLSL\SkyBox.VS.hlsl" />
     <FxCompile Include="HLSL\SkyBox.PS.hlsl" />
+    <FxCompile Include="HLSL\Sprite.VS.hlsl" />
+    <FxCompile Include="HLSL\SPrite.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -227,5 +229,6 @@
     <None Include="HLSL\Particle.hlsli" />
     <None Include="HLSL\SkyBox.hlsli" />
     <None Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj.user" />
+    <None Include="HLSL\Sprite.hlsli" />
   </ItemGroup>
 </Project>
