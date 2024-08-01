@@ -27,15 +27,15 @@ private:
 
 public:
 	void Initialize(DX12Common* dxCommon);
-	ComPtr<IDxcBlob> CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile,
-		IDxcUtils* dxcUtils,
-		IDxcCompiler3* dxcCompiler,
-		IDxcIncludeHandler* includeHandler);
-	void ResetDXC();
-	void MakePSO();
-	void MakeSkeltonPSO();
+	//ComPtr<IDxcBlob> CompileShader(
+	//	const std::wstring& filePath,
+	//	const wchar_t* profile,
+	//	IDxcUtils* dxcUtils,
+	//	IDxcCompiler3* dxcCompiler,
+	//	IDxcIncludeHandler* includeHandler);
+	//void ResetDXC();
+	//void MakePSO();
+	//void MakeSkeltonPSO();
 
 	DX12Common* GetDx12Common()const { return dxCommon_; }
 };

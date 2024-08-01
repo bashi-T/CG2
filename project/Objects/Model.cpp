@@ -3,7 +3,6 @@
 void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, std::string TextureFilePath)
 {
 	this->modelCommon_ = modelCommon;
-	//modelCommon_->MakePSO(DX12Common::GetInstance());
 
 	modelData_ = LoadModelFile("Resource", objFilePath);
 	vertexResource = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());

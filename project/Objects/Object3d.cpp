@@ -199,11 +199,11 @@ void Object3d::Draw(ModelCommon* modelCommon)
 
 	object3dCommon_->GetDx12Common()->GetCommandList().Get()->
 		SetGraphicsRootConstantBufferView(
-		3, directionalLightResource->GetGPUVirtualAddress());
+		4, directionalLightResource->GetGPUVirtualAddress());
 
 	object3dCommon_->GetDx12Common()->GetCommandList()->
 		SetGraphicsRootConstantBufferView(
-		4, cameraResource->GetGPUVirtualAddress());
+		3, cameraResource->GetGPUVirtualAddress());
 
 	if (model_)
 	{
