@@ -51,5 +51,6 @@ private:
 	std::unordered_map<std::string, TextureData>textureDatas;
 	HRESULT hr = NULL;
 	ComPtr<ID3D12Resource> intermediateResources;
+
 };
 

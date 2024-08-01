@@ -273,6 +273,30 @@ void DX12Common::MakeDSV()
 	dsvHandle = GetCPUDescriptorHandle(dsvDescriptorHeap.Get(), descriptorSizeDSV, 0);
 }
 
+void DX12Common::ExecuteCommandList()
+{
+	hr = commandList->Close();
+	assert(SUCCEEDED(hr));
+
+	ComPtr<ID3D12CommandList> commandLists[] =
+	{
+		commandList.Get()
+	};
+	commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
+}
+
+void DX12Common::MakeFenceEvent()
+{
+	fenceValue++;
+	commandQueue->Signal(fence.Get(), fenceValue);
+
+	if (fence->GetCompletedValue() < fenceValue)
+	{
+		fence->SetEventOnCompletion(fenceValue, fenceEvent);
+		WaitForSingleObject(fenceEvent, INFINITE);
+	}
+}
+
 
 ComPtr<ID3D12Resource> DX12Common::CreatedepthstencilTextureResource(int32_t width, int32_t height)
 {
@@ -406,23 +430,11 @@ void DX12Common::PostDraw()
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	commandList->ResourceBarrier(1, &barrier);
 
-	hr = commandList->Close();
-	assert(SUCCEEDED(hr));
+	ExecuteCommandList();
 
-	ComPtr<ID3D12CommandList> commandLists[] =
-	{
-		commandList.Get()
-	};
-	commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
 	swapChain->Present(1, 0);
-	fenceValue++;
-	commandQueue->Signal(fence.Get(), fenceValue);
 
-	if (fence->GetCompletedValue() < fenceValue)
-	{
-		fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		WaitForSingleObject(fenceEvent, INFINITE);
-	}
+	MakeFenceEvent();
 
 	hr = commandAllocator->Reset();
 	assert(SUCCEEDED(hr));

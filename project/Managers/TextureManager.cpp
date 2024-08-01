@@ -71,6 +71,13 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	intermediateResources = TextureManager::GetInstance()->
 		UploadTextureData(textureData.resource.Get(), mipImages);
 
+	DX12Common::GetInstance()->ExecuteCommandList();
+	DX12Common::GetInstance()->MakeFenceEvent();
+	hr = DX12Common::GetInstance()->GetCommandAllocator()->Reset();
+	assert(SUCCEEDED(hr));
+	hr = DX12Common::GetInstance()->GetCommandList()->Reset(DX12Common::GetInstance()->GetCommandAllocator().Get(), nullptr);
+	assert(SUCCEEDED(hr));
+	
 	textureData.srvIndex = SRVManager::GetInstance()->Allocate();
 	textureData.srvHandleCPU = SRVManager::GetInstance()->
 		GetCPUDescriptorHandle(textureData.srvIndex);

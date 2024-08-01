@@ -29,6 +29,8 @@ public:
 	void BringResources();
 	void MakeRTV();
 	void MakeDSV();
+	void ExecuteCommandList();
+	void MakeFenceEvent();
 
 	void MakeScreen(WinAPP* winApp);
 	void DX12Release();
