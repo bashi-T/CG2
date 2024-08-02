@@ -35,7 +35,7 @@ int GameManager::Run()
 
 	std::string textureFilePath[100] =//textureの左右が反転してる
 	{
-		"Resource/civ6.png",//一番最初のテクスチャがうまく読み込まれない
+		"Resource/civ6.png",
 		"Resource/ganban.png",
 		"Resource/white.png",
 		"Resource/worldMap.png",

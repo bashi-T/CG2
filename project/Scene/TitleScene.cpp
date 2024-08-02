@@ -2,10 +2,10 @@
 
 void TitleScene::Init()
 {
-	std::string textureFilePath[100] =//textureの左右が反転してる
+	std::string textureFilePath[100] =
 	{
-		"Resource/ganban.png",
 		"Resource/white.png",
+		"Resource/ganban.png",
 		"Resource/worldMap.png",
 		"Resource/monsterBall.png",
 		"Resource/AnimatedCube/AnimatedCube_BaseColor.png",

@@ -18,6 +18,10 @@ void Model::ModelInitialize(ModelCommon* modelCommon, std::string objFilePath, s
 	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
 
+	modelData_.eMaterial.textureFilePath = "Resource/rostock_laage_airport_4k.dds";
+	TextureManager::GetInstance()->LoadTexture("Resource/rostock_laage_airport_4k.dds");
+	modelData_.eMaterial.textureIndex = TextureManager::GetInstance()->GetSrvIndex("Resource/rostock_laage_airport_4k.dds");
+
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData[0].enableLighting = true;
 	materialData[0].uvTransform = MakeIdentity4x4();
@@ -47,6 +51,10 @@ void Model::AnimationInitialize(ModelCommon* modelCommon, std::string objFilePat
 	modelData_.material.textureFilePath = TextureFilePath;
 	TextureManager::GetInstance()->LoadTexture(TextureFilePath);
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(TextureFilePath);
+
+	modelData_.eMaterial.textureFilePath = "Resource/rostock_laage_airport_4k.dds";
+	TextureManager::GetInstance()->LoadTexture("Resource/rostock_laage_airport_4k.dds");
+	modelData_.eMaterial.textureIndex = TextureManager::GetInstance()->GetSrvIndex("Resource/rostock_laage_airport_4k.dds");
 
 	materialData[0].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData[0].enableLighting = true;
@@ -111,6 +119,9 @@ void Model::Draw(ModelCommon* modelCommon, SRVManager* srvManager)
 		IASetIndexBuffer(&indexBufferView);
 	srvManager_->SetGraphicsRootDescriptorTable(
 		2, modelData_.material.textureIndex);
+
+	srvManager_->SetGraphicsRootDescriptorTable(
+		5, modelData_.eMaterial.textureIndex);
 
 	modelCommon_->GetDx12Common()->GetCommandList().Get()->DrawIndexedInstanced(
 		UINT(modelData_.indices.size()), 1, 0, 0, 0);

@@ -54,6 +54,7 @@ public:
 		std::vector<uint32_t> indices;
 		MaterialData material;
 		Node rootNode;
+		MaterialData eMaterial;
 	};
 	struct Joint
 	{

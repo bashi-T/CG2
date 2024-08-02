@@ -68,8 +68,8 @@ void Object3dCommon::MakePSO()
 	descriptionRootSignature_.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 0;//0から始まる
-	descriptorRange[0].NumDescriptors = 1;//数は1つ
+	descriptorRange[0].BaseShaderRegister = 0;//始まる番地
+	descriptorRange[0].NumDescriptors = 1;//用意する数
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offset自動計算
 
@@ -100,17 +100,17 @@ void Object3dCommon::MakePSO()
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[4].Descriptor.ShaderRegister = 2;
 
-	//D3D12_DESCRIPTOR_RANGE descriptorRangeforEnvironment[1] = {};
-	//descriptorRangeforEnvironment[0].BaseShaderRegister = 1;//1から始まる
-	//descriptorRangeforEnvironment[0].NumDescriptors = 1;//数は1つ
-	//descriptorRangeforEnvironment[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
-	//descriptorRangeforEnvironment[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offset自動計算
+	D3D12_DESCRIPTOR_RANGE descriptorRangeforEnvironment[1] = {};
+	descriptorRangeforEnvironment[0].BaseShaderRegister = 1;//1から始まる
+	descriptorRangeforEnvironment[0].NumDescriptors = 1;//数は1つ
+	descriptorRangeforEnvironment[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
+	descriptorRangeforEnvironment[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offset自動計算
 
-	////環境マップ
-	//rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	//rootParameters[5].DescriptorTable.pDescriptorRanges = descriptorRangeforEnvironment;
-	//rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeforEnvironment);
+	//環境マップ
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[5].DescriptorTable.pDescriptorRanges = descriptorRangeforEnvironment;
+	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeforEnvironment);
 	//rootParameters[5].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature_.pParameters = rootParameters;
@@ -265,18 +265,18 @@ void Object3dCommon::MakeSkeltonPSO()
 	rootParameters[5].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
 	rootParameters[5].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
 
-	//D3D12_DESCRIPTOR_RANGE descriptorRangeforEnvironment[1] = {};
-	//descriptorRangeforEnvironment[0].BaseShaderRegister = 1;//1から始まる
-	//descriptorRangeforEnvironment[0].NumDescriptors = 1;//数は1つ
-	//descriptorRangeforEnvironment[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
-	//descriptorRangeforEnvironment[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offset自動計算
+	D3D12_DESCRIPTOR_RANGE descriptorRangeforEnvironment[1] = {};
+	descriptorRangeforEnvironment[0].BaseShaderRegister = 1;//1から始まる
+	descriptorRangeforEnvironment[0].NumDescriptors = 1;//数は1つ
+	descriptorRangeforEnvironment[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使う
+	descriptorRangeforEnvironment[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//offset自動計算
 
-	////環境マップ
-	//rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	//rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRangeforEnvironment;
-	//rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeforEnvironment);
-	//rootParameters[6].Descriptor.ShaderRegister = 1;
+	//環境マップ
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[6].DescriptorTable.pDescriptorRanges = descriptorRangeforEnvironment;
+	rootParameters[6].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeforEnvironment);
+	rootParameters[6].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature_.pParameters = rootParameters;
 	descriptionRootSignature_.NumParameters = _countof(rootParameters);
