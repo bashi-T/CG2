@@ -32,6 +32,10 @@ void GameScene::Init()
 	whale_ = new Whale;
 	player_->Initialize();
 	whale_->Initialize();
+
+	enemyPopFile[0] = "Resource/CSV/practiceFile.csv";
+
+
 	//for (uint32_t i = 0; i < 9; i++)
 	//{
 	//	Enemy* enemy_ = new Enemy;
@@ -94,6 +98,17 @@ void GameScene::Update()
 	{
 		whale_->SetTranslate({ whale_->GetTranslate().x,whale_->GetTranslate().y,player_->GetTranslate().z - whale_->GetMaxDistance() });
 	}
+
+	if (player_->GetTranslate().x <= -10.0f)
+	{
+		player_->SetTranslate({ -10.0f,player_->GetTranslate().y,player_->GetTranslate().z });
+	}
+
+	if (player_->GetTranslate().x >= 10.0f)
+	{
+		player_->SetTranslate({ 10.0f,player_->GetTranslate().y,player_->GetTranslate().z });
+	}
+
 	player_->Update();
 	whale_->Update();
 	UpdateEnemyPopCommands(0);
@@ -130,10 +145,8 @@ void GameScene::Finalize()
 	{
 		delete enemy_;
 	}
-	//for (int i = 0; i < 10; i++)
-	//{
-
-	//}
+	enemyPopFile[0].clear();
+	enemyPopCommands[0].clear();
 }
 
 void GameScene::CheckAllCollisions()
@@ -304,7 +317,7 @@ void GameScene::UpdateEnemyPopCommands(int fileNum)
 
 			//z座標
 			getline(line_stream, word, ',');
-			float z = (float)std::atof(word.c_str());
+			float z = (float)std::atof(word.c_str()) + player_->GetTranslate().z;
 
 			Enemy* enemy_ = new Enemy;
 			enemy_ = new Enemy;
@@ -324,6 +337,9 @@ void GameScene::UpdateEnemyPopCommands(int fileNum)
 		else if (word.find("END") == 0)
 		{
 			gameEnd = true;
+			word.clear();
+			line_stream.clear();
+			line.clear();
 		}
 	}
 }

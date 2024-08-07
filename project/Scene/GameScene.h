@@ -27,10 +27,7 @@ private:
 	std::list<Enemy*> enemys_;
 	Object3d* object3d;
 	std::stringstream enemyPopCommands[10];
-	std::string enemyPopFile[10] =
-	{
-		"Resource/CSV/practiceFile.csv",
-	};
+	std::string enemyPopFile[10];
 	bool isWait = false;
 	int32_t WaitTimer = 1;
 	bool gameEnd = false;
