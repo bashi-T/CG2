@@ -4,6 +4,7 @@
 #include"Objects/Object3d.h"
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
+#include"Sprites/Sprite.h"
 
 class ClearScene :public SceneManager
 {
@@ -14,5 +15,6 @@ public:
 	void Finalize() override;
 
 private:
+	Sprite* sprite;
 };
 

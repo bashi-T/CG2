@@ -39,5 +39,6 @@ public:
 	GameManager();
 	~GameManager();
 	int Run();
+	static int stageNumber;
 };
 

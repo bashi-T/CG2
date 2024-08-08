@@ -5,6 +5,7 @@
 #include"Sprites/Sprite.h"
 #include"Commons/Object3dCommon.h"
 #include"Objects/Particle.h"
+#include "GameManager.h"
 
 class TitleScene:public SceneManager
 {

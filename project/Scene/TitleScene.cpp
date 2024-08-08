@@ -72,7 +72,7 @@ void TitleScene::Init()
     //objects3d[1]->SetScale({ 0.005f,0.005f ,0.005f });
 	sprite = new Sprite;
 	sprite->Initialize(SpriteCommon::GetInstance(), SRVManager::GetInstance(), "Resource/Titleexample.png");
-	sprite->SetPositoin({ 0.0f,0.0f });
+	sprite->SetPositoin({ float(WinAPP::clientWidth_ / 2) - (sprite->GetSize().x / 2),0.0f });
 	Object3dCommon::GetInstance()->SetDefaultCamera(Camera::GetInstance());
 }
 
@@ -135,11 +135,8 @@ void TitleScene::Update()
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
 			sceneNo = INGAME;
+			GameManager::stageNumber = 0;
 		}
-	}else 
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE))
-	{
-		sceneNo = INGAME;
 	}
 
 }

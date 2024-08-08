@@ -111,7 +111,7 @@ void GameScene::Update()
 
 	player_->Update();
 	whale_->Update();
-	UpdateEnemyPopCommands(0);
+	UpdateEnemyPopCommands(GameManager::stageNumber);
 	for(Enemy*enemy_:enemys_)
 	{
 		enemy_->Update();
@@ -223,7 +223,7 @@ void GameScene::CheckAllCollisions()
 				posB = eBullet->GetTranslate();
 				Vector3 distance = Subtract(posA, posB);
 				if ((distance.x * distance.x) + (distance.y * distance.y) +
-					(distance.z * distance.z) <= 4)
+					(distance.z * distance.z) <= 2)
 				{
 					pBullet->OnCollision();
 					eBullet->OnCollision();

@@ -57,7 +57,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,SRVManager* srvManager, std::
 	materialData->material.textureFilePath = textureFilePath;
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	materialData->material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
-	//AdjestTextureSize();
+	AdjestTextureSize();
 }
 
 void Sprite::Update()
@@ -146,7 +146,6 @@ void Sprite::InputData(Vector4 color)
 	indexData[5] = 2;
 
 	materialData[0].color = color;
-	materialData[0].enableLighting = false;
 	materialData[0].uvTransform = MakeIdentity4x4();
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
 	uvTransformMatrix = Multiply(uvTransformMatrix, MakerotateZMatrix(uvTransform.rotate.z));

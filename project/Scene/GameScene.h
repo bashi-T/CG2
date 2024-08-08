@@ -6,6 +6,7 @@
 #include"GameObject/Player.h"
 #include"GameObject/Whale.h"
 #include"GameObject/Enemy.h"
+#include "GameManager.h"
 
 class GameScene:public SceneManager
 {

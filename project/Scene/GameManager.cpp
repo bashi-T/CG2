@@ -1,5 +1,6 @@
 #include "GameManager.h"
 Vector4* vertexData = nullptr;
+int GameManager::stageNumber = 0;
 
 GameManager::GameManager()
 {

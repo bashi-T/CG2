@@ -8,8 +8,7 @@ void Particle::Initialize(const std::string& textureFilePath,SRVManager* srvMana
 	this->object3dCommon_ = object3dCommon;
 	this->srvManager = srvManager;
 	this->camera_ = object3dCommon_->GetDefaultCamera();
-	kNumMaxInstance = 10;
-	kSubdivision = 16;
+	kNumMaxInstance = 100;
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
